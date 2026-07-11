@@ -16,6 +16,9 @@ import Footer from "@/components/Footer";
 import GridOverlay from "@/components/GridOverlay";
 import PageReveal from "@/components/PageReveal";
 import ReadingProgress from "@/components/ReadingProgress";
+import AmbientLight from "@/components/AmbientLight";
+import PageNoise from "@/components/PageNoise";
+import ScrollIndicator from "@/components/ScrollIndicator";
 
 export default function Home() {
   return (
@@ -25,6 +28,9 @@ export default function Home() {
         <GridOverlay />
         <PageReveal />
         <ReadingProgress />
+        <AmbientLight />
+        <PageNoise />
+        <ScrollIndicator />
         <Hero />
         <QuoteBlock quote="هر تغییری از جایی آغاز می‌شود که انسان احساس کند تجربه‌اش واقعاً فهمیده شده است." />
         <QuestionBlock
