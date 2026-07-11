@@ -1,25 +1,15 @@
+import Link from "next/link";
+
 type Props = {
   children: React.ReactNode;
   href: string;
+  variant?: "primary" | "secondary" | "text";
 };
 
-export default function Button({ children, href }: Props) {
+export default function Button({ children, href, variant = "primary" }: Props) {
   return (
-    <a
-      href={href}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "1rem 2.8rem",
-        background: "var(--primary)",
-        color: "white",
-        textDecoration: "none",
-        transition: ".3s",
-        borderRadius: 0,
-      }}
-    >
+    <Link href={href} className={`btn btn-${variant}`}>
       {children}
-    </a>
+    </Link>
   );
 }

@@ -1,0 +1,32 @@
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import ObservationGrid from "@/components/Observation/ObservationGrid";
+
+export default function Observations() {
+  return (
+    <>
+      <Navbar />
+      <main>
+        <section className="editorial-space">
+          <div className="container">
+            <p className="overline">OBSERVATIONS</p>
+            <h1 className="display">
+              مشاهده‌هایی که
+              از دل اتاق درمان آمده‌اند.
+            </h1>
+            <p className="lead">
+              این‌ها نسخه درمان نیستند.
+              تمرین نگاه کردن‌اند.
+            </p>
+          </div>
+        </section>
+        <section>
+          <div className="container">
+            <ObservationGrid />
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
+}
