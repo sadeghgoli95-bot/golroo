@@ -1,15 +1,17 @@
 type Props = {
+  overline?: string;
   eyebrow?: string;
   title: React.ReactNode;
   description?: string;
 };
 
-export default function SectionTitle({ eyebrow, title, description }: Props) {
+export default function SectionTitle({ overline, eyebrow, title, description }: Props) {
+  const label = eyebrow || overline;
   return (
     <header className="flow-lg">
-      {eyebrow && (
+      {label && (
         <small style={{ color: "var(--accent)" }}>
-          {eyebrow}
+          {label}
         </small>
       )}
       <h2>{title}</h2>
