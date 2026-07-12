@@ -1,7 +1,13 @@
-export interface Frontmatter {
-  title: string;
+export interface BaseContent {
+  id: number;
   slug: string;
-  date: string;
-  tags: string[];
+  title: string;
+  excerpt: string;
+  body: string;
+  cover?: string;
+  published: boolean;
   featured: boolean;
+  createdAt: string;
+  updatedAt: string;
+  tags: string[];
 }

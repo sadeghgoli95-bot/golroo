@@ -1,8 +1,5 @@
-export interface JournalEntry {
-  title: string;
-  slug: string;
-  excerpt: string;
-  date: string;
+import { BaseContent } from "./content";
+
+export interface Journal extends BaseContent {
   readingTime: number;
-  tags: string[];
 }
