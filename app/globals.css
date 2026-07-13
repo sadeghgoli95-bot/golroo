@@ -571,3 +571,115 @@ button { font: inherit; }
   .split { grid-template-columns: 1fr; }
   .offset-up, .offset-down { margin-top: 0; }
 }
+
+/* =========================================
+   ARTICLE
+========================================= */
+.article-body {
+  font-size: 1.15rem;
+  line-height: 2.15;
+}
+
+.article-body p { margin: 2rem 0; }
+.article-body h2 { margin-top: 5rem; margin-bottom: 1.5rem; }
+.article-body h3 { margin-top: 3rem; }
+.article-body ul { padding-inline-start: 1.5rem; }
+.article-body li { margin: .8rem 0; }
+
+.article-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  color: var(--text-muted);
+  font-size: .9rem;
+}
+
+.article-meta { display: inline-flex; align-items: center; gap: .5rem; }
+
+.pull-quote {
+  margin: 5rem 0;
+  padding-inline-start: 2rem;
+  border-inline-start: 2px solid var(--accent);
+  font-size: 1.6rem;
+  font-style: italic;
+  line-height: 1.8;
+}
+
+.article-footer {
+  margin-top: 6rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--line);
+}
+
+/* =========================================
+   SEARCH
+========================================= */
+.search-input {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  background: transparent;
+  border: 1px solid var(--line);
+  font: inherit;
+  color: inherit;
+  transition: .3s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* =========================================
+   ARTICLE SYSTEM
+========================================= */
+.article-body { font-size: 1.15rem; line-height: 2.15; }
+.article-body p { margin: 2rem 0; }
+.article-body h2 { margin-top: 5rem; margin-bottom: 1.5rem; }
+.article-body h3 { margin-top: 3rem; }
+.article-body ul { padding-inline-start: 1.5rem; }
+.article-body li { margin: .8rem 0; }
+
+.article-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  color: var(--text-muted);
+  font-size: .9rem;
+}
+
+.article-meta { display: flex; align-items: center; gap: .5rem; }
+
+.article-footer {
+  margin-top: 6rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--line);
+}
+
+.pull-quote {
+  margin: 5rem 0;
+  padding-inline-start: 2rem;
+  border-inline-start: 2px solid var(--accent);
+  font-size: 1.6rem;
+  font-style: italic;
+  line-height: 1.8;
+}
+
+/* =========================================
+   SEARCH SYSTEM
+========================================= */
+.search-input {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  background: transparent;
+  border: 1px solid var(--line);
+  font: inherit;
+  color: inherit;
+  transition: .3s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
