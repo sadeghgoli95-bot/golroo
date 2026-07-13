@@ -1,8 +1,3 @@
-import fs from "fs";
-import path from "path";
-
-export function getObservationSlugs() {
-  return fs.readdirSync(
-    path.join(process.cwd(), "content/observations")
-  );
+export function getObservationSlugs(observations: { slug: string }[]) {
+  return observations.map(o => o.slug);
 }
