@@ -1,0 +1,39 @@
+import {defineField, defineType} from 'sanity'
+
+export default defineType({
+  name: 'category',
+  title: 'دسته‌بندی‌ها',
+  type: 'document',
+
+  fields: [
+    defineField({
+      name: 'title',
+      title: 'نام دسته‌بندی',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    }),
+
+    defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: {
+        source: 'title',
+      },
+      validation: Rule => Rule.required(),
+    }),
+
+    defineField({
+      name: 'description',
+      title: 'توضیحات',
+      type: 'text',
+      rows: 3,
+    }),
+  ],
+
+  preview: {
+    select: {
+      title: 'title',
+    },
+  },
+})

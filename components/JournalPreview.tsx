@@ -1,21 +1,11 @@
+import Link from "next/link";
 import Container from "./Container";
+import { client } from "@/sanity/lib/client";
+import { articlesQuery } from "@/sanity/lib/queries";
 
-const notes = [
-  {
-    title: "وقتی کودک مضطرب است، دقیقاً چه چیزی را تجربه می‌کند؟",
-    category: "یادداشت",
-  },
-  {
-    title: "آیا همیشه باید رفتار کودک را اصلاح کرد؟",
-    category: "تأمل",
-  },
-  {
-    title: "چرا بعضی کودکان احساساتشان را با بازی نشان می‌دهند؟",
-    category: "مشاهده",
-  },
-];
+export default async function JournalPreview() {
+  const notes = await client.fetch(articlesQuery);
 
-export default function JournalPreview() {
   return (
     <section className="section" style={{ background: "var(--bg-soft)" }}>
       <Container>
@@ -40,6 +30,7 @@ export default function JournalPreview() {
             >
               JOURNAL
             </div>
+
             <h2
               style={{
                 fontSize: "clamp(2.4rem,4vw,3.6rem)",
@@ -52,15 +43,22 @@ export default function JournalPreview() {
               برای کندتر فکر کردن.
             </h2>
           </div>
-          <a href="/journal" style={{ color: "var(--bronze)", fontSize: 16 }}>
+
+          <Link
+            href="/journal"
+            style={{
+              color: "var(--bronze)",
+              fontSize: 16,
+            }}
+          >
             مشاهده همه یادداشت‌ها →
-          </a>
+          </Link>
         </div>
 
         <div style={{ display: "grid", gap: 26 }}>
-          {notes.map((item) => (
+          {notes.map((item: any) => (
             <article
-              key={item.title}
+              key={item._id}
               style={{
                 borderTop: "1px solid var(--border)",
                 paddingTop: "2.4rem",
@@ -77,11 +75,26 @@ export default function JournalPreview() {
                   letterSpacing: ".15em",
                 }}
               >
-                {item.category}
+                {item.topic}
               </div>
-              <h3 style={{ fontSize: 29, fontWeight: 300, lineHeight: 1.9 }}>
-                {item.title}
-              </h3>
+
+              <Link
+                href={`/journal/${item.slug.current}`}
+                style={{
+                  textDecoration: "none",
+                  color: "inherit",
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: 29,
+                    fontWeight: 300,
+                    lineHeight: 1.9,
+                  }}
+                >
+                  {item.title}
+                </h3>
+              </Link>
             </article>
           ))}
         </div>

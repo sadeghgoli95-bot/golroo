@@ -1,0 +1,311 @@
+import {defineArrayMember, defineField, defineType} from 'sanity'
+
+export default defineType({
+  name: 'article',
+  title: 'مقالات',
+  type: 'document',
+
+  groups: [
+    {name: 'content', title: 'محتوا', default: true},
+    {name: 'seo', title: 'سئو'},
+    {name: 'relations', title: 'ارتباطات'},
+    {name: 'publish', title: 'انتشار'},
+  ],
+
+  fields: [
+    defineField({
+      name: 'title',
+      title: 'عنوان مقاله',
+      type: 'string',
+      group: 'content',
+      validation: Rule => Rule.required(),
+    }),
+
+    defineField({
+      name: 'status',
+      title: 'وضعیت مقاله',
+      type: 'string',
+      group: 'publish',
+      initialValue: 'draft',
+      options: {
+        layout: 'radio',
+        list: [
+          {title: '🟡 پیش‌نویس', value: 'draft'},
+          {title: '🟢 آماده انتشار', value: 'ready'},
+          {title: '🔵 منتشر شده', value: 'published'},
+          {title: '🔴 نیازمند بازبینی', value: 'review'},
+        ],
+      },
+    }),
+
+    defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      group: 'content',
+      options: {source: 'title'},
+      validation: Rule => Rule.required(),
+    }),
+
+    defineField({
+      name: 'articleId',
+      title: 'شناسه گل‌رو',
+      type: 'string',
+      group: 'content',
+      readOnly: true,
+      initialValue: () => {
+        const year = new Date().getFullYear()
+        const random = Math.floor(1000 + Math.random() * 9000)
+        return `GR-${year}-${random}`
+      },
+    }),
+
+    defineField({
+      name: 'readingTime',
+      title: 'زمان مطالعه',
+      type: 'number',
+      group: 'content',
+      description: 'بر حسب دقیقه',
+    }),
+
+    defineField({
+      name: 'editorChecklist',
+      title: 'چک‌لیست انتشار',
+      type: 'object',
+      group: 'publish',
+      fields: [
+        {name: 'tone', title: 'لحن بررسی شد', type: 'boolean'},
+        {name: 'spelling', title: 'غلط املایی ندارد', type: 'boolean'},
+        {name: 'sources', title: 'منابع بررسی شدند', type: 'boolean'},
+        {name: 'seo', title: 'سئو کامل است', type: 'boolean'},
+        {name: 'internalLinks', title: 'لینک داخلی دارد', type: 'boolean'},
+        {name: 'faq', title: 'FAQ تکمیل شده', type: 'boolean'},
+        {name: 'brand', title: 'مطابق منشور گل‌رو است', type: 'boolean'},
+      ],
+    }),
+
+    defineField({
+      name: 'lastReviewed',
+      title: 'آخرین بازبینی علمی',
+      type: 'date',
+      group: 'publish',
+    }),
+
+    defineField({
+      name: 'lastUpdated',
+      title: 'آخرین بروزرسانی',
+      type: 'datetime',
+      group: 'publish',
+    }),
+
+    defineField({
+      name: 'evidenceLevel',
+      title: 'سطح شواهد',
+      type: 'string',
+      group: 'publish',
+      options: {
+        list: [
+          {title: 'نظر متخصص', value: 'expert'},
+          {title: 'مطالعه مشاهده‌ای', value: 'observational'},
+          {title: 'مرور نظام‌مند', value: 'systematic'},
+          {title: 'راهنمای بالینی', value: 'guideline'},
+        ],
+      },
+    }),
+
+    defineField({
+      name: 'topic',
+      title: 'موضوع',
+      type: 'string',
+      group: 'content',
+    }),
+
+    defineField({
+  name: 'metaDescription',
+  title: 'Meta Description',
+  type: 'text',
+  group: 'content',
+  rows: 3,
+}),
+
+defineField({
+  name: 'keywords',
+  title: 'کلمات کلیدی',
+  type: 'array',
+  group: 'content',
+  of: [
+    {
+      type: 'string',
+    },
+  ],
+}),
+
+    defineField({
+      name: 'excerpt',
+      title: 'خلاصه مقاله',
+      type: 'text',
+      rows: 4,
+      group: 'content',
+    }),
+
+    defineField({
+      name: 'window',
+      title: 'پنجره گل‌رو',
+      type: 'text',
+      rows: 4,
+      group: 'content',
+      description: 'بخش اختصاصی تمام مقاله‌های گل‌رو',
+    }),
+
+    defineField({
+      name: 'importantPoints',
+      title: 'نکات مهم',
+      type: 'array',
+      group: 'content',
+      of: [{type: 'string'}],
+    }),
+
+    defineField({
+      name: 'finalThought',
+      title: 'حرف آخر',
+      type: 'text',
+      rows: 4,
+      group: 'content',
+    }),
+
+    defineField({
+      name: 'finalQuestion',
+      title: 'سؤال پایانی',
+      type: 'text',
+      rows: 2,
+      group: 'content',
+    }),
+
+    defineField({
+      name: 'featuredImage',
+      title: 'تصویر شاخص',
+      type: 'image',
+      group: 'content',
+      options: {hotspot: true},
+    }),
+
+    defineField({
+  name: 'featuredImageAlt',
+  title: 'Alt Text تصویر',
+  type: 'string',
+  group: 'content',
+  description: 'توضیح تصویر برای دسترس‌پذیری و سئو',
+}),
+
+defineField({
+  name: 'imageCaption',
+  title: 'کپشن تصویر',
+  type: 'string',
+  group: 'content',
+}),
+
+    defineField({
+      name: 'body',
+      title: 'متن مقاله',
+      type: 'array',
+      group: 'content',
+      of: [defineArrayMember({type: 'block'})],
+    }),
+
+    defineField({
+      name: 'scientificExplanation',
+      title: 'توضیح علمی',
+      type: 'array',
+      group: 'content',
+      of: [defineArrayMember({type: 'block'})],
+    }),
+
+    defineField({
+  name: 'callout',
+  title: 'قراره درباره چی حرف بزنیم؟',
+  type: 'text',
+  group: 'content',
+  rows: 3,
+}),
+
+    defineField({
+      name: 'seo',
+      title: 'اطلاعات سئو',
+      type: 'seo',
+      group: 'seo',
+    }),
+
+    defineField({
+      name: 'category',
+      title: 'دسته‌بندی',
+      type: 'reference',
+      to: [{type: 'category'}],
+      group: 'relations',
+    }),
+
+    defineField({
+      name: 'tags',
+      title: 'برچسب‌ها',
+      type: 'array',
+      group: 'relations',
+      of: [defineArrayMember({type: 'reference', to: [{type: 'tag'}]})],
+    }),
+
+    defineField({
+      name: 'author',
+      title: 'نویسنده',
+      type: 'reference',
+      to: [{type: 'author'}],
+      group: 'relations',
+    }),
+
+    defineField({
+      name: 'sources',
+      title: 'منابع علمی',
+      type: 'array',
+      group: 'relations',
+      of: [defineArrayMember({type: 'reference', to: [{type: 'source'}]})],
+    }),
+
+    defineField({
+      name: 'faq',
+      title: 'سوالات متداول',
+      type: 'array',
+      group: 'relations',
+      of: [defineArrayMember({type: 'reference', to: [{type: 'faq'}]})],
+    }),
+
+    defineField({
+      name: 'publishedAt',
+      title: 'تاریخ انتشار',
+      type: 'datetime',
+      group: 'publish',
+      initialValue: () => new Date().toISOString(),
+    }),
+
+    defineField({
+      name: 'revisionHistory',
+      title: 'تاریخچه ویرایش',
+      type: 'array',
+      group: 'publish',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {name: 'version', title: 'نسخه', type: 'string'},
+            {name: 'date', title: 'تاریخ', type: 'date'},
+            {name: 'changes', title: 'تغییرات', type: 'text'},
+          ],
+        },
+      ],
+    }),
+  ],
+
+  preview: {
+    select: {
+      title: 'title',
+      subtitle: 'articleId',
+      media: 'featuredImage',
+    },
+  },
+})
