@@ -22,23 +22,6 @@ export default defineType({
     }),
 
     defineField({
-      name: 'status',
-      title: 'وضعیت مقاله',
-      type: 'string',
-      group: 'publish',
-      initialValue: 'draft',
-      options: {
-        layout: 'radio',
-        list: [
-          {title: '🟡 پیش‌نویس', value: 'draft'},
-          {title: '🟢 آماده انتشار', value: 'ready'},
-          {title: '🔵 منتشر شده', value: 'published'},
-          {title: '🔴 نیازمند بازبینی', value: 'review'},
-        ],
-      },
-    }),
-
-    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
@@ -61,6 +44,13 @@ export default defineType({
     }),
 
     defineField({
+      name: 'topic',
+      title: 'موضوع',
+      type: 'string',
+      group: 'content',
+    }),
+
+    defineField({
       name: 'readingTime',
       title: 'زمان مطالعه',
       type: 'number',
@@ -69,70 +59,10 @@ export default defineType({
     }),
 
     defineField({
-      name: 'editorChecklist',
-      title: 'چک‌لیست انتشار',
-      type: 'object',
-      group: 'publish',
-      fields: [
-        {name: 'tone', title: 'لحن بررسی شد', type: 'boolean'},
-        {name: 'spelling', title: 'غلط املایی ندارد', type: 'boolean'},
-        {name: 'sources', title: 'منابع بررسی شدند', type: 'boolean'},
-        {name: 'seo', title: 'سئو کامل است', type: 'boolean'},
-        {name: 'internalLinks', title: 'لینک داخلی دارد', type: 'boolean'},
-        {name: 'brand', title: 'مطابق منشور گل‌رو است', type: 'boolean'},
-      ],
-    }),
-
-    defineField({
-      name: 'lastReviewed',
-      title: 'آخرین بازبینی علمی',
-      type: 'date',
-      group: 'publish',
-    }),
-
-    defineField({
-      name: 'lastUpdated',
-      title: 'آخرین بروزرسانی',
-      type: 'datetime',
-      group: 'publish',
-    }),
-
-    defineField({
-      name: 'evidenceLevel',
-      title: 'سطح شواهد',
-      type: 'string',
-      group: 'content',
-      options: {
-        list: [
-          {title: 'نظر متخصص', value: 'expert'},
-          {title: 'مطالعه مشاهده‌ای', value: 'observational'},
-          {title: 'مرور نظام‌مند', value: 'systematic'},
-          {title: 'راهنمای بالینی', value: 'guideline'},
-        ],
-      },
-    }),
-
-    defineField({
-      name: 'topic',
-      title: 'موضوع',
-      type: 'string',
-      group: 'content',
-    }),
-
-    defineField({
-      name: 'metaDescription',
-      title: 'توضیح متا',
-      type: 'text',
-      rows: 3,
+      name: 'seo',
+      title: 'اطلاعات سئو',
+      type: 'seo',
       group: 'seo',
-    }),
-
-    defineField({
-      name: 'keywords',
-      title: 'کلمات کلیدی',
-      type: 'array',
-      group: 'seo',
-      of: [{type: 'string'}],
     }),
 
     defineField({
@@ -154,12 +84,39 @@ export default defineType({
     }),
 
     defineField({
+      name: 'body',
+      title: 'متن اصلی مقاله',
+      type: 'array',
+      group: 'content',
+      description: 'بدنه اصلی مقاله.',
+      of: [defineArrayMember({type: 'block'})],
+    }),
+
+    defineField({
       name: 'window',
       title: 'پنجره گل‌رو',
       type: 'text',
       rows: 4,
       group: 'content',
       description: 'بخش ثابت «پنجره گل‌رو».',
+    }),
+
+    defineField({
+      name: 'realExample',
+      title: 'مثال یا مشاهده واقعی',
+      type: 'array',
+      group: 'content',
+      of: [defineArrayMember({type: 'block'})],
+      description: 'نمونه‌ای واقعی یا آشنا برای مخاطب',
+    }),
+
+    defineField({
+      name: 'scientificExplanation',
+      title: 'توضیح علمی (بر پایه منابع)',
+      type: 'array',
+      group: 'content',
+      description: 'توضیح علمی همراه با استناد به منابع.',
+      of: [defineArrayMember({type: 'block'})],
     }),
 
     defineField({
@@ -213,21 +170,11 @@ export default defineType({
     }),
 
     defineField({
-      name: 'body',
-      title: 'متن اصلی مقاله',
+      name: 'sources',
+      title: 'منابع علمی',
       type: 'array',
-      group: 'content',
-      description: 'بدنه اصلی مقاله.',
-      of: [defineArrayMember({type: 'block'})],
-    }),
-
-    defineField({
-      name: 'scientificExplanation',
-      title: 'توضیح علمی',
-      type: 'array',
-      group: 'content',
-      description: 'توضیح علمی همراه با استناد به منابع.',
-      of: [defineArrayMember({type: 'block'})],
+      group: 'relations',
+      of: [defineArrayMember({type: 'reference', to: [{type: 'source'}]})],
     }),
 
     defineField({
@@ -255,11 +202,20 @@ export default defineType({
     }),
 
     defineField({
-      name: 'sources',
-      title: 'منابع علمی',
-      type: 'array',
-      group: 'relations',
-      of: [defineArrayMember({type: 'reference', to: [{type: 'source'}]})],
+      name: 'status',
+      title: 'وضعیت مقاله',
+      type: 'string',
+      group: 'publish',
+      initialValue: 'draft',
+      options: {
+        layout: 'radio',
+        list: [
+          {title: '🟡 پیش‌نویس', value: 'draft'},
+          {title: '🟢 آماده انتشار', value: 'ready'},
+          {title: '🔵 منتشر شده', value: 'published'},
+          {title: '🔴 نیازمند بازبینی', value: 'review'},
+        ],
+      },
     }),
 
     defineField({
@@ -268,6 +224,50 @@ export default defineType({
       type: 'datetime',
       group: 'publish',
       initialValue: () => new Date().toISOString(),
+    }),
+
+    defineField({
+      name: 'lastUpdated',
+      title: 'آخرین بروزرسانی',
+      type: 'datetime',
+      group: 'publish',
+    }),
+
+    defineField({
+      name: 'lastReviewed',
+      title: 'آخرین بازبینی علمی',
+      type: 'date',
+      group: 'publish',
+    }),
+
+    defineField({
+      name: 'evidenceLevel',
+      title: 'سطح شواهد',
+      type: 'string',
+      group: 'publish',
+      options: {
+        list: [
+          {title: 'نظر متخصص', value: 'expert'},
+          {title: 'مطالعه مشاهده‌ای', value: 'observational'},
+          {title: 'مرور نظام‌مند', value: 'systematic'},
+          {title: 'راهنمای بالینی', value: 'guideline'},
+        ],
+      },
+    }),
+
+    defineField({
+      name: 'editorChecklist',
+      title: 'چک‌لیست انتشار',
+      type: 'object',
+      group: 'publish',
+      fields: [
+        {name: 'tone', title: 'لحن بررسی شد', type: 'boolean'},
+        {name: 'spelling', title: 'غلط املایی ندارد', type: 'boolean'},
+        {name: 'sources', title: 'منابع بررسی شدند', type: 'boolean'},
+        {name: 'seo', title: 'سئو کامل است', type: 'boolean'},
+        {name: 'internalLinks', title: 'لینک داخلی دارد', type: 'boolean'},
+        {name: 'brand', title: 'مطابق منشور گل‌رو است', type: 'boolean'},
+      ],
     }),
 
     defineField({
