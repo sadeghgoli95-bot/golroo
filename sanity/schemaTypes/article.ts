@@ -79,7 +79,6 @@ export default defineType({
         {name: 'sources', title: 'منابع بررسی شدند', type: 'boolean'},
         {name: 'seo', title: 'سئو کامل است', type: 'boolean'},
         {name: 'internalLinks', title: 'لینک داخلی دارد', type: 'boolean'},
-        {name: 'faq', title: 'FAQ تکمیل شده', type: 'boolean'},
         {name: 'brand', title: 'مطابق منشور گل‌رو است', type: 'boolean'},
       ],
     }),
@@ -102,7 +101,7 @@ export default defineType({
       name: 'evidenceLevel',
       title: 'سطح شواهد',
       type: 'string',
-      group: 'publish',
+      group: 'content',
       options: {
         list: [
           {title: 'نظر متخصص', value: 'expert'},
@@ -121,31 +120,37 @@ export default defineType({
     }),
 
     defineField({
-  name: 'metaDescription',
-  title: 'Meta Description',
-  type: 'text',
-  group: 'content',
-  rows: 3,
-}),
+      name: 'metaDescription',
+      title: 'توضیح متا',
+      type: 'text',
+      rows: 3,
+      group: 'seo',
+    }),
 
-defineField({
-  name: 'keywords',
-  title: 'کلمات کلیدی',
-  type: 'array',
-  group: 'content',
-  of: [
-    {
-      type: 'string',
-    },
-  ],
-}),
+    defineField({
+      name: 'keywords',
+      title: 'کلمات کلیدی',
+      type: 'array',
+      group: 'seo',
+      of: [{type: 'string'}],
+    }),
 
     defineField({
       name: 'excerpt',
-      title: 'خلاصه مقاله',
+      title: 'مقدمه انسانی',
       type: 'text',
       rows: 4,
       group: 'content',
+      description: 'شروع مقاله؛ از یک مشاهده یا تجربه آغاز شود.',
+    }),
+
+    defineField({
+      name: 'callout',
+      title: 'قراره درباره چی حرف بزنیم؟',
+      type: 'text',
+      rows: 3,
+      group: 'content',
+      description: 'در ۲ تا ۳ جمله بگو این مقاله قرار است درباره چه چیزی باشد.',
     }),
 
     defineField({
@@ -154,7 +159,7 @@ defineField({
       type: 'text',
       rows: 4,
       group: 'content',
-      description: 'بخش اختصاصی تمام مقاله‌های گل‌رو',
+      description: 'بخش ثابت «پنجره گل‌رو».',
     }),
 
     defineField({
@@ -162,23 +167,26 @@ defineField({
       title: 'نکات مهم',
       type: 'array',
       group: 'content',
+      description: 'خلاصه نکات مهم به صورت فهرست.',
       of: [{type: 'string'}],
     }),
 
     defineField({
       name: 'finalThought',
-      title: 'حرف آخر',
+      title: 'جمع‌بندی',
       type: 'text',
       rows: 4,
       group: 'content',
+      description: 'جمع‌بندی بدون نتیجه‌گیری قطعی.',
     }),
 
     defineField({
       name: 'finalQuestion',
-      title: 'سؤال پایانی',
+      title: 'پرسشی برای تأمل',
       type: 'text',
       rows: 2,
       group: 'content',
+      description: 'سؤالی که ذهن مخاطب را باز بگذارد.',
     }),
 
     defineField({
@@ -190,25 +198,26 @@ defineField({
     }),
 
     defineField({
-  name: 'featuredImageAlt',
-  title: 'Alt Text تصویر',
-  type: 'string',
-  group: 'content',
-  description: 'توضیح تصویر برای دسترس‌پذیری و سئو',
-}),
+      name: 'featuredImageAlt',
+      title: 'توضیح تصویر (Alt)',
+      type: 'string',
+      group: 'content',
+      description: 'توضیح تصویر برای دسترس‌پذیری و سئو',
+    }),
 
-defineField({
-  name: 'imageCaption',
-  title: 'کپشن تصویر',
-  type: 'string',
-  group: 'content',
-}),
+    defineField({
+      name: 'imageCaption',
+      title: 'کپشن تصویر',
+      type: 'string',
+      group: 'content',
+    }),
 
     defineField({
       name: 'body',
-      title: 'متن مقاله',
+      title: 'متن اصلی مقاله',
       type: 'array',
       group: 'content',
+      description: 'بدنه اصلی مقاله.',
       of: [defineArrayMember({type: 'block'})],
     }),
 
@@ -217,22 +226,8 @@ defineField({
       title: 'توضیح علمی',
       type: 'array',
       group: 'content',
+      description: 'توضیح علمی همراه با استناد به منابع.',
       of: [defineArrayMember({type: 'block'})],
-    }),
-
-    defineField({
-  name: 'callout',
-  title: 'قراره درباره چی حرف بزنیم؟',
-  type: 'text',
-  group: 'content',
-  rows: 3,
-}),
-
-    defineField({
-      name: 'seo',
-      title: 'اطلاعات سئو',
-      type: 'seo',
-      group: 'seo',
     }),
 
     defineField({
@@ -265,14 +260,6 @@ defineField({
       type: 'array',
       group: 'relations',
       of: [defineArrayMember({type: 'reference', to: [{type: 'source'}]})],
-    }),
-
-    defineField({
-      name: 'faq',
-      title: 'سوالات متداول',
-      type: 'array',
-      group: 'relations',
-      of: [defineArrayMember({type: 'reference', to: [{type: 'faq'}]})],
     }),
 
     defineField({
