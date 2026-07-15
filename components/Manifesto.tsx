@@ -48,7 +48,7 @@ export default function Manifesto() {
                 gap: 24,
                 alignItems: "center",
                 padding: "2rem 0",
-                borderTop: "1px solid var(--border)",
+                borderTop: "1px solid var(--line)",
               }}
             >
               <div style={{ color: "var(--text-muted)", fontSize: 15 }}>

@@ -33,7 +33,7 @@ export default function AmbientLight() {
           top: -220 + y,
           right: -220,
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(108,31,51,.06), transparent 70%)",
+          background: "radial-gradient(circle, color-mix(in srgb, var(--accent-dark) 6%, transparent), transparent 70%)",
           filter: "blur(70px)",
         }}
       />
@@ -45,7 +45,7 @@ export default function AmbientLight() {
           bottom: -180 - y,
           left: -120,
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(255,255,255,.05), transparent 70%)",
+          background: "radial-gradient(circle, color-mix(in srgb, var(--text) 5%, transparent), transparent 70%)",
           filter: "blur(60px)",
         }}
       />

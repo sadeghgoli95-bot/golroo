@@ -3,7 +3,13 @@ import Container from "./Container";
 
 export default function Footer() {
   return (
-    <footer style={{ borderTop: "1px solid var(--border)", padding: "5rem 0 3rem" }}>
+    <footer
+      style={{
+        background: "var(--primary)",
+        color: "var(--bg)",
+        padding: "5rem 0 3rem",
+      }}
+    >
       <Container>
         <div
           style={{
@@ -14,10 +20,10 @@ export default function Footer() {
           }}
         >
           <div>
-            <h2 style={{ fontSize: "2.8rem", fontWeight: 300, marginBottom: "1.5rem" }}>
+            <h2 style={{ fontSize: "2.8rem", fontWeight: 300, marginBottom: "1.5rem", color: "var(--bg)" }}>
               گل‌رو
             </h2>
-            <p style={{ maxWidth: 420, lineHeight: 2.1, color: "var(--text-muted)" }}>
+            <p style={{ maxWidth: 420, lineHeight: 1.9, color: "color-mix(in srgb, var(--bg) 72%, transparent)" }}>
               فضایی برای فهم عمیق‌تر تجربه کودک،
               نوجوان و خانواده؛
               با رویکردی رابطه‌محور،
@@ -26,7 +32,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 style={{ marginBottom: "1.5rem", fontWeight: 500 }}>دسترسی سریع</h4>
+            <h4 style={{ marginBottom: "1.5rem", fontWeight: 500, color: "var(--bg)" }}>دسترسی سریع</h4>
             <nav style={{ display: "grid", gap: ".9rem" }}>
               <Link href="/">خانه</Link>
               <Link href="/journal">ژورنال</Link>
@@ -37,8 +43,8 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 style={{ marginBottom: "1.5rem", fontWeight: 500 }}>ارتباط</h4>
-            <div style={{ display: "grid", gap: ".9rem", color: "var(--text-muted)" }}>
+            <h4 style={{ marginBottom: "1.5rem", fontWeight: 500, color: "var(--bg)" }}>ارتباط</h4>
+            <div style={{ display: "grid", gap: ".9rem", color: "color-mix(in srgb, var(--bg) 72%, transparent)" }}>
               <span>Online Sessions</span>
               <span>Instagram</span>
               <span>Telegram</span>
@@ -52,11 +58,11 @@ export default function Footer() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            borderTop: "1px solid var(--border)",
+            borderTop: "1px solid color-mix(in srgb, var(--bg) 18%, transparent)",
             paddingTop: "2rem",
             flexWrap: "wrap",
             gap: "1rem",
-            color: "var(--text-muted)",
+            color: "color-mix(in srgb, var(--bg) 72%, transparent)",
             fontSize: ".95rem",
           }}
         >

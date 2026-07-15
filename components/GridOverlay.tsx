@@ -31,7 +31,7 @@ export default function GridOverlay() {
       }}
     >
       {Array.from({ length: 12 }).map((_, i) => (
-        <div key={i} style={{ background: "rgba(108,31,51,.08)" }} />
+        <div key={i} style={{ background: "color-mix(in srgb, var(--accent-dark) 8%, transparent)" }} />
       ))}
     </div>
   );

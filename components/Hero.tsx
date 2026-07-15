@@ -58,7 +58,7 @@ export default function Hero() {
               href="#about"
               style={{
                 padding: "1rem 2.8rem",
-                border: "1px solid var(--border)",
+                border: "1px solid var(--line)",
                 color: "var(--text)",
               }}
             >

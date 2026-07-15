@@ -64,7 +64,7 @@ export default function Lens() {
             <div
               key={item.number}
               style={{
-                borderTop: "1px solid var(--border)",
+                borderTop: "1px solid var(--line)",
                 paddingTop: 30,
               }}
             >

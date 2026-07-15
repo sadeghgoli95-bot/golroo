@@ -25,8 +25,8 @@ export default function Approach() {
       className="section"
       style={{
         background: "var(--bg-soft)",
-        borderTop: "1px solid var(--border)",
-        borderBottom: "1px solid var(--border)",
+        borderTop: "1px solid var(--line)",
+        borderBottom: "1px solid var(--line)",
       }}
     >
       <Container>
@@ -73,7 +73,7 @@ export default function Approach() {
                   gridTemplateColumns: "70px 1fr",
                   gap: 24,
                   padding: "2.2rem 0",
-                  borderTop: index === 0 ? "none" : "1px solid var(--border)",
+                  borderTop: index === 0 ? "none" : "1px solid var(--line)",
                 }}
               >
                 <div style={{ color: "var(--bronze)", fontSize: 15 }}>

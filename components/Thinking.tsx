@@ -62,7 +62,7 @@ export default function Thinking() {
                 gridTemplateColumns: "90px 280px 1fr",
                 gap: 32,
                 padding: "2.2rem 0",
-                borderTop: "1px solid var(--border)",
+                borderTop: "1px solid var(--line)",
                 alignItems: "start",
               }}
             >

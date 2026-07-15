@@ -78,7 +78,7 @@ export default function Services() {
             <article
               key={service.title}
               style={{
-                border: "1px solid var(--border)",
+                border: "1px solid var(--line)",
                 padding: "2.5rem",
                 transition: ".35s",
               }}

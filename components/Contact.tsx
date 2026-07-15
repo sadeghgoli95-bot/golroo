@@ -4,7 +4,7 @@ export default function Contact() {
   return (
     <section
       className="section"
-      style={{ borderTop: "1px solid var(--border)" }}
+      style={{ borderTop: "1px solid var(--line)" }}
     >
       <Container>
         <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
@@ -62,8 +62,8 @@ export default function Contact() {
                 alignItems: "center",
                 justifyContent: "center",
                 padding: "1rem 2.8rem",
-                background: "var(--primary)",
-                color: "white",
+                background: "var(--accent)",
+                color: "var(--text)",
                 textDecoration: "none",
                 transition: ".3s",
               }}
@@ -77,7 +77,7 @@ export default function Contact() {
                 alignItems: "center",
                 justifyContent: "center",
                 padding: "1rem 2.8rem",
-                border: "1px solid var(--border)",
+                border: "1px solid var(--line)",
                 color: "var(--text)",
                 textDecoration: "none",
                 transition: ".3s",

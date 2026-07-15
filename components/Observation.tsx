@@ -13,8 +13,8 @@ export default function Observation() {
     <section
       className="section"
       style={{
-        borderTop: "1px solid var(--border)",
-        borderBottom: "1px solid var(--border)",
+        borderTop: "1px solid var(--line)",
+        borderBottom: "1px solid var(--line)",
       }}
     >
       <Container>
@@ -35,7 +35,7 @@ export default function Observation() {
               key={index}
               style={{
                 padding: "2.6rem 0",
-                borderTop: index === 0 ? "none" : "1px solid var(--border)",
+                borderTop: index === 0 ? "none" : "1px solid var(--line)",
               }}
             >
               <p

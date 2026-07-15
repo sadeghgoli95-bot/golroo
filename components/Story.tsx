@@ -57,7 +57,7 @@ export default function Story() {
                 display: "grid",
                 gridTemplateColumns: "180px 1fr",
                 gap: 40,
-                borderTop: "1px solid var(--border)",
+                borderTop: "1px solid var(--line)",
                 paddingTop: 36,
               }}
             >

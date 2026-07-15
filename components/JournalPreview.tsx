@@ -67,7 +67,7 @@ export default async function JournalPreview() {
             <article
               key={item._id}
               style={{
-                borderTop: "1px solid var(--border)",
+                borderTop: "1px solid var(--line)",
                 paddingTop: "2.4rem",
                 display: "grid",
                 gridTemplateColumns: "140px 1fr",

@@ -11,8 +11,8 @@ export default function QuoteBlock({ quote, author }: Props) {
       className="section"
       style={{
         background: "var(--bg-soft)",
-        borderTop: "1px solid var(--border)",
-        borderBottom: "1px solid var(--border)",
+        borderTop: "1px solid var(--line)",
+        borderBottom: "1px solid var(--line)",
       }}
     >
       <Container>

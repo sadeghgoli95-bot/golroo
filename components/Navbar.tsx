@@ -13,8 +13,8 @@ export default function Navbar() {
         left: 0,
         zIndex: 999,
         backdropFilter: "blur(18px)",
-        background: "rgba(9,9,9,.72)",
-        borderBottom: "1px solid var(--border)",
+        background: "color-mix(in srgb, var(--bg) 82%, transparent)",
+        borderBottom: "1px solid var(--divider)",
       }}
     >
       <Container>
@@ -32,7 +32,7 @@ export default function Navbar() {
               fontSize: 26,
               fontWeight: 500,
               letterSpacing: ".08em",
-              color: "var(--text)",
+              color: "var(--primary)",
             }}
           >
             گل‌رو
@@ -53,7 +53,7 @@ export default function Navbar() {
                   textDecoration: "none",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = "var(--text)";
+                  e.currentTarget.style.color = "var(--primary)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.color = "var(--text-muted)";
