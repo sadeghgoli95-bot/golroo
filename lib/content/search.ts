@@ -1,4 +1,7 @@
-export function search(query: string, items: any[]) {
+export function search<T extends { title: string; excerpt: string }>(
+  query: string,
+  items: T[]
+) {
   const q = query.toLowerCase();
   return items.filter(
     item =>

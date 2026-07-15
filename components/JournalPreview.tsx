@@ -3,8 +3,15 @@ import Container from "./Container";
 import { client } from "@/sanity/lib/client";
 import { articlesQuery } from "@/sanity/lib/queries";
 
+type ArticlePreview = {
+  _id: string;
+  topic: string;
+  title: string;
+  slug: { current: string };
+};
+
 export default async function JournalPreview() {
-  const notes = await client.fetch(articlesQuery);
+  const notes = await client.fetch<ArticlePreview[]>(articlesQuery);
 
   return (
     <section className="section" style={{ background: "var(--bg-soft)" }}>
@@ -56,7 +63,7 @@ export default async function JournalPreview() {
         </div>
 
         <div style={{ display: "grid", gap: 26 }}>
-          {notes.map((item: any) => (
+          {notes.map((item) => (
             <article
               key={item._id}
               style={{

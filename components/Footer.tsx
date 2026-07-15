@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Container from "./Container";
 
 export default function Footer() {
@@ -27,8 +28,8 @@ export default function Footer() {
           <div>
             <h4 style={{ marginBottom: "1.5rem", fontWeight: 500 }}>دسترسی سریع</h4>
             <nav style={{ display: "grid", gap: ".9rem" }}>
-              <a href="/">خانه</a>
-              <a href="/journal">ژورنال</a>
+              <Link href="/">خانه</Link>
+              <Link href="/journal">ژورنال</Link>
               <a href="/about">درباره</a>
               <a href="/services">خدمات</a>
               <a href="/contact">ارتباط</a>

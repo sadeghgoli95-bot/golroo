@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Container from "./Container";
 
 export default function Navbar() {
@@ -25,7 +26,7 @@ export default function Navbar() {
             justifyContent: "space-between",
           }}
         >
-          <a
+          <Link
             href="/"
             style={{
               fontSize: 26,
@@ -35,7 +36,7 @@ export default function Navbar() {
             }}
           >
             گل‌رو
-          </a>
+          </Link>
           <nav style={{ display: "flex", gap: 42, fontSize: 15 }}>
             {[
               ["درباره", "#about"],
