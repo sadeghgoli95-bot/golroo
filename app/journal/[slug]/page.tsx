@@ -20,7 +20,7 @@ type Article = {
 };
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 async function getArticle(slug: string) {
@@ -28,7 +28,8 @@ async function getArticle(slug: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const article = await getArticle(params.slug);
+  const { slug } = await params;
+  const article = await getArticle(slug);
   return {
     title: article ? `${article.seo?.metaTitle || article.title} | گل‌رو` : "گل‌رو",
     description: article?.seo?.metaDescription || article?.excerpt,
@@ -36,7 +37,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function JournalArticlePage({ params }: Props) {
-  const article = await getArticle(params.slug);
+  const { slug } = await params;
+  const article = await getArticle(slug);
 
   if (!article) {
     notFound();
