@@ -99,6 +99,7 @@ export default async function ArticlePage({ params }: Props) {
               category={article.category?.title}
               categorySlug={article.category?.slug?.current}
               authorName={article.author?.name}
+              authorSlug={article.author?.slug?.current}
             />
           </div>
         </section>
@@ -121,6 +122,7 @@ export default async function ArticlePage({ params }: Props) {
           </div>
         )}
 
+        <div className="article-container">
         <ArticleBody>
           {article.window && (
             <div
@@ -311,6 +313,7 @@ export default async function ArticlePage({ params }: Props) {
             </div>
           )}
         </ArticleBody>
+        </div>
 
         <div className="article-container" style={{ paddingBottom: "8rem" }}>
           <ArticleFooter />

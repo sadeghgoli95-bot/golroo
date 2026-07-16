@@ -63,7 +63,7 @@ export default function TopicPage({ params }: Props) {
               <p className="overline" style={{ marginBottom: "2rem" }}>مشاهده‌ها</p>
               <div className="grid-3">
                 {relatedObservations.map((obs) => (
-                  <article key={obs.id} className="card">
+                  <article key={obs.id} className="card card-static">
                     <h3 className="card-title">{obs.title}</h3>
                     <p className="card-text">{obs.body}</p>
                   </article>
@@ -79,10 +79,10 @@ export default function TopicPage({ params }: Props) {
               <p className="overline" style={{ marginBottom: "2rem" }}>یادداشت‌ها</p>
               <div className="grid-3">
                 {relatedJournal.map((item) => (
-                  <Link key={item.id} href={`/journal/${item.slug}`} className="card">
+                  <article key={item.id} className="card card-static">
                     <h3 className="card-title">{item.title}</h3>
                     <p className="card-text">{item.excerpt}</p>
-                  </Link>
+                  </article>
                 ))}
               </div>
             </div>

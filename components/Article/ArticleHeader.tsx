@@ -9,6 +9,7 @@ type Props = {
   category?: string;
   categorySlug?: string;
   authorName?: string;
+  authorSlug?: string;
 };
 
 export default function ArticleHeader({
@@ -19,6 +20,7 @@ export default function ArticleHeader({
   category,
   categorySlug,
   authorName,
+  authorSlug,
 }: Props) {
   return (
     <header className="reading">
@@ -32,7 +34,12 @@ export default function ArticleHeader({
       <h1 className="display">{title}</h1>
       {excerpt && <p className="lead">{excerpt}</p>}
       <div className="article-header-meta">
-        {authorName && <span>{authorName}</span>}
+        {authorName &&
+          (authorSlug ? (
+            <Link href={`/journal/author/${authorSlug}`}>{authorName}</Link>
+          ) : (
+            <span>{authorName}</span>
+          ))}
         {authorName && date && <span>·</span>}
         {date && <span>{date}</span>}
         {readingTime > 0 && <ReadingTime minutes={readingTime} />}

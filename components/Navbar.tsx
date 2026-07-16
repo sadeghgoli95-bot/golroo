@@ -1,14 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Container from "./Container";
 import SearchOverlay from "./Search/SearchOverlay";
 
-const navLinks: [string, string][] = [
+const anchorLinks: [string, string][] = [
   ["درباره", "#about"],
   ["خدمات", "#services"],
-  ["شیوه کار", "#philosophy"],
   ["ارتباط", "#contact"],
 ];
 
@@ -26,6 +25,13 @@ function MenuIcon({ open }: { open: boolean }) {
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  function close() {
+    setIsOpen(false);
+    toggleRef.current?.focus();
+  }
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -35,12 +41,42 @@ export default function Navbar() {
   }, [isOpen]);
 
   useEffect(() => {
+    if (!isOpen) return;
+
+    // Move focus into the panel when it opens.
+    const firstFocusable = panelRef.current?.querySelector<HTMLElement>(
+      'a[href], button:not([disabled])'
+    );
+    firstFocusable?.focus();
+
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") setIsOpen(false);
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close();
+        return;
+      }
+
+      if (event.key !== "Tab" || !panelRef.current) return;
+
+      const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled])'
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
+
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [isOpen]);
 
   return (
     <header
@@ -78,7 +114,23 @@ export default function Navbar() {
           </Link>
 
           <nav className="navbar-links" aria-label="ناوبری اصلی">
-            {navLinks.map(([title, href]) => (
+            <Link
+              href="/journal"
+              style={{
+                color: "var(--text-muted)",
+                transition: ".2s ease-out",
+                textDecoration: "none",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = "var(--primary)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "var(--text-muted)";
+              }}
+            >
+              ژورنال
+            </Link>
+            {anchorLinks.map(([title, href]) => (
               <a
                 key={title}
                 href={href}
@@ -101,6 +153,7 @@ export default function Navbar() {
           </nav>
 
           <button
+            ref={toggleRef}
             type="button"
             className="navbar-menu-toggle"
             aria-label={isOpen ? "بستن منو" : "باز کردن منو"}
@@ -113,22 +166,28 @@ export default function Navbar() {
         </div>
       </Container>
 
-      <div id="navbar-mobile-panel" className={`navbar-mobile-panel${isOpen ? " is-open" : ""}`}>
+      {isOpen && <div className="navbar-mobile-backdrop" onClick={close} />}
+
+      <div
+        id="navbar-mobile-panel"
+        ref={panelRef}
+        className={`navbar-mobile-panel${isOpen ? " is-open" : ""}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="ناوبری موبایل"
+      >
         <nav className="navbar-mobile-links" aria-label="ناوبری موبایل">
           <div style={{ padding: "16px 4px" }}>
             <SearchOverlay />
           </div>
-          {navLinks.map(([title, href]) => (
-            <a key={title} href={href} onClick={() => setIsOpen(false)}>
+          <Link href="/journal" onClick={close}>
+            ژورنال
+          </Link>
+          {anchorLinks.map(([title, href]) => (
+            <a key={title} href={href} onClick={close}>
               {title}
             </a>
           ))}
-          <Link href="/journal" onClick={() => setIsOpen(false)}>
-            ژورنال
-          </Link>
-          <Link href="/faq" onClick={() => setIsOpen(false)}>
-            پرسش‌های متداول
-          </Link>
         </nav>
       </div>
     </header>

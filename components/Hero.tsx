@@ -3,13 +3,7 @@ import Button from "./Button";
 
 export default function Hero() {
   return (
-    <section
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
+    <section className="hero-section">
       <Container>
         <div style={{ maxWidth: 840 }}>
           <div
@@ -22,18 +16,11 @@ export default function Hero() {
           >
             SADEGH GOLROO
           </div>
-          <h1
-            style={{
-              fontSize: "clamp(3rem,7vw,5.2rem)",
-              lineHeight: 1.35,
-              fontWeight: 400,
-              marginBottom: 42,
-            }}
-          >
+          <h1 className="hero-heading">
             هر کودکی
-            <br />
+            <br className="hero-break" />
             داستانش را
-            <br />
+            <br className="hero-break" />
             با کلمات تعریف نمی‌کند.
           </h1>
           <p
@@ -52,14 +39,15 @@ export default function Hero() {
             و بعضی با رفتارهایی حرف می‌زنند که بیشتر از آنکه نیاز به اصلاح داشته باشند،
             نیاز دارند فهمیده شوند.
           </p>
-          <div style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
-            <Button href="#contact">رزرو جلسه</Button>
+          <div className="hero-actions">
+            <Button href="/appointment">رزرو جلسه</Button>
             <a
               href="#about"
               style={{
                 padding: "1rem 2.8rem",
                 border: "1px solid var(--line)",
                 color: "var(--text)",
+                display: "inline-block",
               }}
             >
               بیشتر بخوانید

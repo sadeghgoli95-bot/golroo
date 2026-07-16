@@ -14,7 +14,6 @@ import Services from "@/components/Services";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import GridOverlay from "@/components/GridOverlay";
-import PageReveal from "@/components/PageReveal";
 import ReadingProgress from "@/components/ReadingProgress";
 import AmbientLight from "@/components/AmbientLight";
 import PageNoise from "@/components/PageNoise";
@@ -26,7 +25,6 @@ export default function Home() {
       <Navbar />
       <main>
         <GridOverlay />
-        <PageReveal />
         <ReadingProgress />
         <AmbientLight />
         <PageNoise />

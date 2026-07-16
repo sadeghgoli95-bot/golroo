@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Container from "./Container";
 
 export default function Contact() {
@@ -56,8 +57,8 @@ export default function Contact() {
               flexWrap: "wrap",
             }}
           >
-            <a
-              href="#"
+            <Link
+              href="/appointment"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -70,9 +71,9 @@ export default function Contact() {
               }}
             >
               رزرو جلسه
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              href="/contact"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -85,7 +86,7 @@ export default function Contact() {
               }}
             >
               ارتباط با ما
-            </a>
+            </Link>
           </div>
         </div>
       </Container>
