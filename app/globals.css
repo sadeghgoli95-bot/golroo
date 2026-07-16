@@ -4,50 +4,47 @@
    DESIGN TOKENS
 ========================================= */
 :root {
-  /* Colors — Premium Editorial (Light) */
-  --background: #FCFAF5;
-  --primary: #2E4C47;
-  --primary-hover: #385C56;
-  --link-hover: #456D65;
-  --mint: #CBEDE0;
-  --surface: #F6F1E7;
-  --surface-2: #FAF8F2;
-  --border: color-mix(in srgb, var(--primary) 12%, transparent);
-  --divider: color-mix(in srgb, var(--primary) 8%, transparent);
-  --text: #32302C;
-  --muted: #6F6A62;
-  --caption: #767068; /* darkened from #9B958B — ~2.9:1 failed WCAG AA against --background, this is ~4.8:1 */
-  --highlight: #FFF6D9;
-  --input-bg: #FFFFFF;
+  /* Colors — Editorial Burgundy */
+  --bg: #F7F3EE;
+  --bg-soft: #EEE9E1;
+  --surface: #E8E2D9;
+  --surface-2: #DFD8CE;
+  --card: #F0EBE3;
+  --text: #1A1714;
+  --text-soft: #4A4540;
+  --text-muted: #8C857D;
+  --text-light: #B0A89F;
+  --accent: #6B2D3E;
+  --accent-light: #883549;
+  --accent-dark: #521E2E;
+  --bronze: #9B7B4E;
+  --line: rgba(26,23,20,.1);
+  --line-soft: rgba(26,23,20,.06);
+  --line-strong: rgba(26,23,20,.18);
+  --shadow-sm: 0 2px 12px rgba(26,23,20,.06);
+  --shadow-md: 0 8px 30px rgba(26,23,20,.08);
+  --overlay: rgba(26,23,20,.4);
 
-  /* Legacy token names — aliased so existing components keep working */
-  --bg: var(--background);
-  --bg-soft: var(--surface);
-  --card: var(--background);
-
-  --text-soft: var(--muted);
-  --text-muted: var(--caption);
-  --text-light: var(--caption);
-
-  --line: var(--border);
-  --line-soft: var(--divider);
-  --line-strong: var(--border);
-
-  --accent: var(--primary);
-  --accent-light: var(--primary-hover);
-  --accent-dark: #1F3733;
-  --bronze: var(--primary);
+  /* Bridge aliases — tokens used across the stylesheet that aren't part
+     of the explicit palette above, mapped onto it for consistency. */
+  --background: var(--bg);
+  --primary: var(--accent);
+  --primary-hover: var(--accent-light);
+  --link-hover: var(--accent-light);
+  --mint: color-mix(in srgb, var(--accent) 12%, var(--bg));
+  --border: var(--line);
+  --divider: var(--line-soft);
+  --muted: var(--text-soft);
+  --caption: var(--text-light);
+  --highlight: color-mix(in srgb, var(--bronze) 25%, var(--bg));
+  --input-bg: var(--card);
 
   --success: #4C6B5E;
   --warning: #8d6334;
   --danger: #A5453D;
 
-  --shadow-xs: 0 4px 16px rgba(0,0,0,.03);
-  --shadow-sm: 0 8px 30px rgba(0,0,0,.04);
-  --shadow-md: 0 8px 30px rgba(0,0,0,.04);
-  --shadow-lg: 0 8px 30px rgba(0,0,0,.04);
-
-  --overlay: rgba(46,76,71,.35);
+  --shadow-xs: var(--shadow-sm);
+  --shadow-lg: var(--shadow-md);
 
   --radius-none: 0;
   --radius-sm: 8px;
@@ -177,14 +174,14 @@ summary:focus-visible,
 }
 
 ::selection {
-  background: var(--primary);
-  color: var(--bg);
+  background: var(--accent);
+  color: #fff;
 }
 
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--muted) 35%, transparent); }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+::-webkit-scrollbar-thumb { background: var(--accent); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-light); }
 
 /* =========================================
    GRID SYSTEM
@@ -267,13 +264,13 @@ summary:focus-visible,
 }
 
 .button-primary, .btn-primary {
-  background: var(--primary);
-  color: var(--bg);
+  background: var(--accent);
+  color: #fff;
   border: 1px solid transparent;
 }
 
 .button-primary:hover, .btn-primary:hover {
-  background: var(--primary-hover);
+  background: var(--accent-light);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
   opacity: 1;
@@ -281,12 +278,12 @@ summary:focus-visible,
 
 .button-secondary, .btn-secondary {
   background: transparent;
-  color: var(--primary);
-  border: 1px solid var(--primary);
+  color: var(--text);
+  border: 1px solid var(--line);
 }
 
 .button-secondary:hover, .btn-secondary:hover {
-  background: color-mix(in srgb, var(--primary) 6%, transparent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
   opacity: 1;
 }
 
@@ -320,7 +317,7 @@ summary:focus-visible,
 .card:hover {
   transform: translateY(-4px);
   background: var(--surface-2);
-  border-color: var(--mint);
+  border-color: var(--accent);
   box-shadow: var(--shadow-sm);
 }
 

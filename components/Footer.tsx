@@ -6,9 +6,9 @@ export default function Footer() {
   return (
     <footer
       style={{
-        background: "#F5F1E9",
-        color: "var(--muted)",
-        borderTop: "1px solid var(--divider)",
+        background: "var(--surface)",
+        color: "var(--text-muted)",
+        borderTop: "1px solid var(--line)",
         padding: "5rem 0 3rem",
       }}
     >
@@ -25,7 +25,7 @@ export default function Footer() {
             <h2 style={{ fontSize: "2.8rem", fontWeight: 300, marginBottom: "1.5rem", color: "var(--primary)" }}>
               گل‌رو
             </h2>
-            <p style={{ maxWidth: 420, lineHeight: 1.9, color: "var(--muted)" }}>
+            <p style={{ maxWidth: 420, lineHeight: 1.9, color: "var(--text-muted)" }}>
               فضایی برای فهم عمیق‌تر تجربه کودک،
               نوجوان و خانواده؛
               با رویکردی رابطه‌محور،
@@ -35,7 +35,7 @@ export default function Footer() {
 
           <div>
             <h3 style={{ marginBottom: "1.5rem", fontWeight: 500, fontSize: "1rem", color: "var(--primary)" }}>دسترسی سریع</h3>
-            <nav aria-label="لینک‌های تندسترسی فوتر" style={{ display: "grid", gap: ".9rem" }}>
+            <nav aria-label="لینک‌های تندسترسی فوتر" style={{ display: "grid", gap: ".9rem", color: "var(--text-soft)" }}>
               <Link href="/">خانه</Link>
               <Link href="/journal">ژورنال</Link>
               <Link href="/about">درباره</Link>
@@ -48,7 +48,7 @@ export default function Footer() {
 
           <div>
             <h3 style={{ marginBottom: "1.5rem", fontWeight: 500, fontSize: "1rem", color: "var(--primary)" }}>ارتباط</h3>
-            <div style={{ display: "grid", gap: ".9rem", color: "var(--muted)" }}>
+            <div style={{ display: "grid", gap: ".9rem", color: "var(--text-soft)" }}>
               <a href={siteConfig.contact.whatsapp} target="_blank" rel="noopener noreferrer">
                 واتساپ
               </a>
@@ -68,11 +68,11 @@ export default function Footer() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            borderTop: "1px solid var(--divider)",
+            borderTop: "1px solid var(--line)",
             paddingTop: "2rem",
             flexWrap: "wrap",
             gap: "1rem",
-            color: "var(--caption)",
+            color: "var(--text-light)",
             fontSize: ".95rem",
           }}
         >
