@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { SanityImageSource } from "@sanity/image-url";
 import { urlFor } from "@/sanity/lib/image";
 import { highlightText } from "@/lib/utils/highlight";
 
@@ -10,7 +11,7 @@ export type ArticlePreview = {
   topic?: string;
   readingTime?: number;
   publishedAt?: string;
-  featuredImage?: unknown;
+  featuredImage?: SanityImageSource;
   featuredImageAlt?: string;
   category?: { title: string; slug?: { current: string } } | string;
   author?: { name: string; slug?: { current: string } };

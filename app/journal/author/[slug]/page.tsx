@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import type { SanityImageSource } from "@sanity/image-url";
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -25,7 +26,7 @@ const PAGE_SIZE = 12;
 type Author = {
   name: string;
   slug: { current: string };
-  image?: unknown;
+  image?: SanityImageSource;
   title?: string;
   bio?: string;
   degree?: string;
