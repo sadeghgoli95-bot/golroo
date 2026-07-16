@@ -39,9 +39,9 @@
   --highlight: color-mix(in srgb, var(--bronze) 25%, var(--bg));
   --input-bg: var(--card);
 
-  --success: #4C6B5E;
-  --warning: #8d6334;
-  --danger: #A5453D;
+  --success: #5C6B3F;
+  --warning: #A6752E;
+  --danger: #A83A3A;
 
   --shadow-xs: var(--shadow-sm);
   --shadow-lg: var(--shadow-md);

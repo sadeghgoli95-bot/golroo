@@ -48,13 +48,13 @@ const visitorTypeLabels: Record<string, string> = {
 export function renderAppointmentEmailHtml(payload: AppointmentEmailPayload): string {
   const row = (label: string, value: string) =>
     value
-      ? `<tr><td style="padding:8px 12px;color:#6F6A62;">${label}</td><td style="padding:8px 12px;color:#32302C;">${value}</td></tr>`
+      ? `<tr><td style="padding:8px 12px;color:#8C857D;">${label}</td><td style="padding:8px 12px;color:#1A1714;">${value}</td></tr>`
       : "";
 
   return `
-    <div dir="rtl" style="font-family:sans-serif;background:#FCFAF5;padding:32px;">
-      <h2 style="color:#2E4C47;">درخواست جلسه جدید</h2>
-      <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #E8E2D7;border-radius:8px;">
+    <div dir="rtl" style="font-family:sans-serif;background:#F7F3EE;padding:32px;">
+      <h2 style="color:#6B2D3E;">درخواست جلسه جدید</h2>
+      <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid rgba(26,23,20,.1);border-radius:8px;">
         ${row("نام", payload.name)}
         ${row("سن", payload.age)}
         ${row("شماره تماس", payload.phone)}
