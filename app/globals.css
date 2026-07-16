@@ -4,39 +4,40 @@
    DESIGN TOKENS
 ========================================= */
 :root {
-  /* Colors — Editorial Burgundy */
-  --bg: #F7F3EE;
-  --bg-soft: #EEE9E1;
-  --surface: #E8E2D9;
-  --surface-2: #DFD8CE;
-  --card: #F0EBE3;
+  /* Colors — Sunlit Gold */
+  --bg: #FEFEFC;
+  --bg-soft: #FFF8DC;
+  --surface: #FFF8DC;
+  --surface-2: #FFF3C4;
+  --card: #FEFEFC;
   --text: #1A1714;
   --text-soft: #4A4540;
-  --text-muted: #8C857D;
-  --text-light: #B0A89F;
-  --accent: #6B2D3E;
-  --accent-light: #883549;
-  --accent-dark: #521E2E;
-  --bronze: #9B7B4E;
-  --line: rgba(26,23,20,.1);
-  --line-soft: rgba(26,23,20,.06);
-  --line-strong: rgba(26,23,20,.18);
-  --shadow-sm: 0 2px 12px rgba(26,23,20,.06);
-  --shadow-md: 0 8px 30px rgba(26,23,20,.08);
+  --text-muted: #7A7068;
+  --text-light: #A09890;
+  --accent: #B8860B;
+  --accent-light: #D4A76A;
+  --accent-dark: #8B6508;
+  --highlight: #FDEE00;
+  --honey: #D4A76A;
+  --line: rgba(212,167,106,.3);
+  --line-soft: rgba(212,167,106,.15);
+  --line-strong: rgba(184,134,11,.4);
+  --shadow-sm: 0 2px 12px rgba(184,134,11,.06);
+  --shadow-md: 0 8px 30px rgba(184,134,11,.08);
   --overlay: rgba(26,23,20,.4);
 
   /* Bridge aliases — tokens used across the stylesheet that aren't part
      of the explicit palette above, mapped onto it for consistency. */
   --background: var(--bg);
   --primary: var(--accent);
-  --primary-hover: var(--accent-light);
-  --link-hover: var(--accent-light);
-  --mint: color-mix(in srgb, var(--accent) 12%, var(--bg));
+  --primary-hover: var(--accent-dark);
+  --link-hover: var(--accent);
+  --mint: color-mix(in srgb, var(--honey) 30%, var(--bg));
   --border: var(--line);
   --divider: var(--line-soft);
   --muted: var(--text-soft);
   --caption: var(--text-light);
-  --highlight: color-mix(in srgb, var(--bronze) 25%, var(--bg));
+  --bronze: var(--accent); /* overline/label color per spec — gold, not honey */
   --input-bg: var(--card);
 
   --success: #5C6B3F;
@@ -270,7 +271,7 @@ summary:focus-visible,
 }
 
 .button-primary:hover, .btn-primary:hover {
-  background: var(--accent-light);
+  background: var(--accent-dark);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
   opacity: 1;
@@ -278,12 +279,13 @@ summary:focus-visible,
 
 .button-secondary, .btn-secondary {
   background: transparent;
-  color: var(--text);
-  border: 1px solid var(--line);
+  color: var(--text-soft);
+  border: 1px solid rgba(212,167,106,.4);
 }
 
 .button-secondary:hover, .btn-secondary:hover {
   background: color-mix(in srgb, var(--accent) 6%, transparent);
+  border-color: var(--accent);
   opacity: 1;
 }
 
@@ -308,7 +310,7 @@ summary:focus-visible,
   display: flex;
   flex-direction: column;
   padding: 2.4rem;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(212,167,106,.25);
   border-radius: var(--radius-card);
   background: var(--card);
   transition: transform var(--speed-fast) var(--ease), background var(--speed-fast) var(--ease), border-color var(--speed-fast) var(--ease);
@@ -317,8 +319,8 @@ summary:focus-visible,
 .card:hover {
   transform: translateY(-4px);
   background: var(--surface-2);
-  border-color: var(--accent);
-  box-shadow: var(--shadow-sm);
+  border-color: var(--honey);
+  box-shadow: 0 4px 20px rgba(184,134,11,.08);
 }
 
 /* For .card content that isn't a link/button — same panel look,
@@ -372,16 +374,16 @@ summary:focus-visible,
 /* =========================================
    LINE SYSTEM
 ========================================= */
-.rule { width: 100%; height: 1px; background: var(--border); }
+.rule { width: 100%; height: 1px; background: rgba(212,167,106,.2); }
 
 .rule-soft {
   width: 100%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  background: linear-gradient(90deg, transparent, rgba(212,167,106,.2), transparent);
 }
 
 .rule-short { width: 80px; height: 1px; background: var(--primary); }
-.rule-vertical { width: 1px; align-self: stretch; background: var(--border); }
+.rule-vertical { width: 1px; align-self: stretch; background: rgba(212,167,106,.2); }
 .rule-accent { width: 48px; height: 2px; background: var(--primary); }
 
 .section-divider { position: relative; }
@@ -496,7 +498,7 @@ summary:focus-visible,
 .overline {
   display: inline-block;
   font-size: .82rem;
-  letter-spacing: .35em;
+  letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--primary);
 }
@@ -962,9 +964,12 @@ summary:focus-visible,
   color: var(--text);
 }
 
-.search-suggestion:hover,
-.search-suggestion[data-active="true"] {
+.search-suggestion:hover {
   background: var(--surface);
+}
+
+.search-suggestion[data-active="true"] {
+  background: color-mix(in srgb, var(--highlight) 20%, var(--surface));
 }
 
 .search-suggestion-title { color: var(--text); }
@@ -979,9 +984,13 @@ summary:focus-visible,
   color: var(--muted);
 }
 
-.search-recent-item:hover,
-.search-recent-item[data-active="true"] {
+.search-recent-item:hover {
   background: var(--surface);
+  color: var(--primary);
+}
+
+.search-recent-item[data-active="true"] {
+  background: color-mix(in srgb, var(--highlight) 20%, var(--surface));
   color: var(--primary);
 }
 
@@ -997,7 +1006,7 @@ summary:focus-visible,
   cursor: pointer;
 }
 
-.search-icon-btn:hover { color: var(--primary); }
+.search-icon-btn:hover { color: var(--highlight); }
 
 /* =========================================
    HERO

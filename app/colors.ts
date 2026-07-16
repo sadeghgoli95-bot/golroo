@@ -1,14 +1,15 @@
 const colors = {
-  bg: "#F7F3EE",
-  bgSoft: "#EEE9E1",
-  surface: "#E8E2D9",
+  bg: "#FEFEFC",
+  bgSoft: "#FFF8DC",
+  surface: "#FFF8DC",
   text: "#1A1714",
   textSoft: "#4A4540",
-  textMuted: "#8C857D",
-  border: "rgba(26,23,20,.1)",
-  primary: "#6B2D3E",
-  primaryHover: "#883549",
-  bronze: "#9B7B4E",
+  textMuted: "#7A7068",
+  border: "rgba(212,167,106,.3)",
+  primary: "#B8860B",
+  primaryHover: "#8B6508",
+  bronze: "#D4A76A",
+  highlight: "#FDEE00",
 };
 
 export default colors;
