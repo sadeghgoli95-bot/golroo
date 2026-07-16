@@ -20,7 +20,7 @@ const story = [
 
 export default function Story() {
   return (
-    <section id="about" className="section">
+    <section className="section">
       <Container>
         <div style={{ marginBottom: 90 }}>
           <div

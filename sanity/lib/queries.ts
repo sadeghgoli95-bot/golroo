@@ -105,50 +105,37 @@ export const authorLatestPublishedAtQuery = groq`
 
 // ---------- Search ----------
 
-const searchMatchFilter = groq`
-  status != "draft" && (
-    title match $q ||
-    excerpt match $q ||
-    pt::text(body) match $q ||
-    category->title match $q ||
-    author->name match $q ||
-    count(tags[]->title[@ match $q]) > 0
-  )
-`
-
-export const searchResultsQuery = groq`
-  *[_type == "article" && ${searchMatchFilter}]
-  | score(
-      boost(title match $q, 4),
-      boost(excerpt match $q, 2),
-      boost(category->title match $q, 1),
-      boost(author->name match $q, 1),
-      boost(pt::text(body) match $q, 1)
-    )
-  | order(_score desc, publishedAt desc) [$start...$end]{
-    ${articleCardProjection}
-  }
-`
-
-export const searchResultsCountQuery = groq`
-  count(*[_type == "article" && ${searchMatchFilter}])
-`
-
-export const searchSuggestionsQuery = groq`
-  *[_type == "article" && ${searchMatchFilter}]
-  | score(
-      boost(title match $q, 4),
-      boost(excerpt match $q, 2),
-      boost(category->title match $q, 1),
-      boost(author->name match $q, 1),
-      boost(pt::text(body) match $q, 1)
-    )
-  | order(_score desc, publishedAt desc) [0...8]{
+// GROQ's `match` operator does exact character comparison, so it can't
+// reliably handle Persian/Arabic Unicode variants (ي vs ی, ك vs ک) or
+// stemming (نوجوان vs نوجوانی). Instead of filtering in GROQ, we fetch a
+// compact search index of every published article's searchable fields
+// once (cached briefly server-side — see lib/search/searchArticles.ts)
+// and do normalized matching + ranking in JS.
+export const searchIndexQuery = groq`
+  *[_type == "article" && status != "draft"]{
+    _id,
     title,
     slug,
+    excerpt,
     readingTime,
     publishedAt,
-    category->{title, slug}
+    featuredImage,
+    featuredImageAlt,
+    "categoryTitle": category->title,
+    "categorySlug": category->slug,
+    "authorName": author->name,
+    "authorSlug": author->slug,
+    "tags": tags[]->{title, slug},
+    "seoTitle": seo.metaTitle,
+    "seoDescription": seo.metaDescription,
+    "bodyText": pt::text(body),
+    "realExampleText": pt::text(realExample),
+    "scientificText": pt::text(scientificExplanation),
+    window,
+    callout,
+    finalThought,
+    finalQuestion,
+    importantPoints
   }
 `
 

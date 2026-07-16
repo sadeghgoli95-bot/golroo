@@ -1,24 +1,6 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-// SMTP credentials are supplied later via environment variables — see
-// .env.local. Nothing here is hardcoded.
-export function getTransport() {
-  const host = process.env.SMTP_HOST;
-  const port = Number(process.env.SMTP_PORT || 587);
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASSWORD;
-
-  if (!host || !user || !pass) {
-    throw new Error("SMTP credentials are not configured.");
-  }
-
-  return nodemailer.createTransport({
-    host,
-    port,
-    secure: port === 465,
-    auth: { user, pass },
-  });
-}
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export type AppointmentEmailPayload = {
   name: string;
@@ -48,39 +30,46 @@ const visitorTypeLabels: Record<string, string> = {
 export function renderAppointmentEmailHtml(payload: AppointmentEmailPayload): string {
   const row = (label: string, value: string) =>
     value
-      ? `<tr><td style="padding:8px 12px;color:#8C857D;">${label}</td><td style="padding:8px 12px;color:#1A1714;">${value}</td></tr>`
+      ? `<tr style="border-bottom: 1px solid #E8E2D9;"><td style="padding: 12px 0; color: #7A7068; width: 140px;">${label}:</td><td style="padding: 12px 0;">${value}</td></tr>`
       : "";
 
   return `
-    <div dir="rtl" style="font-family:sans-serif;background:#F7F3EE;padding:32px;">
-      <h2 style="color:#6B2D3E;">درخواست جلسه جدید</h2>
-      <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid rgba(26,23,20,.1);border-radius:8px;">
+    <div dir="rtl" style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; background: #FEFEFC; color: #1A1714;">
+      <h2 style="color: #B8860B; border-bottom: 1px solid #D4A76A; padding-bottom: 16px;">
+        درخواست جلسه جدید
+      </h2>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 24px;">
         ${row("نام", payload.name)}
         ${row("سن", payload.age)}
         ${row("شماره تماس", payload.phone)}
-        ${row("ایمیل", payload.email)}
+        ${row("ایمیل", payload.email || "وارد نشده")}
         ${row("نوع جلسه", sessionTypeLabels[payload.sessionType] || payload.sessionType)}
         ${row("نوع مراجعه", visitorTypeLabels[payload.visitorType] || payload.visitorType)}
         ${row("موضوع مراجعه", payload.topic)}
+        ${payload.referral ? row("آشنایی از طریق", payload.referral) : ""}
         ${row("زمان ثبت درخواست", payload.submittedAt)}
         ${payload.ip ? row("IP", payload.ip) : ""}
       </table>
+      <div style="margin-top: 32px; padding: 16px; background: #FFF8DC; border-right: 3px solid #B8860B;">
+        <p style="margin: 0; color: #7A7068; font-size: 14px;">
+          این ایمیل از طریق فرم درخواست جلسه سایت گل‌رو ارسال شده است.
+        </p>
+      </div>
     </div>
   `;
 }
 
 export async function sendAppointmentEmail(payload: AppointmentEmailPayload) {
-  const transport = getTransport();
   const recipient = process.env.APPOINTMENT_NOTIFICATION_EMAIL;
 
   if (!recipient) {
     throw new Error("APPOINTMENT_NOTIFICATION_EMAIL is not configured.");
   }
 
-  await transport.sendMail({
-    from: process.env.SMTP_FROM || process.env.SMTP_USER,
+  await resend.emails.send({
+    from: "Golroo <onboarding@resend.dev>",
     to: recipient,
-    subject: "درخواست جلسه جدید",
+    subject: `درخواست جلسه جدید از ${payload.name}`,
     html: renderAppointmentEmailHtml(payload),
   });
 }

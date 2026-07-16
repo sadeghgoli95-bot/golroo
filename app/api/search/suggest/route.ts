@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { client } from "@/sanity/lib/client";
-import { searchSuggestionsQuery } from "@/sanity/lib/queries";
+import { searchArticles } from "@/lib/search/searchArticles";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -10,7 +9,14 @@ export async function GET(request: Request) {
     return NextResponse.json({ suggestions: [] });
   }
 
-  const suggestions = await client.fetch(searchSuggestionsQuery, { q: `*${q}*` });
+  const results = await searchArticles(q);
+  const suggestions = results.slice(0, 8).map((result) => ({
+    title: result.title,
+    slug: result.slug,
+    readingTime: result.readingTime,
+    publishedAt: result.publishedAt,
+    category: result.categoryTitle ? { title: result.categoryTitle } : undefined,
+  }));
 
   return NextResponse.json({ suggestions });
 }

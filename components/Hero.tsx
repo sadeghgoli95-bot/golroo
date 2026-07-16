@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Container from "./Container";
 import Button from "./Button";
 
@@ -36,8 +37,8 @@ export default function Hero() {
           </p>
           <div className="hero-actions">
             <Button href="/appointment">رزرو جلسه</Button>
-            <a
-              href="#about"
+            <Link
+              href="/about"
               style={{
                 padding: "1rem 2.8rem",
                 border: "1px solid var(--line)",
@@ -46,7 +47,7 @@ export default function Hero() {
               }}
             >
               بیشتر بخوانید
-            </a>
+            </Link>
           </div>
         </div>
       </Container>

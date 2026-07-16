@@ -3,9 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ArticleGrid from "@/components/Journal/ArticleGrid";
 import Pagination from "@/components/Journal/Pagination";
-import { client } from "@/sanity/lib/client";
-import { searchResultsQuery, searchResultsCountQuery } from "@/sanity/lib/queries";
-import { type ArticlePreview } from "@/components/Journal/JournalCard";
+import { searchArticles, toArticlePreview } from "@/lib/search/searchArticles";
 import { formatArticleCount } from "@/lib/utils/persian";
 import { siteConfig } from "@/lib/siteConfig";
 import Link from "next/link";
@@ -29,21 +27,12 @@ export default async function SearchPage({ searchParams }: Props) {
   const { q, page: pageParam } = await searchParams;
   const query = (q || "").trim();
   const currentPage = Math.max(1, Number(pageParam) || 1);
+
+  const allResults = query ? await searchArticles(query) : [];
+  const total = allResults.length;
   const start = (currentPage - 1) * PAGE_SIZE;
-  const end = start + PAGE_SIZE;
-
-  const matchPattern = query ? `*${query}*` : "";
-
-  const [articles, total] = query
-    ? await Promise.all([
-        client.fetch<(ArticlePreview & { _id: string })[]>(searchResultsQuery, {
-          q: matchPattern,
-          start,
-          end,
-        }),
-        client.fetch<number>(searchResultsCountQuery, { q: matchPattern }),
-      ])
-    : [[], 0];
+  const pageResults = allResults.slice(start, start + PAGE_SIZE);
+  const articles = pageResults.map(toArticlePreview);
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
