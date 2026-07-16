@@ -1,5 +1,20 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+
+export const metadata: Metadata = {
+  title: "درباره",
+  description:
+    "محمد صادق گل‌رو، روان‌شناس و روان‌درمانگر کودک و نوجوان؛ رویکردی رابطه‌محور، روان‌پویشی و مبتنی بر مشاهده.",
+  alternates: { canonical: "/about" },
+  openGraph: {
+    title: "درباره | گل‌رو",
+    description:
+      "محمد صادق گل‌رو، روان‌شناس و روان‌درمانگر کودک و نوجوان؛ رویکردی رابطه‌محور، روان‌پویشی و مبتنی بر مشاهده.",
+    url: "https://golroo.ir/about",
+    type: "website",
+  },
+};
 
 export default function AboutPage() {
   return (

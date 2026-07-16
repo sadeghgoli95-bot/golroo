@@ -22,6 +22,7 @@ const approach = [
 export default function Approach() {
   return (
     <section
+      id="philosophy"
       className="section"
       style={{
         background: "var(--bg-soft)",

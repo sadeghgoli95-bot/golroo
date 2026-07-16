@@ -3,6 +3,7 @@ import Container from "./Container";
 export default function Contact() {
   return (
     <section
+      id="contact"
       className="section"
       style={{ borderTop: "1px solid var(--line)" }}
     >

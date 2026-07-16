@@ -1,6 +1,19 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ObservationGrid from "@/components/Observation/ObservationGrid";
+
+export const metadata: Metadata = {
+  title: "مشاهده‌ها",
+  description: "مشاهده‌هایی که از دل اتاق درمان آمده‌اند؛ نه نسخه درمان، تمرین نگاه کردن.",
+  alternates: { canonical: "/observations" },
+  openGraph: {
+    title: "مشاهده‌ها | گل‌رو",
+    description: "مشاهده‌هایی که از دل اتاق درمان آمده‌اند؛ نه نسخه درمان، تمرین نگاه کردن.",
+    url: "https://golroo.ir/observations",
+    type: "website",
+  },
+};
 
 export default function Observations() {
   return (

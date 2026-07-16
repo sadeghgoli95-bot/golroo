@@ -23,7 +23,7 @@ const services = [
 
 export default function Services() {
   return (
-    <section className="section">
+    <section id="services" className="section">
       <Container>
         <div
           style={{

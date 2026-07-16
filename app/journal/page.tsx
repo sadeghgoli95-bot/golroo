@@ -1,6 +1,21 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import JournalGrid from "@/components/Journal/JournalGrid";
+
+export const metadata: Metadata = {
+  title: "ژورنال",
+  description:
+    "مشاهده‌ها و یادداشت‌های بالینی درباره روان‌درمانی کودک و نوجوان، دلبستگی و رابطه والد و کودک.",
+  alternates: { canonical: "/journal" },
+  openGraph: {
+    title: "ژورنال | گل‌رو",
+    description:
+      "مشاهده‌ها و یادداشت‌های بالینی درباره روان‌درمانی کودک و نوجوان، دلبستگی و رابطه والد و کودک.",
+    url: "https://golroo.ir/journal",
+    type: "website",
+  },
+};
 
 export default function Journal() {
   return (

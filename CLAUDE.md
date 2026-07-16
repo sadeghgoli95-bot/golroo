@@ -17,15 +17,14 @@
 ## Architecture
 - `app/` — صفحات و routing
 - `components/` — کامپوننت‌های UI (هر بخش فایل جدا)
-- `lib/content/` — تمام منطق فیلتر/مرتب‌سازی داده (کامپوننت‌ها مستقیم فیلتر نمی‌کنند)
-- `domains/` — سرویس‌های دامنه‌ای
-- `data/` — داده‌های ثابت (topics و غیره)
-- `sanity/` — schema و query های CMS
+- `lib/` — یوتیلیتی‌های مشترک (siteConfig، فرمت تاریخ فارسی، rate limit، mailer و غیره)
+- `data/` — داده‌های ثابت غیر-Sanity (topics، observations قدیمی و غیره — برای صفحات knowledge)
+- `sanity/` — schema و query های CMS (منبع اصلی داده مقالات ژورنال)
 - `docs/` — منشور برند و راهنمای تحریریه (editorial-bible.md مرجع لحن است)
 
 ## Design System
 - تمام رنگ/فاصله/فونت از `app/globals.css` (CSS variables) می‌آید
-- پالت: پس‌زمینه مشکی مات (#090909)، متن استخوانی، آکسنت زرشکی، لیبل برنز
+- پالت: پس‌زمینه کرم گرم (#FCFAF5)، سبز عمیق به‌عنوان امضای برند (#2E4C47)، نعنایی ملایم (#CBEDE0)، هایلایت زرد گرم (#FFF6D9)
 - بدون border-radius اغراق‌آمیز، بدون سایه سنگین، فضای خالی زیاد
 
 ## Conventions

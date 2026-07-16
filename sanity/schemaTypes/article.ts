@@ -89,7 +89,38 @@ export default defineType({
       type: 'array',
       group: 'content',
       description: 'بدنه اصلی مقاله.',
-      of: [defineArrayMember({type: 'block'})],
+      of: [
+        defineArrayMember({type: 'block'}),
+        defineArrayMember({
+          type: 'image',
+          options: {hotspot: true},
+          fields: [
+            {name: 'alt', title: 'توضیح تصویر (Alt)', type: 'string'},
+            {name: 'caption', title: 'کپشن', type: 'string'},
+          ],
+        }),
+        defineArrayMember({
+          type: 'object',
+          name: 'codeBlock',
+          title: 'بلوک کد',
+          fields: [
+            {name: 'language', title: 'زبان', type: 'string'},
+            {name: 'code', title: 'کد', type: 'text', rows: 8},
+          ],
+          preview: {
+            select: {title: 'language', subtitle: 'code'},
+          },
+        }),
+        defineArrayMember({
+          type: 'object',
+          name: 'break',
+          title: 'خط جداکننده',
+          fields: [{name: '_dummy', type: 'string', hidden: true}],
+          preview: {
+            prepare: () => ({title: '— خط جداکننده —'}),
+          },
+        }),
+      ],
     }),
 
     defineField({
@@ -199,6 +230,14 @@ export default defineType({
       type: 'reference',
       to: [{type: 'author'}],
       group: 'relations',
+    }),
+
+    defineField({
+      name: 'faq',
+      title: 'سوالات متداول',
+      type: 'array',
+      group: 'relations',
+      of: [defineArrayMember({type: 'reference', to: [{type: 'faq'}]})],
     }),
 
     defineField({

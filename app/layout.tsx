@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/components/Seo/JsonLd";
 
 const vazir = localFont({
   src: [
@@ -71,6 +72,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  },
 };
 
 export default function RootLayout({
@@ -80,7 +84,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fa" dir="rtl" suppressHydrationWarning>
-      <body className={vazir.className}>{children}</body>
+      <body className={vazir.className}>
+        <JsonLd data={organizationJsonLd()} />
+        <JsonLd data={websiteJsonLd()} />
+        {children}
+      </body>
     </html>
   );
 }

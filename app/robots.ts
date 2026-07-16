@@ -1,8 +1,13 @@
 import type { MetadataRoute } from "next";
+import { siteConfig } from "@/lib/siteConfig";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", allow: "/" },
-    sitemap: "https://golroo.com/sitemap.xml",
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      disallow: ["/studio", "/api"],
+    },
+    sitemap: `${siteConfig.url}/sitemap.xml`,
   };
 }

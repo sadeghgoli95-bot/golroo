@@ -47,5 +47,20 @@ export default defineType({
       type: 'boolean',
       initialValue: false,
     }),
+
+    defineField({
+      name: 'twitterTitle',
+      title: 'Twitter Title',
+      type: 'string',
+      description: 'در صورت خالی بودن، از Meta Title استفاده می‌شود.',
+    }),
+
+    defineField({
+      name: 'twitterDescription',
+      title: 'Twitter Description',
+      type: 'text',
+      rows: 3,
+      description: 'در صورت خالی بودن، از Meta Description استفاده می‌شود.',
+    }),
   ],
 })
