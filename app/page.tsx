@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import OpeningLetter from "@/components/OpeningLetter";
 import QuoteBlock from "@/components/QuoteBlock";
 import QuestionBlock from "@/components/QuestionBlock";
 import Observation from "@/components/Observation";
@@ -30,6 +31,7 @@ export default function Home() {
         <PageNoise />
         <ScrollIndicator />
         <Hero />
+        <OpeningLetter />
         <QuoteBlock quote="لازم نیست مطمئن باشید که مشکلی وجود دارد. اگر چیزی در رفتار، احساس یا رابطه با فرزندتان ذهن شما را مشغول کرده است، همان نگرانی می‌تواند نقطه مناسبی برای آغاز یک گفت‌وگو باشد." />
         <QuestionBlock
           question="اگر رفتار فرزندتان می‌توانست حرف بزند، چه چیزی می‌گفت؟"

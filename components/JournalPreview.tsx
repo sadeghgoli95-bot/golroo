@@ -43,12 +43,23 @@ export default async function JournalPreview() {
                 fontSize: "clamp(2.4rem,4vw,3.6rem)",
                 fontWeight: 400,
                 lineHeight: 1.7,
+                maxWidth: 780,
               }}
             >
-              یادداشت‌هایی
-              <br />
-              برای کندتر فکر کردن.
+              اگر قرار بود فقط یک بخش از این سایت را بخوانید، از اینجا شروع کنید.
             </h2>
+
+            <p
+              style={{
+                marginTop: 24,
+                maxWidth: 600,
+                fontSize: 17,
+                color: "var(--text-muted)",
+                lineHeight: 2,
+              }}
+            >
+              این نوشته‌ها حاصل سال‌ها مطالعه، تجربهٔ بالینی و فکر کردن به دنیای کودکان‌اند؛ برای والدینی که می‌خواهند فراتر از توصیه‌های آماده، فرزندشان را عمیق‌تر بفهمند.
+            </p>
           </div>
 
           <Link
@@ -58,7 +69,7 @@ export default async function JournalPreview() {
               fontSize: 16,
             }}
           >
-            مشاهده همه یادداشت‌ها →
+            مشاهده همهٔ یادداشت‌ها →
           </Link>
         </div>
 
