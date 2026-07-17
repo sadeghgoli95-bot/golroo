@@ -4,7 +4,7 @@ import OpeningLetter from "@/components/OpeningLetter";
 import QuoteBlock from "@/components/QuoteBlock";
 import QuestionBlock from "@/components/QuestionBlock";
 import Observation from "@/components/Observation";
-import JournalPreview from "@/components/JournalPreview";
+import JournalRotator from "@/components/JournalRotator";
 import Manifesto from "@/components/Manifesto";
 import ReadingPause from "@/components/ReadingPause";
 import Thinking from "@/components/Thinking";
@@ -38,7 +38,7 @@ export default function Home() {
           text="گاهی رفتار، مسئله اصلی نیست؛ نزدیک‌ترین راهی است که کودک برای نشان دادن تجربه‌ای پیدا کرده که هنوز نمی‌تواند آن را با کلمات بیان کند. فهمیدن این تجربه، اغلب نقطه‌ای است که مسیر گفت‌وگو و تغییر از آن آغاز می‌شود."
         />
         <Observation />
-        <JournalPreview />
+        <JournalRotator />
         <Manifesto />
         <ReadingPause text="شخصیت کودک، فقط با آنچه برایش اتفاق می‌افتد شکل نمی‌گیرد؛ با تجربهٔ فهمیده شدن و فهمیده نشدن نیز شکل می‌گیرد." />
         <Thinking />
