@@ -115,7 +115,7 @@ export default defineType({
           type: 'object',
           name: 'break',
           title: 'خط جداکننده',
-          fields: [{name: '_dummy', type: 'string', hidden: true}],
+          fields: [{name: 'dummy', type: 'string', hidden: true}],
           preview: {
             prepare: () => ({title: '— خط جداکننده —'}),
           },
