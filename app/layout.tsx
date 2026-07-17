@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/components/Seo/JsonLd";
+import PersianTextNormalizer from "@/components/PersianTextNormalizer";
 
 const vazir = localFont({
   src: [
@@ -87,6 +88,7 @@ export default function RootLayout({
       <body className={vazir.className}>
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={websiteJsonLd()} />
+        <PersianTextNormalizer />
         {children}
       </body>
     </html>

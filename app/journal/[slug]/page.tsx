@@ -13,6 +13,7 @@ import Navbar from "@/components/Navbar";
 import Breadcrumb from "@/components/Breadcrumb";
 import { JsonLd, articleJsonLd } from "@/components/Seo/JsonLd";
 import { siteConfig } from "@/lib/siteConfig";
+import { normalizePersianText, normalizePortableTextBlocks } from "@/lib/utils/textNormalize";
 import type { Metadata } from "next";
 
 type Props = {
@@ -53,9 +54,38 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
-  const article = await client.fetch(articleQuery, { slug });
+  const rawArticle = await client.fetch(articleQuery, { slug });
 
-  if (!article) notFound();
+  if (!rawArticle) notFound();
+
+  const article = {
+    ...rawArticle,
+    title: normalizePersianText(rawArticle.title),
+    excerpt: normalizePersianText(rawArticle.excerpt),
+    window: normalizePersianText(rawArticle.window),
+    callout: normalizePersianText(rawArticle.callout),
+    finalThought: normalizePersianText(rawArticle.finalThought),
+    finalQuestion: normalizePersianText(rawArticle.finalQuestion),
+    imageCaption: normalizePersianText(rawArticle.imageCaption),
+    importantPoints: rawArticle.importantPoints?.map((point: string) => normalizePersianText(point)),
+    body: normalizePortableTextBlocks(rawArticle.body),
+    realExample: normalizePortableTextBlocks(rawArticle.realExample),
+    scientificExplanation: normalizePortableTextBlocks(rawArticle.scientificExplanation),
+    category: rawArticle.category
+      ? { ...rawArticle.category, title: normalizePersianText(rawArticle.category.title) }
+      : rawArticle.category,
+    author: rawArticle.author
+      ? {
+          ...rawArticle.author,
+          name: normalizePersianText(rawArticle.author.name),
+          bio: normalizePersianText(rawArticle.author.bio),
+        }
+      : rawArticle.author,
+    tags: rawArticle.tags?.map((tag: { title: string; slug: { current: string } }) => ({
+      ...tag,
+      title: normalizePersianText(tag.title),
+    })),
+  };
 
   const publishedDate = article.publishedAt
     ? new Date(article.publishedAt).toLocaleDateString("fa-IR", {

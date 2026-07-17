@@ -344,6 +344,37 @@ summary:focus-visible,
 .card-link::after { content: "→"; transition: transform var(--speed-fast) var(--ease); }
 .card:hover .card-link::after { transform: translateX(-8px); }
 
+/* Minimal rotating-journal card variant: title stays neutral until hover,
+   excerpt clamps to 2 lines so all cards stay equal height. */
+.journal-card-compact { height: 100%; }
+.journal-card-compact .card-title { color: var(--text); transition: color var(--speed-fast) var(--ease); }
+.journal-card-compact:hover .card-title { color: var(--accent); }
+.journal-card-compact .card-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.journal-rotator-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+@media (max-width: 1024px) {
+  .journal-rotator-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .journal-rotator-grid { grid-template-columns: 1fr; }
+}
+
+.journal-rotator-card-anim {
+  transition: opacity 400ms ease, transform 400ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .journal-rotator-card-anim { transition: none !important; }
+}
+
 /* =========================================
    TEXTURE SYSTEM
 ========================================= */

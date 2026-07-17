@@ -1,51 +1,154 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Container from "./Container";
 import { client } from "@/sanity/lib/client";
 import { articlesQuery } from "@/sanity/lib/queries";
+import JournalCard, { type ArticlePreview } from "./Journal/JournalCard";
 
-type ArticlePreview = {
-  _id: string;
-  topic: string;
-  title: string;
-  slug: { current: string };
-};
+type Article = ArticlePreview & { _id: string };
 
-function pickRandom(items: ArticlePreview[], count: number): ArticlePreview[] {
-  const shuffled = [...items].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
+const VISIBLE_COUNT = 4;
+const ROTATE_INTERVAL_MS = 10000;
+const EXIT_DURATION_MS = 400;
+const TOUCH_RESUME_DELAY_MS = 3000;
+const CARD_STAGGER_MS = 80;
+
+// There's no view/analytics tracking in this codebase, so "most-read" is
+// approximated with a recency-tier proxy (newest / mid / older) rather than
+// real read counts — see the weighting comment below.
+function weightedPool(articles: Article[]) {
+  const sorted = [...articles].sort(
+    (a, b) => new Date(b.publishedAt || 0).getTime() - new Date(a.publishedAt || 0).getTime()
+  );
+  const n = sorted.length;
+  const newestCount = Math.max(1, Math.ceil(n * 0.34));
+  const midCount = Math.max(1, Math.ceil(n * 0.33));
+
+  return sorted.map((article, i) => {
+    let weight: number;
+    if (i < newestCount) {
+      weight = 0.5 / newestCount; // newest ~50%
+    } else if (i < newestCount + midCount) {
+      weight = 0.3 / midCount; // "most-read" proxy ~30%
+    } else {
+      weight = 0.2 / Math.max(1, n - newestCount - midCount); // archive ~20%
+    }
+    return { article, weight };
+  });
+}
+
+function weightedSample(weighted: { article: Article; weight: number }[], count: number): Article[] {
+  const pool = [...weighted];
+  const picked: Article[] = [];
+  for (let i = 0; i < count && pool.length > 0; i++) {
+    const total = pool.reduce((sum, w) => sum + w.weight, 0);
+    let r = Math.random() * total;
+    let idx = 0;
+    for (; idx < pool.length - 1; idx++) {
+      r -= pool[idx].weight;
+      if (r <= 0) break;
+    }
+    picked.push(pool[idx].article);
+    pool.splice(idx, 1);
+  }
+  return picked;
+}
+
+function sameSet(a: Article[], b: Set<string>): boolean {
+  if (a.length !== b.size) return false;
+  return a.every((article) => b.has(article._id));
+}
+
+function pickFour(articles: Article[], previousIds: Set<string>): Article[] {
+  if (articles.length <= VISIBLE_COUNT) return articles;
+
+  const weighted = weightedPool(articles);
+  let picked = weightedSample(weighted, VISIBLE_COUNT);
+  let tries = 0;
+  while (sameSet(picked, previousIds) && tries < 5) {
+    picked = weightedSample(weighted, VISIBLE_COUNT);
+    tries++;
+  }
+  return picked;
 }
 
 export default function JournalRotator() {
-  const [notes, setNotes] = useState<ArticlePreview[]>([]);
-  const [displayed, setDisplayed] = useState<ArticlePreview[]>([]);
-  const [visible, setVisible] = useState(true);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [displayed, setDisplayed] = useState<Article[]>([]);
+  const [entered, setEntered] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const previousIdsRef = useRef<Set<string>>(new Set());
+  const resumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    client.fetch<ArticlePreview[]>(articlesQuery).then((data) => {
-      setNotes(data);
-      setDisplayed(pickRandom(data, 5));
+    client.fetch<Article[]>(articlesQuery).then((data) => {
+      setArticles(data);
+      const initial = pickFour(data, new Set());
+      previousIdsRef.current = new Set(initial.map((a) => a._id));
+      setDisplayed(initial);
     });
   }, []);
 
+  const rotate = useCallback(() => {
+    setEntered(false); // trigger fade-out + move-down
+
+    exitTimeoutRef.current = setTimeout(() => {
+      setArticles((current) => {
+        const next = pickFour(current, previousIdsRef.current);
+        previousIdsRef.current = new Set(next.map((a) => a._id));
+        setDisplayed(next);
+        return current;
+      });
+
+      // Two rAFs: let the new (offset) cards paint once before animating
+      // them back to their resting position, so the browser doesn't
+      // collapse the transition into a no-op.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setEntered(true));
+      });
+    }, EXIT_DURATION_MS);
+  }, []);
+
   useEffect(() => {
-    if (notes.length === 0) return;
+    if (isPaused || articles.length === 0) return;
+    const id = setInterval(rotate, ROTATE_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [isPaused, articles, rotate]);
 
-    const interval = setInterval(() => {
-      setVisible(false);
-      setTimeout(() => {
-        setDisplayed(pickRandom(notes, 5));
-        setVisible(true);
-      }, 500);
-    }, 10000);
+  useEffect(() => {
+    return () => {
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+      if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
+    };
+  }, []);
 
-    return () => clearInterval(interval);
-  }, [notes]);
+  const handleMouseEnter = () => setIsPaused(true);
+  const handleMouseLeave = () => setIsPaused(false);
+
+  const handleTouchStart = () => {
+    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    setIsPaused(true);
+  };
+
+  const handleTouchEnd = () => {
+    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    resumeTimeoutRef.current = setTimeout(() => setIsPaused(false), TOUCH_RESUME_DELAY_MS);
+  };
 
   return (
-    <section className="section" style={{ background: "var(--bg-soft)" }}>
+    <section
+      className="section"
+      style={{ background: "var(--bg-soft)" }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+    >
       <Container>
         <div
           style={{
@@ -77,7 +180,9 @@ export default function JournalRotator() {
                 maxWidth: 780,
               }}
             >
-              اگر قرار بود فقط یک بخش از این سایت را بخوانید، از اینجا شروع کنید.
+              اگر قرار باشد فقط یک بخش از این سایت را بخوانید،
+              <br />
+              از اینجا شروع کنید.
             </h2>
 
             <p
@@ -100,58 +205,24 @@ export default function JournalRotator() {
               fontSize: 16,
             }}
           >
-            مشاهده همهٔ یادداشت‌ها →
+            مشاهده همه یادداشت‌ها →
           </Link>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gap: 26,
-            opacity: visible ? 1 : 0,
-            transition: "opacity 500ms",
-          }}
-        >
-          {displayed.map((item) => (
-            <article
-              key={item._id}
+        <div className="journal-rotator-grid">
+          {displayed.map((article, index) => (
+            <div
+              key={article._id}
+              className="journal-rotator-card-anim"
               style={{
-                borderTop: "1px solid var(--line)",
-                paddingTop: "2.4rem",
-                display: "grid",
-                gridTemplateColumns: "140px 1fr",
-                gap: "2rem",
-                alignItems: "start",
+                height: "100%",
+                opacity: entered ? 1 : 0,
+                transform: entered ? "translateY(0)" : "translateY(10px)",
+                transitionDelay: entered ? `${index * CARD_STAGGER_MS}ms` : "0ms",
               }}
             >
-              <div
-                style={{
-                  color: "var(--text-muted)",
-                  fontSize: 14,
-                  letterSpacing: ".15em",
-                }}
-              >
-                {item.topic}
-              </div>
-
-              <Link
-                href={`/journal/${item.slug.current}`}
-                style={{
-                  textDecoration: "none",
-                  color: "inherit",
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: 29,
-                    fontWeight: 300,
-                    lineHeight: 1.9,
-                  }}
-                >
-                  {item.title}
-                </h3>
-              </Link>
-            </article>
+              <JournalCard item={article} compact />
+            </div>
           ))}
         </div>
       </Container>

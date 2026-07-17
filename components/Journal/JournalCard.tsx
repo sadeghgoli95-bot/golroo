@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { SanityImageSource } from "@sanity/image-url";
 import { urlFor } from "@/sanity/lib/image";
 import { highlightText } from "@/lib/utils/highlight";
+import { normalizePersianText } from "@/lib/utils/textNormalize";
 
 export type ArticlePreview = {
   slug: { current: string } | string;
@@ -21,19 +22,24 @@ export type ArticlePreview = {
 type Props = {
   item: ArticlePreview;
   highlightQuery?: string;
+  /** Minimal variant: category, title, 2-line excerpt, reading time and date only — no image, tags or author. */
+  compact?: boolean;
 };
 
-export default function JournalCard({ item, highlightQuery }: Props) {
+export default function JournalCard({ item, highlightQuery, compact }: Props) {
   const slugStr = typeof item.slug === "string" ? item.slug : item.slug.current;
   const articleHref = `/journal/${slugStr}`;
 
-  const categoryLabel =
-    (typeof item.category === "string" ? item.category : item.category?.title) || item.topic;
+  const categoryLabel = normalizePersianText(
+    (typeof item.category === "string" ? item.category : item.category?.title) || item.topic
+  );
   const categorySlug = typeof item.category === "string" ? undefined : item.category?.slug?.current;
+  const title = normalizePersianText(item.title);
+  const excerpt = normalizePersianText(item.excerpt);
 
   return (
-    <article className="card">
-      {item.featuredImage && (
+    <article className={compact ? "card journal-card-compact" : "card"}>
+      {!compact && item.featuredImage && (
         <Link href={articleHref} tabIndex={-1} aria-hidden="true">
           <div style={{ margin: "-2.4rem -2.4rem 1.6rem", overflow: "hidden", borderRadius: "16px 16px 0 0" }}>
             <Image
@@ -58,19 +64,19 @@ export default function JournalCard({ item, highlightQuery }: Props) {
 
       <h3 className="card-title">
         <Link href={articleHref} style={{ color: "inherit" }}>
-          {highlightQuery ? highlightText(item.title, highlightQuery) : item.title}
+          {highlightQuery ? highlightText(title, highlightQuery) : title}
         </Link>
       </h3>
 
       <p className="card-text">
-        {highlightQuery ? highlightText(item.excerpt, highlightQuery) : item.excerpt}
+        {highlightQuery ? highlightText(excerpt, highlightQuery) : excerpt}
       </p>
 
-      {item.tags && item.tags.length > 0 && (
+      {!compact && item.tags && item.tags.length > 0 && (
         <div className="cluster" style={{ marginTop: "1.2rem", gap: ".6rem" }}>
           {item.tags.map((tag) => (
             <Link key={tag.slug.current} href={`/journal/tag/${tag.slug.current}`} className="tag">
-              {tag.title}
+              {normalizePersianText(tag.title)}
             </Link>
           ))}
         </div>
@@ -78,15 +84,15 @@ export default function JournalCard({ item, highlightQuery }: Props) {
 
       <div className="card-footer">
         <div className="cluster" style={{ gap: ".8rem" }}>
-          {item.author?.name &&
+          {!compact && item.author?.name &&
             (item.author.slug?.current ? (
               <Link href={`/journal/author/${item.author.slug.current}`} className="caption">
-                {item.author.name}
+                {normalizePersianText(item.author.name)}
               </Link>
             ) : (
-              <span className="caption">{item.author.name}</span>
+              <span className="caption">{normalizePersianText(item.author.name)}</span>
             ))}
-          {item.author?.name && (item.readingTime || item.publishedAt) && (
+          {!compact && item.author?.name && (item.readingTime || item.publishedAt) && (
             <span className="caption">·</span>
           )}
           {item.readingTime && <span className="caption">{item.readingTime} دقیقه مطالعه</span>}
