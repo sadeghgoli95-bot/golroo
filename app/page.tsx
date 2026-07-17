@@ -8,9 +8,7 @@ import JournalPreview from "@/components/JournalPreview";
 import Manifesto from "@/components/Manifesto";
 import ReadingPause from "@/components/ReadingPause";
 import Thinking from "@/components/Thinking";
-import Lens from "@/components/Lens";
 import Story from "@/components/Story";
-import Approach from "@/components/Approach";
 import Services from "@/components/Services";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -40,11 +38,9 @@ export default function Home() {
         <Observation />
         <JournalPreview />
         <Manifesto />
-        <ReadingPause text="شاید مهم‌ترین اتفاق درمان، زمانی رخ می‌دهد که برای اولین بار احساس می‌کنیم کسی واقعاً تجربه ما را دیده است." />
+        <ReadingPause text="شخصیت کودک، فقط با آنچه برایش اتفاق می‌افتد شکل نمی‌گیرد؛ با تجربهٔ فهمیده شدن و فهمیده نشدن نیز شکل می‌گیرد." />
         <Thinking />
-        <Lens />
         <Story />
-        <Approach />
         <Services />
         <Contact />
       </main>

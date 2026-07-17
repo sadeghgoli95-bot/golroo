@@ -23,7 +23,7 @@ const services = [
 
 export default function Services() {
   return (
-    <section className="section">
+    <section className="section" style={{ background: "var(--bg-soft)" }}>
       <Container>
         <div
           style={{

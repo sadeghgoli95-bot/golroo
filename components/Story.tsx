@@ -1,28 +1,17 @@
 import Container from "./Container";
 
-const story = [
-  {
-    year: "شروع",
-    title: "رفتار، اولین چیزی است که دیده می‌شود.",
-    text: "بیشتر خانواده‌ها زمانی مراجعه می‌کنند که رفتار کودک نگران‌کننده شده است؛ اضطراب، پرخاشگری، سکوت، افت تحصیلی یا مشکلات ارتباطی.",
-  },
-  {
-    year: "کمی عمیق‌تر",
-    title: "اما رفتار، معمولاً آغاز داستان نیست.",
-    text: "رفتار اغلب آخرین حلقه زنجیره‌ای از تجربه‌ها، روابط و احساساتی است که مدت‌ها قبل شکل گرفته‌اند.",
-  },
-  {
-    year: "جایی که درمان آغاز می‌شود",
-    title: "ما سعی می‌کنیم داستان را از ابتدا بخوانیم.",
-    text: "به جای جنگیدن با نشانه‌ها، تلاش می‌کنیم بفهمیم کودک چه تجربه‌ای را زندگی می‌کند و این تجربه چگونه به رفتار امروز او تبدیل شده است.",
-  },
+const body = [
+  "بیشتر والدین زمانی به فکر کمک گرفتن می‌افتند که رفتار فرزندشان تغییر کرده است؛ وقتی بیشتر از قبل مضطرب می‌شود، زودتر عصبانی می‌شود، از دیگران فاصله می‌گیرد، یا دیگر مانند گذشته بازی و ارتباط برقرار نمی‌کند.",
+  "این نگرانی، واقعی و قابل درک است.",
+  "اما در بسیاری از موقعیت‌ها، رفتار فقط جایی است که ما متوجه مسئله می‌شویم؛ نه جایی که مسئله از آن آغاز شده باشد.",
+  "به همین دلیل، پیش از آنکه به دنبال تغییر رفتار باشم، تلاش می‌کنم بفهمم کودک چه تجربه‌ای را زندگی می‌کند، این تجربه در چه رابطه‌هایی شکل گرفته است و چگونه به رفتاری تبدیل شده که امروز می‌بینیم.",
 ];
 
 export default function Story() {
   return (
     <section className="section">
       <Container>
-        <div style={{ marginBottom: 90 }}>
+        <div style={{ marginBottom: 70 }}>
           <div
             style={{
               color: "var(--bronze)",
@@ -41,45 +30,17 @@ export default function Story() {
               maxWidth: 760,
             }}
           >
-            گاهی مسئله،
+            گاهی آنچه والد را نگران می‌کند،
             <br />
-            آن چیزی نیست
-            <br />
-            که در نگاه اول دیده می‌شود.
+            همان چیزی نیست که کودک از آن رنج می‌برد.
           </h2>
         </div>
 
-        <div style={{ display: "grid", gap: 70 }}>
-          {story.map((item) => (
-            <div
-              key={item.title}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "180px 1fr",
-                gap: 40,
-                borderTop: "1px solid var(--line)",
-                paddingTop: 36,
-              }}
-            >
-              <div style={{ color: "var(--bronze)", fontSize: 18 }}>
-                {item.year}
-              </div>
-              <div>
-                <h3
-                  style={{
-                    fontSize: 32,
-                    fontWeight: 300,
-                    lineHeight: 1.8,
-                    marginBottom: 20,
-                  }}
-                >
-                  {item.title}
-                </h3>
-                <p style={{ fontSize: 18, lineHeight: 2.2, maxWidth: 760 }}>
-                  {item.text}
-                </p>
-              </div>
-            </div>
+        <div style={{ display: "grid", gap: 32, maxWidth: 760 }}>
+          {body.map((paragraph) => (
+            <p key={paragraph} style={{ fontSize: 18, lineHeight: 2.2 }}>
+              {paragraph}
+            </p>
           ))}
         </div>
       </Container>
