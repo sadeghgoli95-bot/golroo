@@ -3,6 +3,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import JournalGrid from "@/components/Journal/JournalGrid";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "ژورنال",
   description:

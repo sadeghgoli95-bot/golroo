@@ -18,6 +18,8 @@ import AmbientLight from "@/components/AmbientLight";
 import PageNoise from "@/components/PageNoise";
 import ScrollIndicator from "@/components/ScrollIndicator";
 
+export const revalidate = 60;
+
 export default function Home() {
   return (
     <>
