@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/components/Seo/JsonLd";
+import { professionalServiceJsonLd } from "@/lib/seo/schema";
+import { SITE_URL } from "@/lib/seo/site";
 import PersianTextNormalizer from "@/components/PersianTextNormalizer";
 
 const vazir = localFont({
@@ -32,13 +34,14 @@ const vazir = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://golroo.ir"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "گل‌رو",
     template: "%s | گل‌رو",
   },
   description:
     "برند شخصی صادق گل‌رو؛ روان‌درمانگر کودک و نوجوان. جلسات آنلاین برای کودکان، نوجوانان و والدین.",
+  alternates: { canonical: "/" },
   keywords: [
     "گل‌رو",
     "صادق گل‌رو",
@@ -60,7 +63,7 @@ export const metadata: Metadata = {
     title: "گل‌رو",
     description:
       "روان‌درمانی کودک و نوجوان با تمرکز بر رابطه، رشد و فهم تجربه کودک.",
-    url: "https://golroo.ir",
+    url: SITE_URL,
     siteName: "Golroo",
     locale: "fa_IR",
     type: "website",
@@ -88,6 +91,7 @@ export default function RootLayout({
       <body className={vazir.className}>
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={websiteJsonLd()} />
+        <JsonLd data={professionalServiceJsonLd()} />
         <PersianTextNormalizer />
         {children}
       </body>

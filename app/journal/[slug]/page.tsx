@@ -13,6 +13,7 @@ import Navbar from "@/components/Navbar";
 import Breadcrumb from "@/components/Breadcrumb";
 import { JsonLd, articleJsonLd } from "@/components/Seo/JsonLd";
 import { siteConfig } from "@/lib/siteConfig";
+import { SITE_URL } from "@/lib/seo/site";
 import { normalizePersianText, normalizePortableTextBlocks } from "@/lib/utils/textNormalize";
 import type { Metadata } from "next";
 
@@ -40,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       type: "article",
-      url: seo.canonicalUrl || `https://golroo.ir/journal/${slug}`,
+      url: seo.canonicalUrl || `${SITE_URL}/journal/${slug}`,
       images: ogImageSource ? [urlFor(ogImageSource).width(1200).height(630).url()] : undefined,
     },
     twitter: {

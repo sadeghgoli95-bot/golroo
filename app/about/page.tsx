@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { SITE_URL } from "@/lib/seo/site";
 
 export const metadata: Metadata = {
   title: "درباره",
@@ -11,8 +12,14 @@ export const metadata: Metadata = {
     title: "درباره | گل‌رو",
     description:
       "محمد صادق گل‌رو، روان‌شناس و روان‌درمانگر کودک و نوجوان؛ رویکردی رابطه‌محور، روان‌پویشی و مبتنی بر مشاهده.",
-    url: "https://golroo.ir/about",
+    url: `${SITE_URL}/about`,
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "درباره | گل‌رو",
+    description:
+      "محمد صادق گل‌رو، روان‌شناس و روان‌درمانگر کودک و نوجوان؛ رویکردی رابطه‌محور، روان‌پویشی و مبتنی بر مشاهده.",
   },
 };
 

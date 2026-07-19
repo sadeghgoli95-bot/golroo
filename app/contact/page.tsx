@@ -10,6 +10,7 @@ import {
   PinIcon,
   InfoIcon,
 } from "@/components/Contact/icons";
+import { SITE_URL } from "@/lib/seo/site";
 
 export const metadata: Metadata = {
   title: "درخواست جلسه",
@@ -20,8 +21,14 @@ export const metadata: Metadata = {
     title: "درخواست جلسه | گل‌رو",
     description:
       "برای هماهنگی جلسه حضوری یا آنلاین با صادق گل‌رو، روان‌درمانگر کودک و نوجوان، درخواست خود را ثبت کنید.",
-    url: "https://golroo.ir/contact",
+    url: `${SITE_URL}/contact`,
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "درخواست جلسه | گل‌رو",
+    description:
+      "برای هماهنگی جلسه حضوری یا آنلاین با صادق گل‌رو، روان‌درمانگر کودک و نوجوان، درخواست خود را ثبت کنید.",
   },
 };
 

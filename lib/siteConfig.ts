@@ -1,12 +1,14 @@
+import { SITE_URL, SITE_NAME } from "./seo/site";
+
 export const siteConfig = {
-  name: "گل‌رو",
-  url: "https://golroo.ir",
+  name: SITE_NAME,
+  url: SITE_URL,
   description:
     "برند شخصی صادق گل‌رو؛ روان‌درمانگر کودک و نوجوان. جلسات آنلاین برای کودکان، نوجوانان و والدین.",
   person: {
     name: "محمد صادق گل‌رو",
     jobTitle: "روان‌شناس و روان‌درمانگر کودک و نوجوان",
-    image: "https://golroo.ir/favicon.ico",
+    image: `${SITE_URL}/favicon.ico`,
   },
   contact: {
     whatsapp: "https://wa.me/989120538112",

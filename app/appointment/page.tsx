@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AppointmentForm from "@/components/Appointment/AppointmentForm";
-import { siteConfig } from "@/lib/siteConfig";
+import { SITE_URL } from "@/lib/seo/site";
 
 export const metadata: Metadata = {
   title: "درخواست جلسه روان‌درمانی",
@@ -13,8 +13,14 @@ export const metadata: Metadata = {
     title: "درخواست جلسه روان‌درمانی | گل‌رو",
     description:
       "اگر مایل به شروع روان‌درمانی هستید، فرم درخواست جلسه را تکمیل کنید تا در اولین فرصت با شما تماس گرفته شود.",
-    url: `${siteConfig.url}/appointment`,
+    url: `${SITE_URL}/appointment`,
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "درخواست جلسه روان‌درمانی | گل‌رو",
+    description:
+      "اگر مایل به شروع روان‌درمانی هستید، فرم درخواست جلسه را تکمیل کنید تا در اولین فرصت با شما تماس گرفته شود.",
   },
 };
 

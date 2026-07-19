@@ -1,4 +1,5 @@
 import { siteConfig, sameAs } from "@/lib/siteConfig";
+import { ORGANIZATION_NAME } from "@/lib/seo/site";
 
 type JsonLdProps = {
   data: Record<string, unknown>;
@@ -17,7 +18,7 @@ export function organizationJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: siteConfig.person.name,
+    name: ORGANIZATION_NAME,
     url: siteConfig.url,
     logo: `${siteConfig.url}/favicon.ico`,
     sameAs,
@@ -91,7 +92,7 @@ export function articleJsonLd(article: {
     mainEntityOfPage: article.url,
     publisher: {
       "@type": "Organization",
-      name: siteConfig.person.name,
+      name: ORGANIZATION_NAME,
       logo: { "@type": "ImageObject", url: `${siteConfig.url}/favicon.ico` },
     },
   };
