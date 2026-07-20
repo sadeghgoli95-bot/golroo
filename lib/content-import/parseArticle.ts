@@ -39,7 +39,11 @@ function splitIntoSections(raw: string): ArticleSections {
     }
   };
 
-  for (const line of raw.split("\n")) {
+  // Normalize CRLF/CR to LF first — LABEL_LINE_PATTERN's `(.*)$` can never
+  // match a trailing "\r" (`.` excludes line terminators), so without this
+  // every line in Windows-style (\r\n) input fails to match and the whole
+  // article parses to an empty sections map.
+  for (const line of raw.replace(/\r\n?/g, "\n").split("\n")) {
     const match = line.match(LABEL_LINE_PATTERN);
     if (match) {
       flush();
