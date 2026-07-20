@@ -18,7 +18,7 @@ for (const [canonicalKey, aliases] of Object.entries(SECTION_LABEL_ALIASES) as [
 }
 
 const ALL_ALIASES = Array.from(ALIAS_TO_CANONICAL.keys());
-const LABEL_LINE_PATTERN = new RegExp(`^(${ALL_ALIASES.join("|")})\\s*:\\s*(.*)$`);
+const LABEL_LINE_PATTERN = new RegExp(`^[ \\t]*(${ALL_ALIASES.join("|")})\\s*:\\s*(.*)$`);
 const WORDS_PER_MINUTE = 200;
 
 /**
@@ -47,8 +47,21 @@ function splitIntoSections(raw: string): ArticleSections {
     const match = line.match(LABEL_LINE_PATTERN);
     if (match) {
       flush();
-      currentKey = ALIAS_TO_CANONICAL.get(match[1]) ?? null;
-      buffer = match[2] ? [match[2]] : [];
+      const matchedKey = ALIAS_TO_CANONICAL.get(match[1]) ?? null;
+
+      if (matchedKey === "readingTime") {
+        // The real article format has no explicit Body: label — Reading
+        // Time's value is always a single line, and everything after it
+        // is body content until another recognized label appears (if
+        // any). Still backward-compatible: an explicit body label later
+        // simply matches the `if` branch below and takes over normally.
+        sections.readingTime = (match[2] ?? "").trim();
+        currentKey = "body";
+        buffer = [];
+      } else {
+        currentKey = matchedKey;
+        buffer = match[2] ? [match[2]] : [];
+      }
     } else if (currentKey) {
       buffer.push(line);
     }
@@ -66,8 +79,8 @@ export function parseArticle(raw: string): ParsedArticleFields {
   const sections = splitIntoSections(raw);
 
   const header = extractHeader(sections);
-  const { excerpt, callout } = extractExcerpt(sections);
   const body = extractBody(sections);
+  const { excerpt, callout } = extractExcerpt(sections, body);
   const windowText = extractWindow(sections);
   const importantPoints = extractImportantPoints(sections);
   const finalThought = extractFinalThought(sections);
