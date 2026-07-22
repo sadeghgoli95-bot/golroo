@@ -1,5 +1,5 @@
 import type { ArticleSections, ParsedArticleFields, SectionKey } from "./types";
-import { SECTION_LABEL_ALIASES, FAQ_SECTION_HEADING, SOURCES_SECTION_HEADING } from "./types";
+import { SECTION_LABEL_ALIASES, FAQ_SECTION_HEADINGS, SOURCES_SECTION_HEADINGS } from "./types";
 import { extractHeader } from "./parser/extractHeader";
 import { extractExcerpt } from "./parser/extractExcerpt";
 import { extractBody } from "./parser/extractBody";
@@ -19,8 +19,23 @@ for (const [canonicalKey, aliases] of Object.entries(SECTION_LABEL_ALIASES) as [
 
 const ALL_ALIASES = Array.from(ALIAS_TO_CANONICAL.keys());
 const LABEL_LINE_PATTERN = new RegExp(`^[ \\t]*(${ALL_ALIASES.join("|")})\\s*:\\s*(.*)$`);
-const FAQ_HEADING_PATTERN = new RegExp(`^##\\s+${FAQ_SECTION_HEADING}\\s*$`);
-const SOURCES_HEADING_PATTERN = new RegExp(`^##\\s+${SOURCES_SECTION_HEADING}\\s*$`);
+
+/**
+ * A section-delimiter heading (FAQ/Sources) may or may not carry a "##"
+ * marker, and may carry a trailing English/Persian gloss in parentheses
+ * or a trailing colon — e.g. "## سوالات متداول", "## سوالات متداول
+ * (FAQ)", "External Sources:" are all the same delimiter in practice.
+ * The "##" is optional (not "# " through "######") to stay consistent
+ * with the original heading-only match and avoid accidentally treating
+ * an unrelated H1 title as a section delimiter.
+ */
+function buildSectionHeadingPattern(labels: readonly string[]): RegExp {
+  const alternation = labels.join("|");
+  return new RegExp(`^(?:##\\s+)?(?:${alternation})\\s*(?:\\(.*\\))?\\s*:?\\s*$`, "i");
+}
+
+const FAQ_HEADING_PATTERN = buildSectionHeadingPattern(FAQ_SECTION_HEADINGS);
+const SOURCES_HEADING_PATTERN = buildSectionHeadingPattern(SOURCES_SECTION_HEADINGS);
 const ANY_HEADING_PATTERN = /^(#{1,6})\s+.*$/;
 const WORDS_PER_MINUTE = 200;
 
@@ -93,6 +108,14 @@ function splitBodyFaqSources(restLines: string[]): {
     for (let i = faqStart; i < restLines.length; i++) {
       const match = restLines[i].match(ANY_HEADING_PATTERN);
       if (match && match[1].length <= 2) {
+        faqEnd = i;
+        break;
+      }
+      // The Sources heading may have no "#" marker at all (e.g. "External
+      // Sources:"), so it would never match ANY_HEADING_PATTERN above —
+      // check it explicitly or a headless Sources label would be
+      // swallowed into the last FAQ answer instead of ending the section.
+      if (SOURCES_HEADING_PATTERN.test(restLines[i])) {
         faqEnd = i;
         break;
       }

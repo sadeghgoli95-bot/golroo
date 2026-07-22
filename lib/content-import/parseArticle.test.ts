@@ -126,6 +126,64 @@ describe("parseArticle — production bug regressions", () => {
     expect(parsed.sources).toHaveLength(1);
     expect(parsed.sources[0].url).toBe("https://apa.org/source");
   });
+
+  it("recognizes '## سوالات متداول (FAQ)' with a trailing English gloss and 'External Sources:' with no '##' marker (real production article structure that silently produced faq: null / sources: [])", () => {
+    const raw = [
+      "Title: تست",
+      "Slug: test-faq-external-sources",
+      "Meta Description: توضیحات",
+      "",
+      "# مقدمه",
+      "",
+      "متن مقاله.",
+      "",
+      "## سوالات متداول (FAQ)",
+      "",
+      "### سوال اول؟",
+      "پاسخ اول.",
+      "",
+      "External Sources:",
+      "",
+      "- Smith J. (2020). عنوان منبع. مجله روانشناسی. https://apa.org/source",
+    ].join("\n");
+
+    const parsed = parseArticle(raw);
+
+    expect(parsed.faq).toHaveLength(1);
+    expect(parsed.faq[0].question).toBe("سوال اول؟");
+    expect(parsed.faq[0].answer).toBe("پاسخ اول.");
+
+    expect(parsed.sources).toHaveLength(1);
+    expect(parsed.sources[0].url).toBe("https://apa.org/source");
+    expect(parsed.sources[0].year).toBe("2020");
+  });
+
+  it("does not leak 'External Sources:' or the source list into the FAQ answer when Sources has no '#' marker", () => {
+    const raw = [
+      "Title: تست",
+      "Slug: test-faq-swallow-external-sources",
+      "Meta Description: توضیحات",
+      "",
+      "# مقدمه",
+      "",
+      "متن مقاله.",
+      "",
+      "## سوالات متداول",
+      "",
+      "### سوال اول؟",
+      "پاسخ اول.",
+      "",
+      "External Sources:",
+      "",
+      "- https://apa.org/source",
+    ].join("\n");
+
+    const parsed = parseArticle(raw);
+
+    expect(parsed.faq[0].answer).toBe("پاسخ اول.");
+    expect(parsed.faq[0].answer).not.toContain("External Sources");
+    expect(parsed.sources).toHaveLength(1);
+  });
 });
 
 describe("parseArticle — automatic Meta Description and Focus Keyword generation", () => {

@@ -26,5 +26,14 @@ export const SECTION_LABEL_ALIASES = {
   tags: ["برچسب‌ها", "برچسب", "Tags"],
 } as const;
 
-export const FAQ_SECTION_HEADING = "سوالات متداول";
-export const SOURCES_SECTION_HEADING = "منابع";
+/**
+ * Every heading text writers actually use to open the FAQ/Sources
+ * sections, canonical Persian form first. Writers sometimes annotate the
+ * canonical Persian heading with an English gloss (e.g. "## سوالات متداول
+ * (FAQ)") or write an English-only label with no "##" at all (e.g.
+ * "External Sources:") — both are real, observed variations of the same
+ * template, not a different format, so the parser must recognize all of
+ * them (see buildSectionHeadingPattern in parseArticle.ts).
+ */
+export const FAQ_SECTION_HEADINGS = ["سوالات متداول", "FAQ"] as const;
+export const SOURCES_SECTION_HEADINGS = ["منابع", "External Sources", "Sources"] as const;
