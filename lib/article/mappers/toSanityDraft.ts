@@ -1,11 +1,14 @@
 import type { Article } from "../types";
+import { markdownToPortableText, type PortableTextBodyItem } from "./portableText/markdownToPortableText";
 
 /**
  * Reverse of fromSanity.ts, scoped to what createDraft needs — not a full
- * Article->Sanity round-trip. `body` becomes a single Portable Text
- * paragraph block because the canonical Article only carries plain text
- * (the parser doesn't preserve heading/list/image structure); this is an
- * honest minimal conversion, not a fabricated rich-text reconstruction.
+ * Article->Sanity round-trip. `body` is converted from the parser's raw
+ * Markdown string (see extractBody.ts) into real Portable Text blocks via
+ * markdownToPortableText — the single place in this codebase allowed to
+ * construct `article.body` Portable Text, so every block/span always gets
+ * a `_key` (see portableText/createKey.ts) and Studio never reports
+ * "Missing keys" for this field again.
  */
 export type SanityReference = { _type: "reference"; _ref: string };
 
@@ -16,7 +19,7 @@ export type SanityDraftPayload = {
   topic?: string;
   excerpt?: string;
   callout?: string;
-  body: { _type: "block"; style: "normal"; children: { _type: "span"; text: string }[] }[];
+  body: PortableTextBodyItem[];
   window?: string;
   importantPoints?: string[];
   finalThought?: string;
@@ -48,9 +51,7 @@ export function mapArticleToSanityDraft(article: Article, authorRef?: SanityRefe
     ...(article.topic ? { topic: article.topic } : {}),
     ...(article.excerpt ? { excerpt: article.excerpt } : {}),
     ...(article.callout ? { callout: article.callout } : {}),
-    body: article.body
-      ? [{ _type: "block", style: "normal", children: [{ _type: "span", text: article.body }] }]
-      : [],
+    body: markdownToPortableText(article.body),
     ...(article.window ? { window: article.window } : {}),
     ...(article.importantPoints.length > 0 ? { importantPoints: article.importantPoints } : {}),
     ...(article.finalThought ? { finalThought: article.finalThought } : {}),
