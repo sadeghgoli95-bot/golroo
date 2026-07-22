@@ -41,7 +41,7 @@ describe("mapSanityDocumentToArticle — author/canonical/schema consistency", (
 
   it("computes canonicalUrl via the single shared helper regardless of Sanity seo.canonicalUrl", () => {
     const article = mapSanityDocumentToArticle(
-      buildDoc({ slug: { current: "my-slug" }, seo: { metaDescription: null, keywords: null, canonicalUrl: null, ogImage: null, twitterTitle: null } })
+      buildDoc({ slug: { current: "my-slug" }, seo: { metaDescription: null, focusKeyword: null, keywords: null, canonicalUrl: null, ogImage: null, twitterTitle: null } })
     );
     expect(article.canonicalUrl).toBe("https://mirora.ir/journal/my-slug");
   });
@@ -52,7 +52,7 @@ describe("mapSanityDocumentToArticle — author/canonical/schema consistency", (
 
   it("hasOpenGraph/hasTwitterCard are true from title+excerpt alone, without requiring ogImage/twitterTitle overrides", () => {
     const article = mapSanityDocumentToArticle(
-      buildDoc({ title: "عنوان", excerpt: "خلاصه", seo: { metaDescription: null, keywords: null, canonicalUrl: null, ogImage: null, twitterTitle: null } })
+      buildDoc({ title: "عنوان", excerpt: "خلاصه", seo: { metaDescription: null, focusKeyword: null, keywords: null, canonicalUrl: null, ogImage: null, twitterTitle: null } })
     );
     expect(article.hasOpenGraph).toBe(true);
     expect(article.hasTwitterCard).toBe(true);
@@ -60,7 +60,7 @@ describe("mapSanityDocumentToArticle — author/canonical/schema consistency", (
 
   it("uses the real Sanity seo.metaDescription unchanged when present", () => {
     const article = mapSanityDocumentToArticle(
-      buildDoc({ seo: { metaDescription: "توضیحات واقعی", keywords: null, canonicalUrl: null, ogImage: null, twitterTitle: null } })
+      buildDoc({ seo: { metaDescription: "توضیحات واقعی", focusKeyword: null, keywords: null, canonicalUrl: null, ogImage: null, twitterTitle: null } })
     );
     expect(article.metaDescription).toBe("توضیحات واقعی");
   });
@@ -70,5 +70,17 @@ describe("mapSanityDocumentToArticle — author/canonical/schema consistency", (
     const article = mapSanityDocumentToArticle(buildDoc({ bodyText, seo: null }));
     expect(article.metaDescription).not.toBeNull();
     expect(article.metaDescription).toContain("این یک مقاله واقعی درباره سلامت روان کودکان است");
+  });
+
+  it("reads focusKeyword from seo.focusKeyword — the field the schema/importer sync added, no longer hardcoded null", () => {
+    const article = mapSanityDocumentToArticle(
+      buildDoc({ seo: { metaDescription: null, focusKeyword: "اضطراب کودکان", keywords: null, canonicalUrl: null, ogImage: null, twitterTitle: null } })
+    );
+    expect(article.focusKeyword).toBe("اضطراب کودکان");
+  });
+
+  it("falls back to null focusKeyword when seo is absent, instead of throwing", () => {
+    const article = mapSanityDocumentToArticle(buildDoc({ seo: null }));
+    expect(article.focusKeyword).toBeNull();
   });
 });

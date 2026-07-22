@@ -1,14 +1,10 @@
 import type { ArticleHeading } from "../types";
+import { slugify } from "@/lib/utils/slugify";
 
 const HEADING_PATTERN = /^(#{1,6})\s+(.*)$/;
 
 function slugifyHeading(text: string, usedSlugs: Set<string>): string {
-  const base =
-    text
-      .trim()
-      .toLowerCase()
-      .replace(/[^\p{L}\p{N}\s-]/gu, "")
-      .replace(/\s+/g, "-") || "heading";
+  const base = slugify(text) || "heading";
 
   let slug = base;
   let counter = 2;

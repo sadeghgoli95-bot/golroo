@@ -29,6 +29,7 @@ export const articleProjection = groq`
   status,
   "seo": {
     "metaDescription": seo.metaDescription,
+    "focusKeyword": seo.focusKeyword,
     "keywords": seo.keywords,
     "canonicalUrl": seo.canonicalUrl,
     "ogImage": seo.ogImage,

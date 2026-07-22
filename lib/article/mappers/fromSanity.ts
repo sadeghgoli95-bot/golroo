@@ -48,6 +48,7 @@ export type SanityArticleDocument = {
   status: "draft" | "ready" | "published" | "review" | null;
   seo: {
     metaDescription: string | null;
+    focusKeyword: string | null;
     keywords: string[] | null;
     canonicalUrl: string | null;
     ogImage: unknown | null;
@@ -58,11 +59,11 @@ export type SanityArticleDocument = {
 const PUBLISHED_STATUS = "published";
 
 /**
- * ASSUMPTION: `entities`, `clusterId`, `parentTopic`, `focusKeyword`,
- * `secondaryKeywords`, and `headings` have no corresponding field in the
- * current Sanity schema (confirmed against sanity/schemaTypes/article.ts)
- * — they map to their empty/null defaults until those fields exist, or a
- * dedicated extraction step populates them separately (headings would
+ * ASSUMPTION: `entities`, `clusterId`, `parentTopic`, `secondaryKeywords`,
+ * and `headings` have no corresponding field in the current Sanity schema
+ * (confirmed against sanity/schemaTypes/article.ts) — they map to their
+ * empty/null defaults until those fields exist, or a dedicated extraction
+ * step populates them separately (headings would
  * need parsing Portable Text `body` blocks for heading styles, which
  * this mapper does not attempt — it only receives pre-resolved plain
  * text). `canonicalUrl` and `hasSchema` are always computed rather than
@@ -77,7 +78,7 @@ export function mapSanityDocumentToArticle(doc: SanityArticleDocument): Article 
     title: doc.title,
     topic: doc.topic,
     category: doc.category?.title ?? null,
-    focusKeyword: null,
+    focusKeyword: doc.seo?.focusKeyword ?? null,
     secondaryKeywords: [],
     keywords: doc.seo?.keywords ?? [],
     tags: doc.tags?.map((tag) => tag.title) ?? [],

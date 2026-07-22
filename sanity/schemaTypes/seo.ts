@@ -20,6 +20,13 @@ export default defineType({
     }),
 
     defineField({
+      name: 'focusKeyword',
+      title: 'کلیدواژه اصلی',
+      type: 'string',
+      description: 'کلیدواژه اصلی که مقاله برای آن بهینه شده است.',
+    }),
+
+    defineField({
       name: 'keywords',
       title: 'Keywords',
       type: 'array',

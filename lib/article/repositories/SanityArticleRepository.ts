@@ -1,12 +1,13 @@
 import type { SanityClient } from "next-sanity";
 import { groq } from "next-sanity";
-import type { Article, ArticleSummary } from "../types";
+import type { Article, ArticleFaqItem, ArticleSource, ArticleSummary } from "../types";
 import type { ArticleRepository } from "../repository";
 import { mapSanityDocumentToArticle, type SanityArticleDocument } from "../mappers/fromSanity";
 import { mapArticleToSummary } from "../mappers/toSummary";
-import { mapArticleToSanityDraft, type SanityReference } from "../mappers/toSanityDraft";
+import { mapArticleToSanityDraft, type SanityDraftRefs, type SanityReference } from "../mappers/toSanityDraft";
 import { validateArticle } from "../validation";
 import { resolveAuthorName } from "../constants";
+import { slugify } from "@/lib/utils/slugify";
 import {
   composeHydrators,
   ReadingTimeHydrator,
@@ -68,8 +69,8 @@ export class SanityArticleRepository implements ArticleRepository {
     }
 
     try {
-      const authorRef = await this.resolveAuthorReference(resolveAuthorName(article.authorName));
-      const payload = mapArticleToSanityDraft(article, authorRef);
+      const refs = await this.resolveDraftRefs(article);
+      const payload = mapArticleToSanityDraft(article, refs);
       const created = await this.writeClient.create(payload);
       const slug = (created as { slug?: { current?: string } }).slug?.current ?? payload.slug.current;
       return { slug };
@@ -77,6 +78,23 @@ export class SanityArticleRepository implements ArticleRepository {
       this.logger.repositoryError(`createDraft("${article.slug}") failed`, error);
       throw toRepositoryError(error, `Failed to create draft "${article.slug ?? "unknown"}"`);
     }
+  }
+
+  /**
+   * Every reference-typed field on the `article` schema (author, category,
+   * tags, faq, sources) needs its target document resolved — or created,
+   * for a repeated import — before the draft payload can be built. Run
+   * once, shared by createDraft and updateDraft, so both stay in sync.
+   */
+  private async resolveDraftRefs(article: Article): Promise<SanityDraftRefs> {
+    const [author, category, tags, faq, sources] = await Promise.all([
+      this.resolveAuthorReference(resolveAuthorName(article.authorName)),
+      this.resolveCategoryReference(article.category),
+      this.resolveTagReferences(article.tags),
+      this.resolveFaqReferences(article.faq),
+      this.resolveSourceReferences(article.sources),
+    ]);
+    return { author, ...(category ? { category } : {}), tags, faq, sources };
   }
 
   /**
@@ -92,17 +110,112 @@ export class SanityArticleRepository implements ArticleRepository {
     });
     if (existingId) return { _type: "reference", _ref: existingId };
 
-    const slug = name
-      .trim()
-      .toLowerCase()
-      .replace(/[^\p{L}\p{N}\s-]/gu, "")
-      .replace(/\s+/g, "-");
     const created = await this.writeClient.create({
       _type: "author",
       name,
-      slug: { _type: "slug", current: slug || "author" },
+      slug: { _type: "slug", current: slugify(name) || "author" },
     });
     return { _type: "reference", _ref: created._id };
+  }
+
+  /**
+   * `category` and `tag` documents share the exact same shape (title +
+   * slug), so one lookup-or-create helper serves both — the only
+   * difference between them is the Sanity `_type` name.
+   */
+  private async resolveTitledReference(type: "category" | "tag", title: string): Promise<SanityReference> {
+    const existingId = await this.client.fetch<string | null>(
+      groq`*[_type == $type && title == $title][0]._id`,
+      { type, title }
+    );
+    if (existingId) return { _type: "reference", _ref: existingId };
+
+    const created = await this.writeClient.create({
+      _type: type,
+      title,
+      slug: { _type: "slug", current: slugify(title) || type },
+    });
+    return { _type: "reference", _ref: created._id };
+  }
+
+  private async resolveCategoryReference(category: string | null): Promise<SanityReference | null> {
+    if (!category) return null;
+    return this.resolveTitledReference("category", category);
+  }
+
+  private async resolveTagReferences(tags: string[]): Promise<SanityReference[]> {
+    const uniqueTags = Array.from(new Set(tags.filter((tag) => tag.trim().length > 0)));
+    const refs: SanityReference[] = [];
+    for (const tag of uniqueTags) {
+      refs.push(await this.resolveTitledReference("tag", tag));
+    }
+    return refs;
+  }
+
+  /**
+   * Matched by question text, same "reuse instead of duplicate" rule as
+   * author/category/tag — the answer is never overwritten on a match,
+   * since Studio is the source of truth once an FAQ document exists.
+   */
+  private async resolveFaqReferences(items: ArticleFaqItem[]): Promise<SanityReference[]> {
+    const refs: SanityReference[] = [];
+    for (const item of items) {
+      const existingId = await this.client.fetch<string | null>(
+        groq`*[_type == "faq" && question == $question][0]._id`,
+        { question: item.question }
+      );
+      if (existingId) {
+        refs.push({ _type: "reference", _ref: existingId });
+        continue;
+      }
+      const created = await this.writeClient.create({
+        _type: "faq",
+        question: item.question,
+        slug: { _type: "slug", current: slugify(item.question) || "faq" },
+        answer: item.answer,
+      });
+      refs.push({ _type: "reference", _ref: created._id });
+    }
+    return refs;
+  }
+
+  /**
+   * Matched by DOI first, then URL, then title — a source may carry none,
+   * some, or all of those identifiers (see extractSources.ts). `source.
+   * title` is required by the schema; the parser guarantees a non-empty
+   * title for every source it emits, but a `null` title (source list built
+   * by hand elsewhere) falls back to whatever identifying text exists
+   * rather than sending an invalid document.
+   */
+  private async resolveSourceReferences(sources: ArticleSource[]): Promise<SanityReference[]> {
+    const refs: SanityReference[] = [];
+    for (const source of sources) {
+      const title = source.title ?? source.url ?? source.doi ?? source.author ?? "منبع بدون عنوان";
+      const existingId = await this.client.fetch<string | null>(
+        groq`*[_type == "source" && (
+          (defined(doi) && doi == $doi) ||
+          (defined(url) && url == $url) ||
+          title == $title
+        )][0]._id`,
+        { doi: source.doi, url: source.url, title }
+      );
+      if (existingId) {
+        refs.push({ _type: "reference", _ref: existingId });
+        continue;
+      }
+      const year = source.year !== null ? Number(source.year) : null;
+      const created = await this.writeClient.create({
+        _type: "source",
+        title,
+        ...(source.author ? { authors: source.author } : {}),
+        ...(source.journal ? { journal: source.journal } : {}),
+        ...(year !== null && !Number.isNaN(year) ? { year } : {}),
+        ...(source.doi ? { doi: source.doi } : {}),
+        ...(source.url ? { url: source.url } : {}),
+      });
+      refs.push({ _type: "reference", _ref: created._id });
+    }
+    return refs;
   }
 
   /** Patches by query (slug), not by document id — the repository never exposes a Sanity `_id` to callers. */
@@ -115,8 +228,8 @@ export class SanityArticleRepository implements ArticleRepository {
     }
 
     try {
-      const authorRef = await this.resolveAuthorReference(resolveAuthorName(article.authorName));
-      const { _type, ...fields } = mapArticleToSanityDraft(article, authorRef);
+      const refs = await this.resolveDraftRefs(article);
+      const { _type, ...fields } = mapArticleToSanityDraft(article, refs);
       void _type;
       await this.writeClient
         .patch({ query: `*[_type == "article" && slug.current == $slug][0]`, params: { slug } })
