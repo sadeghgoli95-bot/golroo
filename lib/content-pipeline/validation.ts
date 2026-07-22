@@ -39,7 +39,7 @@ function issuesFromMissingFields(article: AnalyzableArticle): ValidationIssue[] 
   const issues: ValidationIssue[] = [];
 
   if (!article.metaDescription) issues.push({ code: "missing_meta", message: "Meta Description وجود ندارد" });
-  if (article.keywords.length === 0) issues.push({ code: "missing_keywords", message: "Keywords خالی است" });
+  if (!article.focusKeyword) issues.push({ code: "missing_focus_keyword", message: "Focus Keyword وجود ندارد" });
   if (!article.excerpt) issues.push({ code: "missing_summary", message: "خلاصه وجود ندارد" });
   if (article.sources.length === 0) issues.push({ code: "missing_references", message: "منبعی ثبت نشده است" });
 

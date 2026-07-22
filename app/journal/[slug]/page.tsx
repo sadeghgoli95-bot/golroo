@@ -11,7 +11,7 @@ import ArticleBody from "@/components/Article/ArticleBody";
 import ArticleFooter from "@/components/Article/ArticleFooter";
 import Navbar from "@/components/Navbar";
 import Breadcrumb from "@/components/Breadcrumb";
-import { JsonLd, articleJsonLd } from "@/components/Seo/JsonLd";
+import { JsonLd, articleJsonLd, breadcrumbJsonLd, faqPageJsonLd, organizationJsonLd, speakableJsonLd } from "@/components/Seo/JsonLd";
 import { siteConfig } from "@/lib/siteConfig";
 import { SITE_URL } from "@/lib/seo/site";
 import { normalizePersianText, normalizePortableTextBlocks } from "@/lib/utils/textNormalize";
@@ -113,6 +113,25 @@ export default async function ArticlePage({ params }: Props) {
             modifiedAt: article.lastUpdated,
           })}
         />
+        <JsonLd
+          data={breadcrumbJsonLd([
+            { name: "خانه", url: siteConfig.url },
+            { name: "ژورنال", url: `${siteConfig.url}/journal` },
+            { name: article.title, url: `${siteConfig.url}/journal/${slug}` },
+          ])}
+        />
+        <JsonLd data={organizationJsonLd()} />
+        {article.excerpt && <JsonLd data={speakableJsonLd(`${siteConfig.url}/journal/${slug}`)} />}
+        {article.faq && article.faq.length > 0 && (
+          <JsonLd
+            data={faqPageJsonLd(
+              article.faq.map((item: { question: string; answer: string }) => ({
+                question: item.question,
+                answer: item.answer,
+              }))
+            )}
+          />
+        )}
         <section className="article-hero">
           <div className="article-container">
             <Breadcrumb

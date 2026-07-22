@@ -1,16 +1,9 @@
-// Unicode code points (explicit escapes to avoid any bidi/rendering
-// ambiguity with RTL glyphs in source):
-//   ي = Arabic Yeh   ی = Persian Yeh
-//   ك = Arabic Kaf   ک = Persian Kaf
-//   ‌ = Zero-width non-joiner (half-space)
-//   ً-ْ, ٰ = Arabic diacritics (tashkeel)
+// Thin wrapper over lib/utils/textNormalize.ts (the single shared
+// normalization library) for search-fold call sites. Kept as its own
+// module so existing imports don't need to change, but it owns no
+// normalization logic of its own anymore.
 
-const ARABIC_YEH = "ي";
-const PERSIAN_YEH = "ی";
-const ARABIC_KAF = "ك";
-const PERSIAN_KAF = "ک";
-const ZWNJ = "‌";
-const ARABIC_DIACRITICS = /[ً-ْٰ]/g;
+import { foldPersianText } from "./textNormalize";
 
 /**
  * Normalize Persian/Arabic text for search comparison: folds Arabic
@@ -19,14 +12,7 @@ const ARABIC_DIACRITICS = /[ً-ْٰ]/g;
  * lowercases (for any Latin content mixed in).
  */
 export function normalizePersian(input: string): string {
-  return input
-    .replace(new RegExp(ARABIC_YEH, "g"), PERSIAN_YEH)
-    .replace(new RegExp(ARABIC_KAF, "g"), PERSIAN_KAF)
-    .replace(ARABIC_DIACRITICS, "")
-    .replace(new RegExp(ZWNJ, "g"), " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .toLowerCase();
+  return foldPersianText(input);
 }
 
 export function includesNormalized(
@@ -34,5 +20,5 @@ export function includesNormalized(
   normalizedNeedle: string
 ): boolean {
   if (!haystack || !normalizedNeedle) return false;
-  return normalizePersian(haystack).includes(normalizedNeedle);
+  return foldPersianText(haystack).includes(normalizedNeedle);
 }

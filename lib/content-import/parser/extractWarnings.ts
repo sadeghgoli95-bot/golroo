@@ -4,11 +4,10 @@ type WarningCheckInput = {
   title: string | null;
   slug: string | null;
   metaDescription: string | null;
-  readingTime: number | null;
-  keywords: string[];
+  focusKeyword: string | null;
   sources: ArticleSource[];
-  body?: string | null;
-  excerpt?: string | null;
+  body: string | null;
+  excerpt: string | null;
 };
 
 export function extractWarnings(input: WarningCheckInput): string[] {
@@ -17,14 +16,13 @@ export function extractWarnings(input: WarningCheckInput): string[] {
   if (!input.title) warnings.push("عنوان وجود ندارد");
   if (input.slug === null) warnings.push("Slug نامعتبر است");
   if (!input.metaDescription) warnings.push("Meta Description وجود ندارد");
-  if (input.readingTime === null) warnings.push("Reading Time وجود ندارد");
-  if (input.keywords.length === 0) warnings.push("Keywords خالی است");
-  if (input.body !== undefined && !input.body) warnings.push("بدنه مقاله وجود ندارد");
-  if (input.excerpt !== undefined && !input.excerpt) warnings.push("خلاصه وجود ندارد");
+  if (!input.focusKeyword) warnings.push("Focus Keyword وجود ندارد");
+  if (!input.body) warnings.push("بدنه مقاله وجود ندارد");
+  if (!input.excerpt) warnings.push("خلاصه وجود ندارد");
 
-  const sourcesWithoutDoi = input.sources.filter((source) => !source.doi).length;
-  if (sourcesWithoutDoi > 0) {
-    warnings.push(`${sourcesWithoutDoi} Source بدون DOI`);
+  const sourcesWithoutIdentifier = input.sources.filter((source) => !source.doi && !source.url).length;
+  if (sourcesWithoutIdentifier > 0) {
+    warnings.push(`${sourcesWithoutIdentifier} Source بدون DOI یا URL`);
   }
 
   return warnings;

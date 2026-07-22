@@ -43,7 +43,9 @@ export default function ImportWorkspace() {
       <div className="dashboard-import">
         <textarea
           className="dashboard-textarea"
-          placeholder="متن مقاله را اینجا paste کنید..."
+          placeholder={
+            "Title:\nSlug:\nTopic:\nKeywords:\nMeta Description:\n\n# متن مقاله با Markdown...\n\n## سوالات متداول\n\n### سوال\nپاسخ\n\n## منابع\n\n- منبع"
+          }
           rows={20}
           value={rawText}
           onChange={(event) => setRawText(event.target.value)}

@@ -2,19 +2,20 @@ import type { AnalyzableArticle, DetailedScores } from "../types";
 import { calculateSEOScore } from "./calculateSEOScore";
 import { calculateAEOScore } from "./calculateAEOScore";
 import { calculateGEOScore } from "./calculateGEOScore";
+import { calculateContentScore } from "./calculateContentScore";
 import { analyzeScientificTrust } from "../analyzers/scientificAnalyzer";
+import { analyzeSourceAuthority } from "../analyzers/sourceAuthorityAnalyzer";
 import { analyzeReadability } from "../analyzers/readabilityAnalyzer";
-import { analyzeStructure } from "../analyzers/structureAnalyzer";
 import { ratioScore } from "../constants";
 
-const MIN_AUTHORITY_SOURCE_COUNT = 3;
-
 function calculateAuthorityScore(article: AnalyzableArticle): number {
-  const checks = [
-    Boolean(article.authorName),
-    article.sources.length >= MIN_AUTHORITY_SOURCE_COUNT,
-    article.sources.length > 0 && article.sources.every((source) => Boolean(source.doi)),
-  ];
+  // Source *identifier* quality (DOI/PMID/URL/authoritative domain) is
+  // analyzeSourceAuthority's job — it already knows books never carry a
+  // DOI. This used to require every source to have a DOI directly,
+  // penalizing book citations (the same bug already fixed once in
+  // lib/content-analysis/analyzers/scientificAnalyzer.ts, but this file
+  // had its own independent copy of the mistake).
+  const checks = [Boolean(article.authorName), article.sources.length >= 3, analyzeSourceAuthority(article).score >= 50];
   return ratioScore(checks.filter(Boolean).length, checks.length);
 }
 
@@ -23,8 +24,8 @@ function calculateTrustScore(article: AnalyzableArticle): number {
   return ratioScore(checks.filter(Boolean).length, checks.length);
 }
 
-function calculateInternalLinkingScore(article: AnalyzableArticle): number {
-  const checks = [article.internalLinkCount > 0, article.internalLinkCount >= 2];
+function calculateInternalLinkingScore(internalLinkSuggestionCount: number): number {
+  const checks = [internalLinkSuggestionCount > 0, internalLinkSuggestionCount >= 2];
   return ratioScore(checks.filter(Boolean).length, checks.length);
 }
 
@@ -40,7 +41,20 @@ const OVERALL_WEIGHTS = {
   internalLinking: 0.05,
 } as const;
 
-export function calculateDetailedScores(article: AnalyzableArticle): DetailedScores {
+/**
+ * `internalLinkSuggestionCount` must be computed by the caller (via
+ * analyzeInternalLinking against the real corpus — see
+ * lib/content-analysis/analyzers/internalLinkAnalyzer.ts) and passed in
+ * explicitly. This function only ever receives a single article, so it
+ * has no way to know real internal-link opportunities itself; the field
+ * used to read article.internalLinkCount, which is hardcoded 0
+ * everywhere in this codebase and was never actually populated —
+ * silently failing this check for every article regardless of reality.
+ */
+export function calculateDetailedScores(
+  article: AnalyzableArticle,
+  internalLinkSuggestionCount: number
+): DetailedScores {
   const seo = calculateSEOScore(article).score;
   const aeo = calculateAEOScore(article).score;
   const geo = calculateGEOScore(article).score;
@@ -48,8 +62,11 @@ export function calculateDetailedScores(article: AnalyzableArticle): DetailedSco
   const authority = calculateAuthorityScore(article);
   const trust = calculateTrustScore(article);
   const readability = analyzeReadability(article).score;
-  const structure = analyzeStructure(article).score;
-  const internalLinking = calculateInternalLinkingScore(article);
+  // "structure" now delegates to calculateContentScore (readability,
+  // accessibility, paragraph length, content depth, intro/conclusion)
+  // instead of the retired legacy-field-based structureAnalyzer.
+  const structure = calculateContentScore(article).score;
+  const internalLinking = calculateInternalLinkingScore(internalLinkSuggestionCount);
 
   const overall = Math.round(
     seo * OVERALL_WEIGHTS.seo +

@@ -1,31 +1,24 @@
-import type { ArticleSections } from "../types";
+import { firstParagraph, truncateAtWholeWord } from "./extractParagraphs";
 
-const AUTO_EXCERPT_MAX_LENGTH = 200;
-const TRUNCATION_SUFFIX = "…";
+const AUTO_EXCERPT_MAX_LENGTH = 180;
 
-export type ExcerptExtractionResult = {
-  excerpt: string | null;
-  callout: string | null;
-};
-
-/** Truncates at the last whole word within the limit — never mid-word. */
-function deriveExcerptFromBody(body: string | null): string | null {
+/**
+ * Single implementation for excerpt generation, in priority order: Meta
+ * Description (already writer-authored or auto-generated — see
+ * generateMetaDescription.ts, resolved before this is called) -> first
+ * paragraph of the body -> first 180 characters of the body. Every
+ * caller (validator, SEO report, Open Graph, JSON-LD, AI Overview) reads
+ * the resulting article.excerpt rather than re-deriving one.
+ */
+export function extractExcerpt(body: string | null, metaDescription: string | null): string | null {
+  if (metaDescription && metaDescription.trim()) return metaDescription.trim();
   if (!body) return null;
 
-  const trimmed = body.trim();
-  if (trimmed.length <= AUTO_EXCERPT_MAX_LENGTH) return trimmed;
+  const trimmedBody = body.trim();
+  if (!trimmedBody) return null;
 
-  const truncated = trimmed.slice(0, AUTO_EXCERPT_MAX_LENGTH);
-  const lastSpaceIndex = truncated.lastIndexOf(" ");
-  const words = lastSpaceIndex > 0 ? truncated.slice(0, lastSpaceIndex) : truncated;
+  const paragraph = firstParagraph(trimmedBody);
+  if (paragraph) return truncateAtWholeWord(paragraph, AUTO_EXCERPT_MAX_LENGTH);
 
-  return `${words.trim()}${TRUNCATION_SUFFIX}`;
-}
-
-/** Falls back to a body-derived excerpt only when no explicit excerpt label was present. */
-export function extractExcerpt(sections: ArticleSections, body: string | null): ExcerptExtractionResult {
-  return {
-    excerpt: sections.excerpt?.trim() || deriveExcerptFromBody(body),
-    callout: sections.callout?.trim() || null,
-  };
+  return truncateAtWholeWord(trimmedBody, AUTO_EXCERPT_MAX_LENGTH);
 }

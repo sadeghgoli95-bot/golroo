@@ -1,5 +1,6 @@
 import type { AnalyzableArticle, AnalyzerResult } from "../types";
 import { MIN_KEYWORD_COUNT, MAX_KEYWORD_COUNT, ratioScore } from "../constants";
+import { foldPersianText } from "@/lib/utils/textNormalize";
 
 export function analyzeKeywords(article: AnalyzableArticle): AnalyzerResult {
   const warnings: string[] = [];
@@ -16,8 +17,9 @@ export function analyzeKeywords(article: AnalyzableArticle): AnalyzerResult {
     suggestions.push(`تعداد کلیدواژه بین ${MIN_KEYWORD_COUNT} تا ${MAX_KEYWORD_COUNT} پیشنهاد می‌شود`);
   }
 
+  const foldedBody = article.body ? foldPersianText(article.body) : "";
   const usedInBody =
-    hasKeywords && Boolean(article.body) && article.keywords.some((keyword) => article.body!.includes(keyword));
+    hasKeywords && Boolean(article.body) && article.keywords.some((keyword) => foldedBody.includes(foldPersianText(keyword)));
   if (hasKeywords && !usedInBody) suggestions.push("کلیدواژه‌ها در بدنه مقاله دیده نمی‌شوند");
 
   const checks = [hasKeywords, withinRange, usedInBody];

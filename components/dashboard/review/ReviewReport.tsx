@@ -18,7 +18,7 @@ type ReviewReportProps = {
 };
 
 export default function ReviewReport({ analysis }: ReviewReportProps) {
-  const { validation, seo, aeo, geo, links, duplicates, publishReadiness } = analysis;
+  const { validation, seo, aeo, geo, links, duplicates, publishReadiness, contentQuality } = analysis;
 
   return (
     <>
@@ -43,6 +43,57 @@ export default function ReviewReport({ analysis }: ReviewReportProps) {
           <ScoreBadge label="AEO" value={aeo.score} />
           <ScoreBadge label="GEO" value={geo.score} />
         </div>
+      </section>
+
+      <section className="dashboard-section">
+        <h2 className="dashboard-section-title">مشاور کیفیت محتوا (Content Quality Advisor)</h2>
+        <div className="dashboard-score-badge-row">
+          <ScoreBadge label="محتوا" value={contentQuality.scores.content} />
+          <ScoreBadge label="خوانایی" value={contentQuality.scores.readability} />
+          <ScoreBadge label="پوشش موضوعی" value={contentQuality.scores.topicCoverage} />
+          <ScoreBadge label="شواهد علمی" value={contentQuality.scores.evidence} />
+          <ScoreBadge label="کیفیت تیترها" value={contentQuality.scores.headingQuality} />
+          <ScoreBadge label="عمق محتوا" value={contentQuality.scores.contentDepth} />
+        </div>
+
+        {contentQuality.suggestions.critical.length > 0 ? (
+          <>
+            <h3>حیاتی</h3>
+            <ul className="dashboard-insights-list">
+              {contentQuality.suggestions.critical.map((item) => (
+                <li key={item} className="dashboard-insight dashboard-insight-critical">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
+
+        {contentQuality.suggestions.recommended.length > 0 ? (
+          <>
+            <h3>پیشنهادی</h3>
+            <ul className="dashboard-insights-list">
+              {contentQuality.suggestions.recommended.map((item) => (
+                <li key={item} className="dashboard-insight dashboard-insight-warning">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
+
+        {contentQuality.suggestions.optional.length > 0 ? (
+          <>
+            <h3>اختیاری</h3>
+            <ul className="dashboard-insights-list">
+              {contentQuality.suggestions.optional.map((item) => (
+                <li key={item} className="dashboard-insight">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
       </section>
 
       {!validation.valid || validation.warnings.length > 0 ? (

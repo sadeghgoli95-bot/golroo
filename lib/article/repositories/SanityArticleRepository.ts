@@ -1,10 +1,12 @@
 import type { SanityClient } from "next-sanity";
+import { groq } from "next-sanity";
 import type { Article, ArticleSummary } from "../types";
 import type { ArticleRepository } from "../repository";
 import { mapSanityDocumentToArticle, type SanityArticleDocument } from "../mappers/fromSanity";
 import { mapArticleToSummary } from "../mappers/toSummary";
-import { mapArticleToSanityDraft } from "../mappers/toSanityDraft";
+import { mapArticleToSanityDraft, type SanityReference } from "../mappers/toSanityDraft";
 import { validateArticle } from "../validation";
+import { resolveAuthorName } from "../constants";
 import {
   composeHydrators,
   ReadingTimeHydrator,
@@ -66,7 +68,8 @@ export class SanityArticleRepository implements ArticleRepository {
     }
 
     try {
-      const payload = mapArticleToSanityDraft(article);
+      const authorRef = await this.resolveAuthorReference(resolveAuthorName(article.authorName));
+      const payload = mapArticleToSanityDraft(article, authorRef);
       const created = await this.writeClient.create(payload);
       const slug = (created as { slug?: { current?: string } }).slug?.current ?? payload.slug.current;
       return { slug };
@@ -74,6 +77,32 @@ export class SanityArticleRepository implements ArticleRepository {
       this.logger.repositoryError(`createDraft("${article.slug}") failed`, error);
       throw toRepositoryError(error, `Failed to create draft "${article.slug ?? "unknown"}"`);
     }
+  }
+
+  /**
+   * Author is a Sanity `reference` field (see sanity/schemaTypes/
+   * article.ts), not a plain string, so "always set the default author"
+   * means resolving or creating the matching `author` document — looked
+   * up by name first so repeated imports reuse the same document instead
+   * of creating a duplicate every time.
+   */
+  private async resolveAuthorReference(name: string): Promise<SanityReference> {
+    const existingId = await this.client.fetch<string | null>(groq`*[_type == "author" && name == $name][0]._id`, {
+      name,
+    });
+    if (existingId) return { _type: "reference", _ref: existingId };
+
+    const slug = name
+      .trim()
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}\s-]/gu, "")
+      .replace(/\s+/g, "-");
+    const created = await this.writeClient.create({
+      _type: "author",
+      name,
+      slug: { _type: "slug", current: slug || "author" },
+    });
+    return { _type: "reference", _ref: created._id };
   }
 
   /** Patches by query (slug), not by document id — the repository never exposes a Sanity `_id` to callers. */
@@ -86,7 +115,8 @@ export class SanityArticleRepository implements ArticleRepository {
     }
 
     try {
-      const { _type, ...fields } = mapArticleToSanityDraft(article);
+      const authorRef = await this.resolveAuthorReference(resolveAuthorName(article.authorName));
+      const { _type, ...fields } = mapArticleToSanityDraft(article, authorRef);
       void _type;
       await this.writeClient
         .patch({ query: `*[_type == "article" && slug.current == $slug][0]`, params: { slug } })

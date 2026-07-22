@@ -7,6 +7,8 @@ import type { Article } from "../types";
  * (the parser doesn't preserve heading/list/image structure); this is an
  * honest minimal conversion, not a fabricated rich-text reconstruction.
  */
+export type SanityReference = { _type: "reference"; _ref: string };
+
 export type SanityDraftPayload = {
   _type: "article";
   title: string;
@@ -19,6 +21,7 @@ export type SanityDraftPayload = {
   importantPoints?: string[];
   finalThought?: string;
   finalQuestion?: string;
+  author?: SanityReference;
   status: "draft";
   seo: {
     metaDescription?: string;
@@ -26,7 +29,15 @@ export type SanityDraftPayload = {
   };
 };
 
-export function mapArticleToSanityDraft(article: Article): SanityDraftPayload {
+/**
+ * `authorRef` is a pre-resolved Sanity reference (author is a `reference`
+ * field in the schema, not a plain string) — resolving/creating that
+ * author document requires a Sanity client, so it's the repository's
+ * job (see SanityArticleRepository.resolveAuthorReference), keeping this
+ * mapper a pure function with no I/O. Omitted entirely when not given,
+ * so callers that don't have one (in-memory repository, tests) still work.
+ */
+export function mapArticleToSanityDraft(article: Article, authorRef?: SanityReference): SanityDraftPayload {
   if (!article.title) throw new Error("Cannot create a draft without a title");
   if (!article.slug) throw new Error("Cannot create a draft without a slug");
 
@@ -44,6 +55,7 @@ export function mapArticleToSanityDraft(article: Article): SanityDraftPayload {
     ...(article.importantPoints.length > 0 ? { importantPoints: article.importantPoints } : {}),
     ...(article.finalThought ? { finalThought: article.finalThought } : {}),
     ...(article.finalQuestion ? { finalQuestion: article.finalQuestion } : {}),
+    ...(authorRef ? { author: authorRef } : {}),
     status: "draft",
     seo: {
       ...(article.metaDescription ? { metaDescription: article.metaDescription } : {}),

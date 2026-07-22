@@ -1,5 +1,7 @@
 import type { ArticleRepository } from "@/lib/article/repository";
 import { calculateDetailedScores } from "@/lib/content-analysis/scoring/calculateDetailedScores";
+import { analyzeInternalLinking } from "@/lib/content-analysis/analyzers/internalLinkAnalyzer";
+import type { Article } from "@/lib/article/types";
 import type { OverviewScores } from "./types";
 
 const NEUTRAL_SCORE = 0;
@@ -24,9 +26,11 @@ export async function getOverviewScores(repository: ArticleRepository): Promise<
       .map((summary) => repository.findBySlug(summary.slug))
   );
 
-  const detailedScores = articles
-    .filter((article): article is NonNullable<typeof article> => article !== null)
-    .map(calculateDetailedScores);
+  const publishedArticles = articles.filter((article): article is Article => article !== null);
+  const detailedScores = publishedArticles.map((article) => {
+    const otherArticles = publishedArticles.filter((other) => other.slug !== article.slug);
+    return calculateDetailedScores(article, analyzeInternalLinking(article, otherArticles).length);
+  });
 
   return {
     siteHealth: average(detailedScores.map((scores) => scores.overall)),

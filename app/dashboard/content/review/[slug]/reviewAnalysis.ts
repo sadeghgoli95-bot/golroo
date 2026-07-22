@@ -5,6 +5,7 @@ import { analyzeInternalLinking } from "@/lib/content-analysis/analyzers/interna
 import { analyzeDuplicateContent } from "@/lib/content-analysis/analyzers/duplicateAnalyzer";
 import { validateArticle, type ArticleValidationResult } from "@/lib/article/validation";
 import { derivePublishReadiness, type PublishReadinessResult } from "@/lib/content-pipeline/publishReadiness";
+import { buildContentQualityReport, type ContentQualityReport } from "@/lib/content-pipeline/contentQualityAdvisor";
 import type { Article, ArticleSummary } from "@/lib/article/types";
 import type { AnalyzerResult, InternalLinkSuggestion, DuplicateMatch } from "@/lib/content-analysis/types";
 
@@ -16,6 +17,7 @@ export type ReviewAnalysis = {
   links: InternalLinkSuggestion[];
   duplicates: DuplicateMatch[];
   publishReadiness: PublishReadinessResult;
+  contentQuality: ContentQualityReport;
 };
 
 /**
@@ -27,6 +29,10 @@ export type ReviewAnalysis = {
  */
 export function analyzeExistingArticle(article: Article, candidates: ArticleSummary[]): ReviewAnalysis {
   const validation = validateArticle(article);
+  const validationReport = {
+    passed: validation.valid,
+    issues: validation.errors.map((message) => ({ code: "validation_error", message })),
+  };
   const seo = calculateSEOScore(article);
   const aeo = calculateAEOScore(article);
   const geo = calculateGEOScore(article);
@@ -35,13 +41,12 @@ export function analyzeExistingArticle(article: Article, candidates: ArticleSumm
 
   const publishReadiness = derivePublishReadiness(
     article,
-    {
-      passed: validation.valid,
-      issues: validation.errors.map((message) => ({ code: "validation_error", message })),
-    },
+    validationReport,
     { seo: seo.score, aeo: aeo.score, geo: geo.score },
     duplicates
   );
 
-  return { validation, seo, aeo, geo, links, duplicates, publishReadiness };
+  const contentQuality = buildContentQualityReport(article, candidates, validationReport);
+
+  return { validation, seo, aeo, geo, links, duplicates, publishReadiness, contentQuality };
 }

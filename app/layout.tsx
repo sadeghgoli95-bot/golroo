@@ -41,7 +41,13 @@ export const metadata: Metadata = {
   },
   description:
     "برند شخصی صادق گل‌رو؛ روان‌درمانگر کودک و نوجوان. جلسات آنلاین برای کودکان، نوجوانان و والدین.",
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    types: {
+      "application/rss+xml": "/feed.xml",
+      "application/atom+xml": "/atom.xml",
+    },
+  },
   keywords: [
     "گل‌رو",
     "صادق گل‌رو",

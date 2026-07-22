@@ -1,16 +1,28 @@
-import type { AnalyzableArticle, ContentAnalysisReport } from "./types";
+import type { AnalyzableArticle, ContentAnalysisReport, LinkableArticleSummary } from "./types";
 import { calculateSEOScore } from "./scoring/calculateSEOScore";
 import { calculateAEOScore } from "./scoring/calculateAEOScore";
 import { calculateGEOScore } from "./scoring/calculateGEOScore";
 import { calculateContentScore } from "./scoring/calculateContentScore";
 import { calculateSiteReadiness } from "./scoring/calculateSiteReadiness";
+import { analyzeInternalLinking } from "./analyzers/internalLinkAnalyzer";
 
-export function analyzeArticle(article: AnalyzableArticle): ContentAnalysisReport {
+/**
+ * `candidates` is optional — when given (the real corpus, excluding this
+ * article), publish-readiness scores real internal-link opportunities
+ * via analyzeInternalLinking; when omitted, that one checklist item is
+ * skipped rather than scored as a fabricated failure (see
+ * publishAnalyzer.ts).
+ */
+export function analyzeArticle(
+  article: AnalyzableArticle,
+  candidates?: LinkableArticleSummary[]
+): ContentAnalysisReport {
   const seo = calculateSEOScore(article);
   const aeo = calculateAEOScore(article);
   const geo = calculateGEOScore(article);
   const content = calculateContentScore(article);
-  const publishReady = calculateSiteReadiness(article);
+  const internalLinkSuggestionCount = candidates ? analyzeInternalLinking(article, candidates).length : undefined;
+  const publishReady = calculateSiteReadiness(article, internalLinkSuggestionCount);
 
   return {
     scores: {
@@ -29,11 +41,11 @@ export function analyzeArticle(article: AnalyzableArticle): ContentAnalysisRepor
       ...publishReady.suggestions,
     ],
     statistics: {
-      wordCount: article.body ? article.body.split(/\s+/).filter(Boolean).length : 0,
+      wordCount: article.wordCount,
       sourceCount: article.sources.length,
-      internalLinkCount: article.internalLinkCount,
+      internalLinkCount: internalLinkSuggestionCount ?? 0,
       externalLinkCount: article.externalLinkCount,
-      importantPointCount: article.importantPoints.length,
+      headingCount: article.headingCount,
     },
   };
 }

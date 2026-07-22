@@ -9,10 +9,22 @@
 export type ArticleSource = {
   doi: string | null;
   pmid: string | null;
+  url: string | null;
   author: string | null;
   journal: string | null;
   year: string | null;
   title: string | null;
+};
+
+export type ArticleHeading = {
+  level: 1 | 2 | 3 | 4 | 5 | 6;
+  text: string;
+  slug: string;
+};
+
+export type ArticleFaqItem = {
+  question: string;
+  answer: string;
 };
 
 export type Article = {
@@ -22,6 +34,9 @@ export type Article = {
 
   // Classification
   topic: string | null;
+  category: string | null;
+  focusKeyword: string | null;
+  secondaryKeywords: string[];
   keywords: string[];
   tags: string[];
   entities: string[];
@@ -31,6 +46,14 @@ export type Article = {
   // Content
   body: string | null;
   excerpt: string | null;
+  headings: ArticleHeading[];
+  faq: ArticleFaqItem[];
+
+  // Legacy Mirora-specific sections — no longer produced by the current
+  // Markdown import format (see lib/content-import), but kept on the
+  // model because existing Sanity documents and the public journal page
+  // (app/journal/[slug]/page.tsx) still read them. Always null/[] for a
+  // freshly imported article.
   callout: string | null;
   window: string | null;
   importantPoints: string[];
@@ -39,6 +62,7 @@ export type Article = {
 
   // Metadata
   metaDescription: string | null;
+  canonicalUrl: string | null;
   readingTime: number | null;
   authorName: string | null;
 
@@ -89,9 +113,9 @@ export type ArticleSummary = Pick<
 >;
 
 /**
- * What the raw-text parser alone can produce — everything CMS/publication
- * state carries (schema, canonical, links, publish status, entities,
- * cluster) is unknowable from raw text and is not part of this view.
+ * What the Markdown parser alone can produce — everything CMS/publication
+ * state carries (schema flags, canonical URL, author, entities, cluster)
+ * is unknowable from raw text and is not part of this view.
  * lib/article/mappers/fromParsedFields.ts fills the rest with defaults.
  */
 export type ParsedArticleFields = Pick<
@@ -99,16 +123,17 @@ export type ParsedArticleFields = Pick<
   | "title"
   | "slug"
   | "topic"
+  | "category"
+  | "focusKeyword"
+  | "secondaryKeywords"
   | "keywords"
+  | "tags"
   | "metaDescription"
   | "readingTime"
   | "excerpt"
-  | "callout"
   | "body"
-  | "window"
-  | "importantPoints"
-  | "finalThought"
-  | "finalQuestion"
+  | "headings"
+  | "faq"
   | "sources"
   | "warnings"
   | "wordCount"

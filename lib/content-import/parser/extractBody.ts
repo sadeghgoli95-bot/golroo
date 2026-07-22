@@ -1,6 +1,5 @@
-import type { ArticleSections } from "../types";
-
-export function extractBody(sections: ArticleSections): string | null {
-  const body = sections.body?.trim();
-  return body ? body : null;
+/** Input is the raw Markdown body slice already isolated by parseArticle (metadata and FAQ/Sources sections excluded). */
+export function extractBody(raw: string): string | null {
+  const trimmed = raw.trim();
+  return trimmed ? trimmed : null;
 }

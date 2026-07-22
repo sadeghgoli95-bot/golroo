@@ -2,6 +2,7 @@ import Link from "next/link";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { createArticleRepository } from "@/lib/article/repositories";
 import { calculateDetailedScores } from "@/lib/content-analysis/scoring/calculateDetailedScores";
+import { analyzeInternalLinking } from "@/lib/content-analysis/analyzers/internalLinkAnalyzer";
 import { mapArticleToDashboardRow } from "@/lib/content-pipeline/mappers/toDashboardRow";
 import type { Article } from "@/lib/article/types";
 
@@ -23,16 +24,18 @@ async function getContentRows() {
       .map((summary) => repository.findBySlug(summary.slug))
   );
 
-  return articles
-    .filter((article): article is Article => article !== null)
-    .map((article) =>
-      mapArticleToDashboardRow(
-        article,
-        article.isPublished ? "published" : "imported",
-        calculateDetailedScores(article),
-        null
-      )
+  const validArticles = articles.filter((article): article is Article => article !== null);
+
+  return validArticles.map((article) => {
+    const otherArticles = validArticles.filter((other) => other.slug !== article.slug);
+    const internalLinkSuggestionCount = analyzeInternalLinking(article, otherArticles).length;
+    return mapArticleToDashboardRow(
+      article,
+      article.isPublished ? "published" : "imported",
+      calculateDetailedScores(article, internalLinkSuggestionCount),
+      null
     );
+  });
 }
 
 export default async function ContentPage() {

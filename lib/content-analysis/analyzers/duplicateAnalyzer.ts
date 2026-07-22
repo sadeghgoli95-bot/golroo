@@ -11,11 +11,17 @@ import {
   KEYWORD_DUPLICATE_THRESHOLD,
   ENTITY_DUPLICATE_THRESHOLD,
 } from "../constants";
+import { foldPersianText } from "@/lib/utils/textNormalize";
 
 const UNTITLED_FALLBACK = "بدون عنوان";
 
+/**
+ * Tokenizes on the normalized fold, not the raw text — two articles that
+ * only differ by Arabic/Persian glyph variants, diacritics or invisible
+ * characters must compare as duplicates, not as unrelated content.
+ */
 function bodyWords(body: string | null): string[] {
-  return body ? body.split(/\s+/).filter(Boolean) : [];
+  return body ? foldPersianText(body).split(/\s+/).filter(Boolean) : [];
 }
 
 /** Real implementation for every match type except semantic (see below). */
@@ -36,7 +42,11 @@ export function analyzeDuplicateContent(
       matches.push({ matchType: "slug", targetSlug, targetTitle, confidence: 100 });
     }
 
-    if (article.title !== null && candidate.title !== null && article.title.trim() === candidate.title.trim()) {
+    if (
+      article.title !== null &&
+      candidate.title !== null &&
+      foldPersianText(article.title) === foldPersianText(candidate.title)
+    ) {
       matches.push({ matchType: "title", targetSlug, targetTitle, confidence: 100 });
     }
 

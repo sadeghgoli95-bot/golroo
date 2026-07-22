@@ -10,6 +10,7 @@ export {
   faqPageJsonLd,
   organizationJsonLd,
   personJsonLd,
+  speakableJsonLd,
   websiteJsonLd,
   type BreadcrumbItem,
 } from "@/components/Seo/JsonLd";

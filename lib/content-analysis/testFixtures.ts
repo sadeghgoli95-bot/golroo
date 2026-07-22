@@ -1,0 +1,64 @@
+import type { AnalyzableArticle, LinkableArticleSummary } from "./types";
+
+/** Shared minimal Article fixture builder for content-analysis/content-pipeline tests. */
+export function buildTestArticle(overrides: Partial<AnalyzableArticle> = {}): AnalyzableArticle {
+  return {
+    slug: "test-article",
+    title: "عنوان تست",
+    topic: null,
+    category: null,
+    focusKeyword: null,
+    secondaryKeywords: [],
+    keywords: [],
+    tags: [],
+    entities: [],
+    clusterId: null,
+    parentTopic: null,
+    body: null,
+    excerpt: null,
+    headings: [],
+    faq: [],
+    callout: null,
+    window: null,
+    importantPoints: [],
+    finalThought: null,
+    finalQuestion: null,
+    metaDescription: null,
+    canonicalUrl: null,
+    readingTime: null,
+    authorName: null,
+    sources: [],
+    headingCount: 0,
+    internalLinkCount: 0,
+    externalLinkCount: 0,
+    imageAltTexts: [],
+    hasFeaturedImage: false,
+    hasSchema: false,
+    hasCanonical: false,
+    hasFaq: false,
+    hasOpenGraph: false,
+    hasTwitterCard: false,
+    isPublished: false,
+    wordCount: 0,
+    characterCount: 0,
+    estimatedReadingTime: 0,
+    warnings: [],
+    ...overrides,
+  };
+}
+
+export function buildTestSummary(overrides: Partial<LinkableArticleSummary> = {}): LinkableArticleSummary {
+  return {
+    slug: "candidate-article",
+    title: "عنوان کاندید",
+    topic: null,
+    keywords: [],
+    entities: [],
+    tags: [],
+    parentTopic: null,
+    clusterId: null,
+    isPublished: true,
+    body: null,
+    ...overrides,
+  };
+}

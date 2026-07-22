@@ -15,6 +15,15 @@ import { runValidationEngine } from "./validation";
 import type { ValidationReport } from "./types";
 import { derivePublishReadiness, type PublishReadinessResult } from "./publishReadiness";
 import { buildExecutiveSummary, type ExecutiveSummary } from "./executiveSummary";
+import { buildStructuredData, type StructuredData } from "./structuredData";
+import { buildTableOfContents, type TocNode } from "./tableOfContents";
+import { buildAiOverviewSummary } from "./aiOverview";
+import { buildMetaTagsPreview, type MetaTagsPreview } from "./metaTags";
+import {
+  detectFeaturedSnippetCandidates,
+  type FeaturedSnippetCandidate,
+} from "@/lib/content-analysis/analyzers/featuredSnippetAnalyzer";
+import { buildContentQualityReport, type ContentQualityReport } from "./contentQualityAdvisor";
 
 export type PipelineResult = {
   article: Article;
@@ -36,6 +45,12 @@ export type PipelineResult = {
    */
   refreshScore: null;
   executiveSummary: ExecutiveSummary;
+  structuredData: StructuredData;
+  toc: TocNode[];
+  aiOverviewSummary: string | null;
+  metaTags: MetaTagsPreview;
+  featuredSnippets: FeaturedSnippetCandidate[];
+  contentQuality: ContentQualityReport;
   warnings: string[];
   errors: string[];
 };
@@ -82,6 +97,12 @@ export async function runContentPipeline(
   );
 
   const executiveSummary = buildExecutiveSummary(seo, aeo, geo, validation, ai, aiConfigured, publishReadiness);
+  const structuredData = buildStructuredData(article);
+  const toc = buildTableOfContents(article.headings);
+  const aiOverviewSummary = buildAiOverviewSummary(article);
+  const metaTags = buildMetaTagsPreview(article);
+  const featuredSnippets = detectFeaturedSnippetCandidates(article);
+  const contentQuality = buildContentQualityReport(article, candidates, validation);
 
   return {
     article,
@@ -96,6 +117,12 @@ export async function runContentPipeline(
     publishReadiness,
     refreshScore: null,
     executiveSummary,
+    structuredData,
+    toc,
+    aiOverviewSummary,
+    metaTags,
+    featuredSnippets,
+    contentQuality,
     warnings: [...parsed.warnings, ...validation.issues.map((issue) => issue.message)],
     errors: ai.errors,
   };

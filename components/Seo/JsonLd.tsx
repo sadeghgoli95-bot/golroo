@@ -1,5 +1,6 @@
 import { siteConfig, sameAs } from "@/lib/siteConfig";
 import { ORGANIZATION_NAME } from "@/lib/seo/site";
+import { resolveAuthorName } from "@/lib/article/constants";
 
 type JsonLdProps = {
   data: Record<string, unknown>;
@@ -84,9 +85,12 @@ export function articleJsonLd(article: {
     headline: article.title,
     description: article.description,
     image: article.image,
-    author: article.authorName
-      ? { "@type": "Person", name: article.authorName }
-      : { "@type": "Person", name: siteConfig.person.name },
+    // Falls back to the single central article-author default (see
+    // lib/article/constants.ts), not siteConfig.person.name — that's the
+    // therapist's full legal name used for the site's Person/
+    // ProfessionalService schema, a different value that was previously
+    // (wrongly) reused here as the article-author fallback.
+    author: { "@type": "Person", name: resolveAuthorName(article.authorName) },
     datePublished: article.publishedAt,
     dateModified: article.modifiedAt || article.publishedAt,
     mainEntityOfPage: article.url,
@@ -94,6 +98,23 @@ export function articleJsonLd(article: {
       "@type": "Organization",
       name: ORGANIZATION_NAME,
       logo: { "@type": "ImageObject", url: `${siteConfig.url}/favicon.ico` },
+    },
+  };
+}
+
+/**
+ * cssSelector defaults to the real classNames the article page uses for
+ * headline/lead (see components/Article/ArticleHeader.tsx: h1.display,
+ * p.lead) — not placeholder selectors.
+ */
+export function speakableJsonLd(url: string, cssSelectors: string[] = [".display", ".lead"]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": url,
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: cssSelectors,
     },
   };
 }
