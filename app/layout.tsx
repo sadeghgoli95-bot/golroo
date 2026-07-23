@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import Script from "next/script";
 import "./globals.css";
 import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/components/Seo/JsonLd";
 import { professionalServiceJsonLd } from "@/lib/seo/schema";
@@ -95,6 +96,15 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl" suppressHydrationWarning>
       <body className={vazir.className}>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-BMR6MFVC5E" strategy="afterInteractive" />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-BMR6MFVC5E');
+          `}
+        </Script>
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={websiteJsonLd()} />
         <JsonLd data={professionalServiceJsonLd()} />

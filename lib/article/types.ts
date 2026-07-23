@@ -83,6 +83,8 @@ export type Article = {
 
   // Publication
   isPublished: boolean;
+  publishedAt: string | null;
+  lastUpdated: string | null;
 
   // Derived text statistics
   wordCount: number;

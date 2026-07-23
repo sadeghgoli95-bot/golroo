@@ -27,6 +27,8 @@ export const articleProjection = groq`
   "author": author->{name},
   "faq": faq[]->{question, answer},
   status,
+  publishedAt,
+  lastUpdated,
   "seo": {
     "metaDescription": seo.metaDescription,
     "focusKeyword": seo.focusKeyword,

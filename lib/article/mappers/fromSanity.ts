@@ -46,6 +46,8 @@ export type SanityArticleDocument = {
   author: { name: string } | null;
   faq: { question: string | null; answer: string | null }[] | null;
   status: "draft" | "ready" | "published" | "review" | null;
+  publishedAt: string | null;
+  lastUpdated: string | null;
   seo: {
     metaDescription: string | null;
     focusKeyword: string | null;
@@ -136,6 +138,8 @@ export function mapSanityDocumentToArticle(doc: SanityArticleDocument): Article 
     hasOpenGraph: Boolean(doc.title && (doc.seo?.metaDescription || doc.excerpt)),
     hasTwitterCard: Boolean(doc.title && (doc.seo?.metaDescription || doc.excerpt)),
     isPublished: doc.status === PUBLISHED_STATUS,
+    publishedAt: doc.publishedAt,
+    lastUpdated: doc.lastUpdated,
     wordCount: doc.bodyText ? doc.bodyText.split(/\s+/).filter(Boolean).length : 0,
     characterCount: doc.bodyText?.length ?? 0,
     estimatedReadingTime: doc.readingTime ?? 0,

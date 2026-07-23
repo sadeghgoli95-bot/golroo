@@ -13,10 +13,10 @@ export type ArticleValidationResult = {
  * import. This one only asks "is this Sanity document even usable",
  * which is what a repository must know before returning it to a caller.
  *
- * The canonical Article model carries no publish/update date fields
- * today (see lib/article/types.ts), so "missing dates" from the CMS
- * Integration spec has no field to check yet — tracked as technical debt
- * rather than invented here.
+ * `publishedAt`/`lastUpdated` (lib/article/types.ts) are read-only here
+ * on purpose — freshness is a Site Health/Reports concern (lib/analytics/
+ * site), not a document-validity concern, so this function still doesn't
+ * check them.
  */
 export function validateArticle(article: Article): ArticleValidationResult {
   const errors: string[] = [];

@@ -39,5 +39,7 @@ export function mapParsedFieldsToArticle(parsed: ParsedArticleFields): Article {
     hasOpenGraph: Boolean(parsed.title && (parsed.metaDescription || parsed.excerpt)),
     hasTwitterCard: Boolean(parsed.title && (parsed.metaDescription || parsed.excerpt)),
     isPublished: false,
+    publishedAt: null,
+    lastUpdated: null,
   };
 }

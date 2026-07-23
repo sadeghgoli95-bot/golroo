@@ -40,6 +40,8 @@ function baseArticle(overrides: Partial<AnalyzableArticle>): AnalyzableArticle {
     hasOpenGraph: false,
     hasTwitterCard: false,
     isPublished: false,
+    publishedAt: null,
+    lastUpdated: null,
     wordCount: 0,
     characterCount: 0,
     estimatedReadingTime: 0,

@@ -23,6 +23,8 @@ function buildDoc(overrides: Partial<SanityArticleDocument> = {}): SanityArticle
     author: null,
     faq: [],
     status: "published",
+    publishedAt: null,
+    lastUpdated: null,
     seo: null,
     ...overrides,
   };

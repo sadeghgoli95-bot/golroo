@@ -39,6 +39,8 @@ export function buildTestArticle(overrides: Partial<AnalyzableArticle> = {}): An
     hasOpenGraph: false,
     hasTwitterCard: false,
     isPublished: false,
+    publishedAt: null,
+    lastUpdated: null,
     wordCount: 0,
     characterCount: 0,
     estimatedReadingTime: 0,

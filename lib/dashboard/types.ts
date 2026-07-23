@@ -1,9 +1,9 @@
 export type DashboardIconName =
   | "dashboard"
   | "content"
-  | "import"
-  | "review"
-  | "analytics"
+  | "seo"
+  | "health"
+  | "reports"
   | "settings";
 
 export type DashboardNavItem = {
