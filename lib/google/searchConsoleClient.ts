@@ -13,7 +13,7 @@ export type SearchAnalyticsRow = {
 export type SearchAnalyticsQuery = {
   startDate: string;
   endDate: string;
-  dimensions?: ("date" | "query" | "page" | "country" | "device")[];
+  dimensions?: ("date" | "query" | "page" | "country" | "device" | "searchAppearance")[];
   rowLimit?: number;
 };
 

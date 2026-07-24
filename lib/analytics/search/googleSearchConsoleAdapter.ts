@@ -4,22 +4,16 @@ import { querySearchAnalytics, type SearchAnalyticsRow } from "@/lib/google/sear
 import { resolveDateRange, getPreviousPeriod, type IsoDateRange } from "../dateRange";
 import { buildMetricValue } from "../comparison";
 import { createMemoryCache, withCache } from "@/lib/article/cache";
-import { SITE_NAME, ORGANIZATION_NAME } from "@/lib/seo/site";
+import { isBrandQuery } from "./brandTerms";
 
 const CACHE_TTL_MS = 15 * 60 * 1000; // Google's own quota + Part 7 (avoid duplicate API work) both want this cached, not refetched per page load.
 const cache = createMemoryCache<SearchMetrics>(CACHE_TTL_MS);
 
-const BRAND_TERMS = [SITE_NAME, ORGANIZATION_NAME, "golroo", "mirora"].map((term) => term.toLowerCase());
 const TOP_N = 10;
 const NEAR_FIRST_PAGE_MIN = 11;
 const NEAR_FIRST_PAGE_MAX = 20;
 const HIGH_IMPRESSION_THRESHOLD = 50;
 const LOW_CTR_THRESHOLD = 0.02;
-
-function isBrandQuery(query: string): boolean {
-  const lower = query.toLowerCase();
-  return BRAND_TERMS.some((term) => lower.includes(term));
-}
 
 function toQueryMetric(row: SearchAnalyticsRow): SearchQueryMetric {
   return { query: row.keys[0] ?? "", clicks: row.clicks, impressions: row.impressions, ctr: row.ctr, averagePosition: row.position };

@@ -4,7 +4,12 @@ export type DashboardIconName =
   | "seo"
   | "health"
   | "reports"
-  | "settings";
+  | "settings"
+  | "search"
+  | "growth"
+  | "conversion"
+  | "history"
+  | "command-center";
 
 export type DashboardNavItem = {
   label: string;

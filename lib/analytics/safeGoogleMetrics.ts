@@ -1,7 +1,9 @@
 import type { DateRange } from "./types";
 import type { SearchMetrics } from "./search/types";
+import type { SearchIntelligenceMetrics } from "./search/searchIntelligenceTypes";
 import type { TrafficMetrics } from "./traffic/types";
 import { googleSearchConsoleAdapter } from "./search/googleSearchConsoleAdapter";
+import { searchIntelligenceAdapter } from "./search/searchIntelligence";
 import { googleAnalyticsAdapter } from "./traffic/googleAnalyticsAdapter";
 
 export type SafeMetricsResult<T> = { data: T | null; error: string | null };
@@ -16,6 +18,15 @@ export type SafeMetricsResult<T> = { data: T | null; error: string | null };
 export async function getSearchMetricsSafely(range: DateRange): Promise<SafeMetricsResult<SearchMetrics>> {
   try {
     return { data: await googleSearchConsoleAdapter.getMetrics(range), error: null };
+  } catch (error) {
+    return { data: null, error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
+/** Phase 2 — Search Intelligence's own safe wrapper, same pattern as getSearchMetricsSafely above, wrapping searchIntelligenceAdapter instead of the Phase 1 adapter. */
+export async function getSearchIntelligenceSafely(range: DateRange): Promise<SafeMetricsResult<SearchIntelligenceMetrics>> {
+  try {
+    return { data: await searchIntelligenceAdapter.getMetrics(range), error: null };
   } catch (error) {
     return { data: null, error: error instanceof Error ? error.message : String(error) };
   }
