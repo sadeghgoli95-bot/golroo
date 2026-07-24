@@ -289,6 +289,80 @@
   gap: 8px;
 }
 
+.dashboard-card-comparison {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  margin: 6px 0 0;
+}
+
+.dashboard-card-comparison-previous {
+  color: var(--text-muted);
+}
+
+.dashboard-trend-positive {
+  color: var(--success);
+}
+
+.dashboard-trend-negative {
+  color: var(--danger);
+}
+
+.dashboard-trend-flat {
+  color: var(--text-muted);
+}
+
+.dashboard-trend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.dashboard-trend-chart {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 16px;
+}
+
+.dashboard-trend-chart-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.dashboard-trend-chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.dashboard-trend-chart-range {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.dashboard-range-button {
+  padding: 6px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-btn);
+  background: var(--card);
+  color: var(--text-soft);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.dashboard-range-button.is-active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
 .dashboard-export-bar {
   display: flex;
   flex-wrap: wrap;

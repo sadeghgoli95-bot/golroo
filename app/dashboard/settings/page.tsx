@@ -1,12 +1,12 @@
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { getSystemStatus } from "@/lib/dashboard/getSystemStatus";
 
-export default function SettingsPage() {
-  const status = getSystemStatus();
+export default async function SettingsPage() {
+  const status = await getSystemStatus();
 
   return (
     <>
-      <DashboardHeader title="تنظیمات" description="وضعیت اتصال سرویس‌ها" />
+      <DashboardHeader title="تنظیمات" description="وضعیت اتصال سرویس‌ها (بررسی زنده، نه فقط وجود متغیر محیطی)" />
       <ul className="dashboard-insights-list">
         {status.map((item) => (
           <li
@@ -15,7 +15,8 @@ export default function SettingsPage() {
               item.status === "connected" ? "dashboard-insight-positive" : "dashboard-insight-warning"
             }`}
           >
-            {item.label} — {item.status === "connected" ? "متصل" : "پیکربندی نشده"} ({item.detail})
+            {item.label} — {item.status === "connected" ? "متصل" : "قطع"} ({item.detail})
+            {item.lastSyncedAt ? ` — آخرین همگام‌سازی: ${new Date(item.lastSyncedAt).toLocaleString("fa-IR")}` : ""}
           </li>
         ))}
       </ul>

@@ -6,14 +6,41 @@ import ExportBar from "@/components/dashboard/ExportBar";
 import { createArticleRepository } from "@/lib/article/repositories";
 import { getSiteAnalysis } from "@/lib/analytics/site/getSiteAnalysis";
 import { getSeoInsights, type StatusBreakdown } from "@/lib/analytics/site/seoInsights";
+import { getSearchMetricsSafely } from "@/lib/analytics/safeGoogleMetrics";
+import { compareMetricValue } from "@/lib/analytics/comparison";
+import type { DateRange } from "@/lib/analytics/types";
+import type { SearchQueryMetric, SearchPageMetric } from "@/lib/analytics/search/types";
+
+const LAST_7_DAYS: DateRange = { preset: "last7Days", start: null, end: null };
+const LAST_30_DAYS: DateRange = { preset: "last30Days", start: null, end: null };
 
 function statusLabel(status: StatusBreakdown): string {
   return `${status.withIt} دارند / ${status.withoutIt} ندارند`;
 }
 
+const queryColumns = [
+  { key: "query", label: "عبارت جستجو", render: (row: SearchQueryMetric) => row.query },
+  { key: "clicks", label: "کلیک", render: (row: SearchQueryMetric) => row.clicks },
+  { key: "impressions", label: "نمایش", render: (row: SearchQueryMetric) => row.impressions },
+  { key: "ctr", label: "CTR", render: (row: SearchQueryMetric) => `${(row.ctr * 100).toFixed(1)}٪` },
+  { key: "averagePosition", label: "جایگاه", render: (row: SearchQueryMetric) => row.averagePosition.toFixed(1) },
+];
+
+const pageColumns = [
+  { key: "page", label: "صفحه", render: (row: SearchPageMetric) => row.page },
+  { key: "clicks", label: "کلیک", render: (row: SearchPageMetric) => row.clicks },
+  { key: "impressions", label: "نمایش", render: (row: SearchPageMetric) => row.impressions },
+  { key: "ctr", label: "CTR", render: (row: SearchPageMetric) => `${(row.ctr * 100).toFixed(1)}٪` },
+  { key: "averagePosition", label: "جایگاه", render: (row: SearchPageMetric) => row.averagePosition.toFixed(1) },
+];
+
 export default async function SeoInsightsPage() {
   const repository = createArticleRepository();
-  const analyses = await getSiteAnalysis(repository);
+  const [analyses, search7d, search30d] = await Promise.all([
+    getSiteAnalysis(repository),
+    getSearchMetricsSafely(LAST_7_DAYS),
+    getSearchMetricsSafely(LAST_30_DAYS),
+  ]);
   const seo = getSeoInsights(analyses);
 
   const articleColumns = [
@@ -36,6 +63,102 @@ export default async function SeoInsightsPage() {
         <DashboardCard label="آماده Featured Snippet" value={String(seo.featuredSnippetReadyCount)} />
         <DashboardCard label="آماده AI Overview" value={String(seo.aiOverviewReadyCount)} />
       </div>
+
+      <section className="dashboard-section">
+        <h2 className="dashboard-section-title">۷ روز اخیر در مقابل ۷ روز قبل از آن (Search Console)</h2>
+        {search7d.data ? (
+          <div className="dashboard-grid">
+            <DashboardCard label="کلیک‌ها" value={String(search7d.data.clicks.current)} comparison={compareMetricValue(search7d.data.clicks)} />
+            <DashboardCard label="نمایش‌ها" value={String(search7d.data.impressions.current)} comparison={compareMetricValue(search7d.data.impressions)} />
+            <DashboardCard label="CTR" value={`${(search7d.data.ctr.current * 100).toFixed(1)}٪`} comparison={compareMetricValue(search7d.data.ctr)} />
+            <DashboardCard
+              label="میانگین جایگاه"
+              value={search7d.data.averagePosition.current.toFixed(1)}
+              comparison={compareMetricValue(search7d.data.averagePosition)}
+              invertColor
+            />
+          </div>
+        ) : (
+          <div className="dashboard-empty-state">
+            <p>Search Console متصل نیست{search7d.error ? ` — ${search7d.error}` : "."}</p>
+          </div>
+        )}
+      </section>
+
+      <section className="dashboard-section">
+        <h2 className="dashboard-section-title">۳۰ روز اخیر در مقابل ۳۰ روز قبل از آن (Search Console)</h2>
+        {search30d.data ? (
+          <div className="dashboard-grid">
+            <DashboardCard label="کلیک‌ها" value={String(search30d.data.clicks.current)} comparison={compareMetricValue(search30d.data.clicks)} />
+            <DashboardCard label="نمایش‌ها" value={String(search30d.data.impressions.current)} comparison={compareMetricValue(search30d.data.impressions)} />
+            <DashboardCard label="CTR" value={`${(search30d.data.ctr.current * 100).toFixed(1)}٪`} comparison={compareMetricValue(search30d.data.ctr)} />
+            <DashboardCard
+              label="میانگین جایگاه"
+              value={search30d.data.averagePosition.current.toFixed(1)}
+              comparison={compareMetricValue(search30d.data.averagePosition)}
+              invertColor
+            />
+          </div>
+        ) : (
+          <div className="dashboard-empty-state">
+            <p>Search Console متصل نیست{search30d.error ? ` — ${search30d.error}` : "."}</p>
+          </div>
+        )}
+      </section>
+
+      {search30d.data ? (
+        <>
+          <section className="dashboard-section">
+            <h2 className="dashboard-section-title">پرکلیک‌ترین عبارت‌های جستجو (۳۰ روز اخیر)</h2>
+            <DataTable rows={search30d.data.topQueries} getRowKey={(row) => row.query} emptyMessage="داده‌ای وجود ندارد." columns={queryColumns} />
+          </section>
+
+          <section className="dashboard-section">
+            <h2 className="dashboard-section-title">پربازدیدترین صفحات در جستجو (۳۰ روز اخیر)</h2>
+            <DataTable rows={search30d.data.topPages} getRowKey={(row) => row.page} emptyMessage="داده‌ای وجود ندارد." columns={pageColumns} />
+          </section>
+
+          <section className="dashboard-section">
+            <h2 className="dashboard-section-title">عبارت‌های در حال رشد (نسبت به ۳۰ روز قبل)</h2>
+            <DataTable
+              rows={search30d.data.fastestGrowingQueries}
+              getRowKey={(row) => row.query}
+              emptyMessage="عبارت رو به رشدی یافت نشد."
+              columns={queryColumns}
+            />
+          </section>
+
+          <section className="dashboard-section">
+            <h2 className="dashboard-section-title">عبارت‌های در حال افت (نسبت به ۳۰ روز قبل)</h2>
+            <DataTable
+              rows={search30d.data.losingQueries}
+              getRowKey={(row) => row.query}
+              emptyMessage="عبارت رو به افتی یافت نشد."
+              columns={queryColumns}
+            />
+          </section>
+
+          <section className="dashboard-section">
+            <h2 className="dashboard-section-title">صفحات نزدیک به صفحه اول (جایگاه ۱۱ تا ۲۰)</h2>
+            <DataTable
+              rows={search30d.data.pagesNearFirstPage}
+              getRowKey={(row) => row.page}
+              emptyMessage="صفحه‌ای در این بازه یافت نشد."
+              columns={pageColumns}
+            />
+          </section>
+
+          <section className="dashboard-section">
+            <h2 className="dashboard-section-title">نمایش بالا / CTR پایین</h2>
+            <DataTable
+              rows={search30d.data.highImpressionLowCtrPages}
+              getRowKey={(row) => row.page}
+              emptyMessage="موردی یافت نشد."
+              columns={pageColumns}
+            />
+          </section>
+        </>
+      ) : null}
 
       <section className="dashboard-section">
         <h2 className="dashboard-section-title">بهترین مقالات از نظر سئو</h2>

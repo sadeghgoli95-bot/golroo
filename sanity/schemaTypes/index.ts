@@ -1,5 +1,6 @@
 import {type SchemaTypeDefinition} from 'sanity'
 
+import analyticsSnapshot from './analyticsSnapshot'
 import article from './article'
 import author from './author'
 import category from './category'
@@ -19,5 +20,6 @@ export const schema: {types: SchemaTypeDefinition[]} = {
     faq,
     seo,
     siteSettings,
+    analyticsSnapshot,
   ],
 }
