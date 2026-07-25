@@ -1,11 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { dashboardNavigation } from "@/lib/dashboard/navigation";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleLogout() {
+    await fetch("/api/dashboard/auth/logout", { method: "POST" });
+    router.replace("/dashboard/login");
+    router.refresh();
+  }
 
   return (
     <aside className="dashboard-sidebar">
@@ -24,6 +31,9 @@ export default function DashboardSidebar() {
           );
         })}
       </nav>
+      <button type="button" onClick={handleLogout} className="dashboard-sidebar-logout">
+        خروج
+      </button>
     </aside>
   );
 }

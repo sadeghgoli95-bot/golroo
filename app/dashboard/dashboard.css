@@ -504,6 +504,75 @@
   font-size: 0.85rem;
 }
 
+.dashboard-sidebar-logout {
+  margin-top: auto;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: right;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.dashboard-sidebar-logout:hover {
+  background: var(--bg-soft);
+  color: var(--text);
+}
+
+.dashboard-shell--bare {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-login {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.dashboard-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 340px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  padding: 32px;
+}
+
+.dashboard-login-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.dashboard-login-input {
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-input);
+  background: var(--input-bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.dashboard-login-error {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
 @media print {
   .dashboard-sidebar,
   [data-print-hide] {
