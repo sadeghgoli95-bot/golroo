@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildTimeline } from "./timeline";
+import { buildTimeline, bucketTimelineByRecency, type TimelineEntry } from "./timeline";
 import type { AnalyticsSnapshot } from "../snapshot/types";
 
 function buildSnapshot(overrides: Partial<AnalyticsSnapshot> = {}): AnalyticsSnapshot {
@@ -58,5 +58,32 @@ describe("buildTimeline", () => {
     for (let i = 1; i < timeline.length; i++) {
       expect(new Date(timeline[i - 1].timestamp).getTime()).toBeGreaterThanOrEqual(new Date(timeline[i].timestamp).getTime());
     }
+  });
+});
+
+describe("bucketTimelineByRecency", () => {
+  function entry(timestamp: string): TimelineEntry {
+    return { id: timestamp, timestamp, type: "notable-jump", key: "clicks", label: "کلیک‌ها", description: "" };
+  }
+
+  it("groups real events into today / this week / this month / earlier by real elapsed time", () => {
+    const now = new Date("2026-07-31T00:00:00.000Z");
+    const entries = [
+      entry("2026-07-31T00:00:00.000Z"), // today
+      entry("2026-07-27T00:00:00.000Z"), // 4 days ago -> this week
+      entry("2026-07-10T00:00:00.000Z"), // 21 days ago -> this month
+      entry("2026-05-01T00:00:00.000Z"), // >30 days ago -> earlier
+    ];
+
+    const buckets = bucketTimelineByRecency(entries, now);
+    expect(buckets.today).toHaveLength(1);
+    expect(buckets.thisWeek).toHaveLength(1);
+    expect(buckets.thisMonth).toHaveLength(1);
+    expect(buckets.earlier).toHaveLength(1);
+  });
+
+  it("returns every bucket empty for an empty timeline rather than fabricating entries", () => {
+    const buckets = bucketTimelineByRecency([]);
+    expect(buckets).toEqual({ today: [], thisWeek: [], thisMonth: [], earlier: [] });
   });
 });

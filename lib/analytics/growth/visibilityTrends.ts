@@ -10,7 +10,8 @@ export type VisibilityChange = {
   comparison: ComparisonResult; // current vs. previous-period real clicks (lib/analytics/comparison.ts — the one comparison formula)
 };
 
-function uniquePagesByUrl(metrics: SearchMetrics): Map<string, SearchPageMetric> {
+/** Exported so other page-level comparison modules (e.g. pageSignals.ts) reuse the same "which pages are real, observable in this adapter's curated slices" join instead of re-deriving it. */
+export function uniquePagesByUrl(metrics: SearchMetrics): Map<string, SearchPageMetric> {
   const map = new Map<string, SearchPageMetric>();
   for (const page of [...metrics.topPages, ...metrics.pagesNearFirstPage, ...metrics.highImpressionLowCtrPages]) {
     map.set(page.page, page);
@@ -64,6 +65,13 @@ export function getLosingVisibility(changes: VisibilityChange[]): VisibilityChan
   return changes
     .filter((change) => change.comparison.trend === "down")
     .sort((a, b) => (a.comparison.difference ?? 0) - (b.comparison.difference ?? 0));
+}
+
+/** The subset of getVisibilityChanges whose real clicks actually improved, biggest gain first — the mirror of getLosingVisibility. */
+export function getImprovingVisibility(changes: VisibilityChange[]): VisibilityChange[] {
+  return changes
+    .filter((change) => change.comparison.trend === "up")
+    .sort((a, b) => (b.comparison.difference ?? 0) - (a.comparison.difference ?? 0));
 }
 
 export type BiggestRisk = {

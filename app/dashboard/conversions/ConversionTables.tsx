@@ -54,9 +54,14 @@ const contentAttributionColumns: DataTableColumn<ContentAttributionRow>[] = [
   { key: "estimatedScore", label: "امتیاز تخمینی", render: (row) => row.estimatedScore },
 ];
 
-type ContentAttributionTableProps = { rows: ContentAttributionRow[]; emptyMessage: string };
+type ContentAttributionTableProps = {
+  rows: ContentAttributionRow[];
+  emptyMessage: string;
+  /** Omit to preserve the rows' own incoming order (e.g. an already worst-first ranking) instead of re-sorting to the default estimatedScore-descending view. */
+  defaultSortKey?: string;
+};
 
-export function ContentAttributionTable({ rows, emptyMessage }: ContentAttributionTableProps) {
+export function ContentAttributionTable({ rows, emptyMessage, defaultSortKey = "estimatedScore" }: ContentAttributionTableProps) {
   return (
     <FilterableDataTable
       rows={rows}
@@ -71,7 +76,7 @@ export function ContentAttributionTable({ rows, emptyMessage }: ContentAttributi
         if (key === "bookingLinkCount") return row.bookingLinkCount;
         return row.estimatedScore;
       }}
-      defaultSortKey="estimatedScore"
+      defaultSortKey={defaultSortKey}
     />
   );
 }

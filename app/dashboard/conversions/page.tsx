@@ -15,7 +15,12 @@ import {
   NO_REVENUE_DATA_REASON,
 } from "@/lib/analytics/conversion/notAvailable";
 import { compareMetricValue } from "@/lib/analytics/comparison";
-import { getEngagementConversionMismatch, getCtaSuggestions } from "@/lib/analytics/conversion/businessInsights";
+import {
+  getEngagementConversionMismatch,
+  getCtaSuggestions,
+  getLowestConvertingHighTraffic,
+  getSuddenConversionDrop,
+} from "@/lib/analytics/conversion/businessInsights";
 import type { DateRange } from "@/lib/analytics/types";
 import type { ConversionRateBreakdownRow, ContentAttributionRow, ExitRateRow } from "@/lib/analytics/conversion/types";
 
@@ -64,6 +69,8 @@ export default async function ConversionsPage() {
   const { summary, funnel, contentAttribution, exitRates, trends } = conversion.data;
   const engagementMismatch = getEngagementConversionMismatch(contentAttribution);
   const ctaSuggestions = getCtaSuggestions(contentAttribution);
+  const lowestConvertingHighTraffic = getLowestConvertingHighTraffic(contentAttribution);
+  const suddenConversionDrops = getSuddenConversionDrop(summary.pageViews);
 
   return (
     <>
@@ -101,6 +108,15 @@ export default async function ConversionsPage() {
             hint="نماینده تقریبی «قصد رزرو»، نه تعداد نوبت واقعی"
           />
         </div>
+        {suddenConversionDrops.length > 0 ? (
+          <ul className="dashboard-insights-list">
+            {suddenConversionDrops.map((alert) => (
+              <li key={alert.metric} className="dashboard-insight dashboard-insight-critical">
+                افت ناگهانی {alert.label}: {alert.comparison.percentChange?.toFixed(1)}٪ نسبت به دوره قبل ({alert.comparison.previous} → {alert.comparison.current})
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </section>
 
       <section className="dashboard-section">
@@ -236,6 +252,13 @@ export default async function ConversionsPage() {
           getRowKey={(row) => row.slug}
           emptyMessage="پیشنهادی یافت نشد."
         />
+
+        <h3 className="dashboard-section-title">پایین‌ترین نرخ تبدیل در صفحات پرترافیک (تخمینی)</h3>
+        <p className="dashboard-card-hint">
+          صفحات با نشست فرود واقعی بالای میانه، مرتب‌شده بر اساس کمترین «تراکم تبدیل تخمینی» (امتیاز تخمینی ÷ نشست) —
+          گسترده‌تر از فهرست بالا، چون صفحاتی با تعدادی لینک نوبت‌دهی/تماس که هنوز نسبت به ترافیک سنگین‌شان کارآمد نیستند را هم نشان می‌دهد.
+        </p>
+        <ContentAttributionTable rows={lowestConvertingHighTraffic} emptyMessage="صفحه‌ای با این الگو یافت نشد." defaultSortKey="" />
       </section>
 
       <section className="dashboard-section">

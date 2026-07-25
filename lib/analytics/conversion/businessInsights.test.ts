@@ -1,7 +1,17 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import type { Ga4Row } from "@/lib/google/ga4Client";
-import type { ContentAttributionRow } from "./types";
-import { getExitRateInsights, getEngagementConversionMismatch, getCtaSuggestions } from "./businessInsights";
+import type { ContentAttributionRow, ConversionPageViews } from "./types";
+import {
+  getExitRateInsights,
+  getEngagementConversionMismatch,
+  getCtaSuggestions,
+  getLowestConvertingHighTraffic,
+  getSuddenConversionDrop,
+} from "./businessInsights";
+
+function metricValue(current: number, previousPeriod: number | null): ConversionPageViews["appointment"] {
+  return { current, previousPeriod, previousYear: null };
+}
 
 const runReportMock = vi.fn<(query: unknown) => Promise<Ga4Row[]>>();
 
@@ -72,5 +82,52 @@ describe("getCtaSuggestions", () => {
     const suggestions = getCtaSuggestions(rows);
     expect(suggestions.map((s) => s.slug)).toContain("top");
     expect(suggestions.map((s) => s.slug)).not.toContain("bottom-linked");
+  });
+});
+
+describe("getLowestConvertingHighTraffic", () => {
+  it("ranks real high-traffic pages by lowest conversion density first, including pages that do have some links", () => {
+    const rows = [
+      row({ slug: "high-traffic-poor", landingSessions: 100, bookingLinkCount: 1, estimatedScore: 110 }), // density 1.1
+      row({ slug: "high-traffic-good", landingSessions: 100, bookingLinkCount: 5, estimatedScore: 150 }), // density 1.5
+      row({ slug: "low-traffic", landingSessions: 1, bookingLinkCount: 0, estimatedScore: 1 }),
+    ];
+    const ranked = getLowestConvertingHighTraffic(rows);
+    expect(ranked[0].slug).toBe("high-traffic-poor");
+    expect(ranked.map((r) => r.slug)).not.toContain("low-traffic");
+  });
+
+  it("returns an empty list when there is no real traffic to rank", () => {
+    expect(getLowestConvertingHighTraffic([])).toEqual([]);
+  });
+});
+
+describe("getSuddenConversionDrop", () => {
+  it("flags a real drop at or beyond the documented threshold", () => {
+    const pageViews: ConversionPageViews = {
+      appointment: metricValue(5, 20), // -75%
+      contact: metricValue(10, 10), // flat
+      combined: metricValue(15, 30), // -50%
+    };
+    const alerts = getSuddenConversionDrop(pageViews);
+    expect(alerts.map((a) => a.metric)).toEqual(["appointment", "combined"]);
+  });
+
+  it("does not flag a small real dip below the threshold", () => {
+    const pageViews: ConversionPageViews = {
+      appointment: metricValue(9, 10), // -10%
+      contact: metricValue(10, 10),
+      combined: metricValue(19, 20),
+    };
+    expect(getSuddenConversionDrop(pageViews)).toEqual([]);
+  });
+
+  it("skips a metric with no real previous-period value rather than fabricating a drop", () => {
+    const pageViews: ConversionPageViews = {
+      appointment: metricValue(5, null),
+      contact: metricValue(10, 10),
+      combined: metricValue(15, null),
+    };
+    expect(getSuddenConversionDrop(pageViews)).toEqual([]);
   });
 });

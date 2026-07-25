@@ -8,9 +8,17 @@ import type { SearchMetrics } from "../search/types";
 import type { TrafficMetrics } from "../traffic/types";
 import { getOpportunityItems, getBiggestOpportunity, type OpportunityItem } from "./opportunityScoring";
 import { buildCtrByPositionCurve, estimateGrowthPotential, type GrowthPotentialEstimate } from "./growthPotential";
-import { getVisibilityChanges, getLosingVisibility, getBiggestRisk, type VisibilityChange, type BiggestRisk } from "./visibilityTrends";
+import {
+  getVisibilityChanges,
+  getLosingVisibility,
+  getImprovingVisibility,
+  getBiggestRisk,
+  type VisibilityChange,
+  type BiggestRisk,
+} from "./visibilityTrends";
 import { getArticlesNeedingUpdate, getArticlesReadyToRepublish, type NeedsUpdatingItem, type ReadyToRepublishItem } from "./contentFreshness";
 import { getBookingSignalItems, countArticlesLinkingToBooking, type BookingSignalItem } from "./bookingSignal";
+import { buildPageSignals, getImpressionGrowthWithoutClicks, getSuddenCtrDrops, type PageSignal } from "./pageSignals";
 import { getContentPerformanceRanking, type ContentRankingItem } from "./contentRanking";
 import {
   buildQuickWins,
@@ -40,6 +48,9 @@ export type GrowthDashboard = {
   growthPotential: GrowthPotentialEstimate[];
   visibilityChanges: VisibilityChange[];
   losingVisibility: VisibilityChange[];
+  improvingVisibility: VisibilityChange[];
+  impressionGrowthWithoutClicks: PageSignal[];
+  suddenCtrDrops: PageSignal[];
   biggestRisk: BiggestRisk | null;
   needsUpdating: NeedsUpdatingItem[];
   readyToRepublish: ReadyToRepublishItem[];
@@ -88,6 +99,11 @@ export async function getGrowthDashboard(analyses: ArticleAnalysis[]): Promise<G
 
   const visibilityChanges = search.data && previousSearch.data ? getVisibilityChanges(search.data, previousSearch.data, analyses) : [];
   const losingVisibility = getLosingVisibility(visibilityChanges);
+  const improvingVisibility = getImprovingVisibility(visibilityChanges);
+
+  const pageSignals = search.data && previousSearch.data ? buildPageSignals(search.data, previousSearch.data, analyses) : [];
+  const impressionGrowthWithoutClicks = getImpressionGrowthWithoutClicks(pageSignals);
+  const suddenCtrDrops = getSuddenCtrDrops(pageSignals);
   const biggestRisk = getBiggestRisk(losingVisibility, analyses);
 
   const losingVisibilitySlugs = new Set(losingVisibility.map((item) => item.slug));
@@ -134,6 +150,9 @@ export async function getGrowthDashboard(analyses: ArticleAnalysis[]): Promise<G
     growthPotential,
     visibilityChanges,
     losingVisibility,
+    improvingVisibility,
+    impressionGrowthWithoutClicks,
+    suddenCtrDrops,
     biggestRisk,
     needsUpdating,
     readyToRepublish,

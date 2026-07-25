@@ -83,3 +83,36 @@ export function buildTimeline(snapshots: AnalyticsSnapshot[]): TimelineEntry[] {
 
   return entries.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 }
+
+export type TimelineBuckets = {
+  today: TimelineEntry[];
+  thisWeek: TimelineEntry[];
+  thisMonth: TimelineEntry[];
+  earlier: TimelineEntry[];
+};
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+/**
+ * Compact executive timeline (Phase 3 Part 1 — Today / This Week / This
+ * Month). Pure presentation-layer bucketing of the already real, already
+ * detected events from buildTimeline — no new event detection, no
+ * fabricated signal, just grouping by real elapsed time since `now`.
+ * "This Week" and "This Month" are exclusive of the more recent bucket
+ * (an event from yesterday appears only in "این هفته", not also in
+ * "این ماه") so every real event appears in exactly one bucket.
+ */
+export function bucketTimelineByRecency(entries: TimelineEntry[], now: Date = new Date()): TimelineBuckets {
+  const buckets: TimelineBuckets = { today: [], thisWeek: [], thisMonth: [], earlier: [] };
+  const nowTime = now.getTime();
+
+  for (const entry of entries) {
+    const daysAgo = Math.floor((nowTime - new Date(entry.timestamp).getTime()) / MS_PER_DAY);
+    if (daysAgo <= 0) buckets.today.push(entry);
+    else if (daysAgo <= 7) buckets.thisWeek.push(entry);
+    else if (daysAgo <= 30) buckets.thisMonth.push(entry);
+    else buckets.earlier.push(entry);
+  }
+
+  return buckets;
+}

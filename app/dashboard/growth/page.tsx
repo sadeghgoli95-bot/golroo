@@ -3,13 +3,19 @@ import DashboardCard from "@/components/dashboard/DashboardCard";
 import DataTable from "@/components/dashboard/DataTable";
 import BarChart from "@/components/dashboard/BarChart";
 import ExportBar from "@/components/dashboard/ExportBar";
-import { OpportunityTable, ContentRankingTable } from "./GrowthTables";
+import {
+  OpportunityTable,
+  ContentRankingTable,
+  VisibilityChangeTable,
+  NeedsUpdatingTable,
+  GrowthPotentialTable,
+  ImpressionGrowthTable,
+  CtrDropTable,
+} from "./GrowthTables";
 import { createArticleRepository } from "@/lib/article/repositories";
 import { getSiteAnalysis } from "@/lib/analytics/site/getSiteAnalysis";
 import { getGrowthDashboard } from "@/lib/analytics/growth/getGrowthDashboard";
-import type { GrowthPotentialEstimate } from "@/lib/analytics/growth/growthPotential";
-import type { VisibilityChange } from "@/lib/analytics/growth/visibilityTrends";
-import type { NeedsUpdatingItem, ReadyToRepublishItem } from "@/lib/analytics/growth/contentFreshness";
+import type { ReadyToRepublishItem } from "@/lib/analytics/growth/contentFreshness";
 import type { HighTrafficLowEngagementItem } from "@/lib/analytics/growth/pageEngagement";
 import type { BookingSignalItem } from "@/lib/analytics/growth/bookingSignal";
 import type { Recommendation } from "@/lib/analytics/growth/recommendations";
@@ -23,38 +29,9 @@ const pageColumns = [
   { key: "averagePosition", label: "جایگاه", render: (row: SearchPageMetric) => row.averagePosition.toFixed(1) },
 ];
 
-const growthPotentialColumns = [
-  { key: "page", label: "صفحه", render: (row: GrowthPotentialEstimate) => row.page },
-  { key: "currentPosition", label: "جایگاه فعلی", render: (row: GrowthPotentialEstimate) => row.currentPosition.toFixed(1) },
-  { key: "currentCtr", label: "CTR فعلی", render: (row: GrowthPotentialEstimate) => `${(row.currentCtr * 100).toFixed(1)}٪` },
-  {
-    key: "estimate",
-    label: `تخمین کلیک اضافه (رسیدن به جایگاه ${growthTargetLabel()})`,
-    render: (row: GrowthPotentialEstimate) =>
-      row.estimatedClickUplift !== null ? `+${row.estimatedClickUplift}` : "داده کافی نیست",
-  },
-];
-
 function growthTargetLabel(): string {
   return "۴ تا ۶";
 }
-
-const visibilityColumns = [
-  { key: "title", label: "مقاله", render: (row: VisibilityChange) => row.title },
-  { key: "current", label: "کلیک فعلی", render: (row: VisibilityChange) => row.comparison.current },
-  { key: "previous", label: "کلیک دوره قبل", render: (row: VisibilityChange) => row.comparison.previous ?? "—" },
-  {
-    key: "change",
-    label: "تغییر",
-    render: (row: VisibilityChange) => (row.comparison.difference !== null ? row.comparison.difference : "—"),
-  },
-];
-
-const needsUpdatingColumns = [
-  { key: "title", label: "مقاله", render: (row: NeedsUpdatingItem) => row.title },
-  { key: "daysSinceUpdate", label: "روز از آخرین به‌روزرسانی", render: (row: NeedsUpdatingItem) => row.daysSinceUpdate },
-  { key: "reason", label: "دلیل", render: (row: NeedsUpdatingItem) => row.reason },
-];
 
 const readyToRepublishColumns = [
   { key: "title", label: "مقاله", render: (row: ReadyToRepublishItem) => row.title },
@@ -159,33 +136,42 @@ export default async function GrowthDashboardPage() {
         <p className="dashboard-card-hint">
           تخمین بر اساس منحنی واقعی CTR-بر-اساس-جایگاه محاسبه‌شده از صفحات واقعی خود سایت — نه یک منحنی فرضی صنعتی.
         </p>
-        <DataTable
-          rows={dashboard.growthPotential}
-          columns={growthPotentialColumns}
-          getRowKey={(row) => row.page}
-          emptyMessage="صفحه‌ای در بازه جایگاه ۱۱ تا ۲۰ یافت نشد."
-        />
+        <GrowthPotentialTable rows={dashboard.growthPotential} emptyMessage="صفحه‌ای در بازه جایگاه ۱۱ تا ۲۰ یافت نشد." />
+      </section>
+
+      <section className="dashboard-section">
+        <h2 className="dashboard-section-title">مقالات با بهبود اخیر دیدپذیری (۳۰ روز اخیر در مقابل ۳۰ روز قبل)</h2>
+        <VisibilityChangeTable rows={dashboard.improvingVisibility} emptyMessage="بهبود دیدپذیری واقعی در صفحات مشاهده‌شده یافت نشد." />
       </section>
 
       <section className="dashboard-section">
         <h2 className="dashboard-section-title">مقالات در حال افت دیدپذیری (۳۰ روز اخیر در مقابل ۳۰ روز قبل)</h2>
-        <DataTable
-          rows={dashboard.losingVisibility}
-          columns={visibilityColumns}
-          getRowKey={(row) => row.slug}
-          emptyMessage="افت دیدپذیری واقعی در صفحات مشاهده‌شده یافت نشد."
+        <VisibilityChangeTable rows={dashboard.losingVisibility} emptyMessage="افت دیدپذیری واقعی در صفحات مشاهده‌شده یافت نشد." />
+      </section>
+
+      <section className="dashboard-section">
+        <h2 className="dashboard-section-title">صفحات با رشد نمایش بدون رشد کلیک</h2>
+        <p className="dashboard-card-hint">
+          سیگنال روند: نمایش واقعی این صفحات در Search Console نسبت به دوره قبل رشد کرده، اما کلیک واقعی همراه آن رشد نکرده است.
+        </p>
+        <ImpressionGrowthTable
+          rows={dashboard.impressionGrowthWithoutClicks}
+          emptyMessage="صفحه‌ای با این الگوی واقعی (رشد نمایش بدون رشد کلیک) یافت نشد."
         />
+      </section>
+
+      <section className="dashboard-section">
+        <h2 className="dashboard-section-title">افت ناگهانی CTR</h2>
+        <p className="dashboard-card-hint">
+          آستانه: افت واقعی CTR به میزان حداقل {`۲۵٪`} نسبت به دوره قبل (همان آستانه «تغییر قابل‌توجه» که در جدول زمانی تاریخچه استفاده می‌شود).
+        </p>
+        <CtrDropTable rows={dashboard.suddenCtrDrops} emptyMessage="افت ناگهانی CTR واقعی در صفحات مشاهده‌شده یافت نشد." />
       </section>
 
       <section className="dashboard-section">
         <h2 className="dashboard-section-title">مقالاتی که نیاز به به‌روزرسانی دارند</h2>
         <p className="dashboard-card-hint">قانون: منتشرشده، بیش از ۱۸۰ روز از آخرین به‌روزرسانی گذشته، و در حال افت کلیک واقعی.</p>
-        <DataTable
-          rows={dashboard.needsUpdating}
-          columns={needsUpdatingColumns}
-          getRowKey={(row) => row.slug}
-          emptyMessage="مقاله‌ای با این دو شرط واقعی یافت نشد."
-        />
+        <NeedsUpdatingTable rows={dashboard.needsUpdating} emptyMessage="مقاله‌ای با این دو شرط واقعی یافت نشد." />
       </section>
 
       <section className="dashboard-section">

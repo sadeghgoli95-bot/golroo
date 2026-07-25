@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getVisibilityChanges, getLosingVisibility, getBiggestRisk } from "./visibilityTrends";
+import { getVisibilityChanges, getLosingVisibility, getImprovingVisibility, getBiggestRisk } from "./visibilityTrends";
 import { buildTestAnalysis } from "../site/testFixtures";
 import type { SearchMetrics, SearchPageMetric } from "../search/types";
 
@@ -33,6 +33,21 @@ describe("getVisibilityChanges / getLosingVisibility", () => {
 
     const losing = getLosingVisibility(changes);
     expect(losing).toHaveLength(1);
+
+    const improving = getImprovingVisibility(changes);
+    expect(improving).toHaveLength(0);
+  });
+
+  it("surfaces real click improvements via getImprovingVisibility", () => {
+    const analysis = buildTestAnalysis({ article: { slug: "a" } });
+    const current = metrics([{ page: "/journal/a", clicks: 30, impressions: 100, ctr: 0.3, averagePosition: 4 }]);
+    const previous = metrics([{ page: "/journal/a", clicks: 10, impressions: 100, ctr: 0.1, averagePosition: 6 }]);
+
+    const changes = getVisibilityChanges(current, previous, [analysis]);
+    const improving = getImprovingVisibility(changes);
+    expect(improving).toHaveLength(1);
+    expect(improving[0].comparison.trend).toBe("up");
+    expect(improving[0].comparison.difference).toBe(20);
   });
 
   it("only compares pages observed in both periods' exposed slices", () => {

@@ -15,8 +15,18 @@ import {
   getCategoryGrowthByMonth,
 } from "@/lib/analytics/site/publishingActivity";
 import { topN, bottomN, average } from "@/lib/analytics/site/shared";
+import { getExecutiveReport } from "@/lib/analytics/reports/getExecutiveReport";
+import { REPORT_STATUS_LABELS } from "@/lib/analytics/reports/reportStatus";
+import { compareMetricValue } from "@/lib/analytics/comparison";
 
 const TOP_TEN = 10;
+
+const reportStatusClassName: Record<string, string> = {
+  healthy: "dashboard-insight dashboard-insight-positive",
+  needs_attention: "dashboard-insight dashboard-insight-warning",
+  at_risk: "dashboard-insight dashboard-insight-critical",
+  insufficient_data: "dashboard-insight",
+};
 
 export default async function ReportsCenterPage() {
   const repository = createArticleRepository();
@@ -29,6 +39,7 @@ export default async function ReportsCenterPage() {
   const activity = getPublishingActivity(analyses);
   const publishingTrend = getPublishingTrendByMonth(analyses);
   const categoryGrowth = getCategoryGrowthByMonth(analyses);
+  const executiveReport = await getExecutiveReport(analyses);
 
   const overallScoreOf = (item: (typeof analyses)[number]) => item.detailedScores.overall;
   const bestOverall = topN(analyses, TOP_TEN, overallScoreOf).map((item) => ({
@@ -47,11 +58,158 @@ export default async function ReportsCenterPage() {
     { key: "slug", label: "Slug", render: (row: { slug: string }) => row.slug },
   ];
 
-  const fullReport = { overview, content, seo, health, activity, publishingTrend, categoryGrowth, bestOverall, worstOverall };
+  const fullReport = { overview, content, seo, health, activity, publishingTrend, categoryGrowth, bestOverall, worstOverall, executiveReport };
 
   return (
     <>
       <DashboardHeader title="گزارش‌ها" description="خلاصه اجرایی وضعیت کل سایت میرورا" />
+
+      <section className="dashboard-section">
+        <h2 className="dashboard-section-title">گزارش اجرایی رشد (Search / Content / Conversion)</h2>
+        <p className={reportStatusClassName[executiveReport.status]}>
+          وضعیت گزارش: {REPORT_STATUS_LABELS[executiveReport.status]}
+        </p>
+        <p className="dashboard-priority-item">
+          <strong>{executiveReport.summary.headline}</strong>
+        </p>
+        {executiveReport.summary.points.length > 0 ? (
+          <ul className="dashboard-insights-list">
+            {executiveReport.summary.points.map((point) => (
+              <li key={point} className="dashboard-insight">
+                {point}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
+        <h3 className="dashboard-section-title">عملکرد جستجو (Search Console، ۳۰ روز اخیر)</h3>
+        {executiveReport.growth.search.data ? (
+          <div className="dashboard-grid">
+            <DashboardCard
+              label="کلیک"
+              value={String(executiveReport.growth.search.data.clicks.current)}
+              comparison={compareMetricValue(executiveReport.growth.search.data.clicks)}
+            />
+            <DashboardCard
+              label="نمایش"
+              value={String(executiveReport.growth.search.data.impressions.current)}
+              comparison={compareMetricValue(executiveReport.growth.search.data.impressions)}
+            />
+            <DashboardCard
+              label="CTR"
+              value={`${(executiveReport.growth.search.data.ctr.current * 100).toFixed(1)}٪`}
+              comparison={compareMetricValue(executiveReport.growth.search.data.ctr)}
+            />
+            <DashboardCard
+              label="میانگین جایگاه"
+              value={executiveReport.growth.search.data.averagePosition.current.toFixed(1)}
+              comparison={compareMetricValue(executiveReport.growth.search.data.averagePosition)}
+              invertColor
+            />
+          </div>
+        ) : (
+          <div className="dashboard-empty-state">
+            <p>Search Console متصل نیست{executiveReport.growth.search.error ? ` — ${executiveReport.growth.search.error}` : "."}</p>
+          </div>
+        )}
+
+        <h3 className="dashboard-section-title">عملکرد تبدیل (تقریبی، ۳۰ روز اخیر)</h3>
+        {executiveReport.conversion.data ? (
+          <div className="dashboard-grid">
+            <DashboardCard
+              label="بازدید نوبت‌دهی + تماس"
+              value={String(executiveReport.conversion.data.summary.pageViews.combined.current)}
+              comparison={compareMetricValue(executiveReport.conversion.data.summary.pageViews.combined)}
+              hint="نماینده تقریبی «قصد رزرو»، نه تعداد نوبت واقعی"
+            />
+            <DashboardCard
+              label="نرخ تبدیل کلی (تقریبی)"
+              value={`${executiveReport.conversion.data.summary.overallConversionRate.current.toFixed(1)}٪`}
+              comparison={compareMetricValue(executiveReport.conversion.data.summary.overallConversionRate)}
+            />
+          </div>
+        ) : (
+          <div className="dashboard-empty-state">
+            <p>Google Analytics 4 متصل نیست{executiveReport.conversion.error ? ` — ${executiveReport.conversion.error}` : "."}</p>
+          </div>
+        )}
+
+        <div className="dashboard-grid">
+          <div className="dashboard-card">
+            <p className="dashboard-card-label">بزرگ‌ترین فرصت</p>
+            <p className="dashboard-card-value">{executiveReport.growth.biggestOpportunity?.title ?? "—"}</p>
+            {executiveReport.growth.biggestOpportunity ? (
+              <p className="dashboard-card-hint">
+                جایگاه {executiveReport.growth.biggestOpportunity.averagePosition.toFixed(1)} با {executiveReport.growth.biggestOpportunity.impressions} نمایش واقعی
+              </p>
+            ) : (
+              <p className="dashboard-card-hint">سیگنال واقعی کافی وجود ندارد.</p>
+            )}
+          </div>
+          <div className="dashboard-card">
+            <p className="dashboard-card-label">بزرگ‌ترین ریسک</p>
+            <p className="dashboard-card-value">{executiveReport.growth.biggestRisk?.title ?? "—"}</p>
+            <p className="dashboard-card-hint">{executiveReport.growth.biggestRisk?.detail ?? "سیگنال واقعی کافی وجود ندارد."}</p>
+          </div>
+        </div>
+
+        <h3 className="dashboard-section-title">بزرگ‌ترین بهبود (هفتگی)</h3>
+        {executiveReport.biggestImprovement && executiveReport.biggestImprovementExplanation ? (
+          <div className="dashboard-insight dashboard-insight-positive">
+            <p><strong>مشاهده‌شده:</strong> {executiveReport.biggestImprovementExplanation.observed}</p>
+            {executiveReport.biggestImprovementExplanation.possibleExplanation ? (
+              <p>{executiveReport.biggestImprovementExplanation.possibleExplanation}</p>
+            ) : null}
+            <p>{executiveReport.biggestImprovementExplanation.unknown}</p>
+          </div>
+        ) : (
+          <div className="dashboard-empty-state">
+            <p>داده هفتگی کافی برای این مقایسه هنوز ثبت نشده است.</p>
+          </div>
+        )}
+
+        <h3 className="dashboard-section-title">بزرگ‌ترین افت (هفتگی)</h3>
+        {executiveReport.biggestDecline && executiveReport.biggestDeclineExplanation ? (
+          <div className="dashboard-insight dashboard-insight-critical">
+            <p><strong>مشاهده‌شده:</strong> {executiveReport.biggestDeclineExplanation.observed}</p>
+            {executiveReport.biggestDeclineExplanation.possibleExplanation ? (
+              <p>{executiveReport.biggestDeclineExplanation.possibleExplanation}</p>
+            ) : null}
+            <p>{executiveReport.biggestDeclineExplanation.unknown}</p>
+          </div>
+        ) : (
+          <div className="dashboard-empty-state">
+            <p>داده هفتگی کافی برای این مقایسه هنوز ثبت نشده است.</p>
+          </div>
+        )}
+
+        <h3 className="dashboard-section-title">مهم‌ترین اقدام پیشنهادی</h3>
+        {executiveReport.mostImportantAction ? (
+          <div className="dashboard-insight">{executiveReport.mostImportantAction.message}</div>
+        ) : (
+          <div className="dashboard-empty-state">
+            <p>داده کافی برای تعیین یک اقدام واحد وجود ندارد.</p>
+          </div>
+        )}
+
+        <h3 className="dashboard-section-title">تازگی داده</h3>
+        <p className="dashboard-card-hint">
+          {executiveReport.dataFreshness.lastSyncedAt
+            ? `آخرین عکس‌فوری تاریخی: ${executiveReport.dataFreshness.lastSyncedAt.slice(0, 10)} — ${executiveReport.dataFreshness.snapshotCount} عکس‌فوری واقعی ثبت‌شده`
+            : "هنوز هیچ عکس‌فوری تاریخی واقعی ثبت نشده است."}
+          {!executiveReport.dataFreshness.hasEnoughHistory ? " — داده تاریخی کافی برای روند هفتگی/ماهانه هنوز وجود ندارد." : ""}
+        </p>
+        <DataTable
+          rows={executiveReport.systemStatus}
+          getRowKey={(row) => row.label}
+          emptyMessage="اطلاعاتی ثبت نشده است."
+          columns={[
+            { key: "label", label: "سرویس", render: (row) => row.label },
+            { key: "status", label: "وضعیت", render: (row) => (row.status === "connected" ? "متصل" : "متصل نیست") },
+            { key: "detail", label: "جزئیات", render: (row) => row.detail },
+          ]}
+        />
+      </section>
 
       <section className="dashboard-section">
         <h2 className="dashboard-section-title">خلاصه اجرایی</h2>
