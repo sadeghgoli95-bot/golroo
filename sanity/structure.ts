@@ -16,7 +16,10 @@ export const structure: StructureResolver = (S) =>
               S.document()
                 .documentId(documentId)
                 .schemaType('article')
-                .views([S.view.form().title('ویرایش'), S.view.component(PublishingChecklistView).title('چک‌لیست انتشار')])
+                .views([
+                  S.view.form().title('ویرایش'),
+                  S.view.component(PublishingChecklistView).id('publishing-checklist').title('چک‌لیست انتشار'),
+                ])
             )
         ),
       ...S.documentTypeListItems().filter((item) => item.getId() !== 'siteSettings' && item.getId() !== 'article'),
