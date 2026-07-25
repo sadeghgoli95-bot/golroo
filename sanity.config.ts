@@ -12,6 +12,8 @@ import {structureTool} from 'sanity/structure'
 import {apiVersion, dataset, projectId} from './sanity/env'
 import {schema} from './sanity/schemaTypes'
 import {structure} from './sanity/structure'
+import {DeleteArticleAction} from './sanity/actions/DeleteArticleAction'
+import {DuplicateArticleAction} from './sanity/actions/DuplicateArticleAction'
 
 export default defineConfig({
   basePath: '/studio',
@@ -25,4 +27,15 @@ export default defineConfig({
     // https://www.sanity.io/docs/the-vision-plugin
     visionTool({defaultApiVersion: apiVersion}),
   ],
+  document: {
+    // Only the article document type gets the custom delete/duplicate
+    // actions — every other document type keeps Sanity's normal defaults,
+    // per "do not modify other pages/schema" in the delete-article task.
+    actions: (prev, context) => {
+      if (context.schemaType !== 'article') return prev
+      return prev
+        .filter((action) => action.action !== 'delete' && action.action !== 'duplicate')
+        .concat([DeleteArticleAction, DuplicateArticleAction])
+    },
+  },
 })

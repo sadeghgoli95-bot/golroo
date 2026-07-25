@@ -42,13 +42,6 @@ function breakdownColumns() {
   ];
 }
 
-function breakdownSortValue(row: ConversionRateBreakdownRow, key: string): number | string {
-  if (key === "segment") return row.segment;
-  if (key === "sessions") return row.sessions;
-  if (key === "conversionPageViews") return row.conversionPageViews;
-  return row.conversionRate;
-}
-
 export default async function ConversionsPage() {
   const repository = createArticleRepository();
   const analyses = await getSiteAnalysis(repository);
