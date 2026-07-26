@@ -4,15 +4,15 @@ import { resolveDateRange } from "../dateRange";
 import { getConversionSummary } from "./conversionSummary";
 import { getConversionFunnel } from "./funnel";
 import { getContentAttribution } from "./contentAttribution";
-import { getExitRateInsights } from "./businessInsights";
+import { getBounceRateInsights } from "./businessInsights";
 import { getConversionTrends } from "./trends";
-import type { ConversionSummary, FunnelStage, ContentAttributionRow, ExitRateRow, ConversionTrends } from "./types";
+import type { ConversionSummary, FunnelStage, ContentAttributionRow, BounceRateRow, ConversionTrends } from "./types";
 
 export type ConversionInsights = {
   summary: ConversionSummary;
   funnel: FunnelStage[];
   contentAttribution: ContentAttributionRow[];
-  exitRates: ExitRateRow[];
+  bounceRates: BounceRateRow[];
   trends: ConversionTrends;
 };
 
@@ -28,14 +28,14 @@ export type SafeConversionResult = { data: ConversionInsights | null; error: str
 export async function getConversionInsightsSafely(range: DateRange, analyses: ArticleAnalysis[]): Promise<SafeConversionResult> {
   try {
     const bounds = resolveDateRange(range);
-    const [summary, funnel, contentAttribution, exitRates, trends] = await Promise.all([
+    const [summary, funnel, contentAttribution, bounceRates, trends] = await Promise.all([
       getConversionSummary(bounds),
       getConversionFunnel(bounds),
       getContentAttribution(bounds, analyses),
-      getExitRateInsights(bounds),
+      getBounceRateInsights(bounds),
       getConversionTrends(bounds),
     ]);
-    return { data: { summary, funnel, contentAttribution, exitRates, trends }, error: null };
+    return { data: { summary, funnel, contentAttribution, bounceRates, trends }, error: null };
   } catch (error) {
     return { data: null, error: error instanceof Error ? error.message : String(error) };
   }

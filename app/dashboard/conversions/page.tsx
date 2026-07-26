@@ -22,7 +22,7 @@ import {
   getSuddenConversionDrop,
 } from "@/lib/analytics/conversion/businessInsights";
 import type { DateRange } from "@/lib/analytics/types";
-import type { ConversionRateBreakdownRow, ContentAttributionRow, ExitRateRow } from "@/lib/analytics/conversion/types";
+import type { ConversionRateBreakdownRow, ContentAttributionRow, BounceRateRow } from "@/lib/analytics/conversion/types";
 
 const LAST_30_DAYS: DateRange = { preset: "last30Days", start: null, end: null };
 
@@ -66,7 +66,7 @@ export default async function ConversionsPage() {
     );
   }
 
-  const { summary, funnel, contentAttribution, exitRates, trends } = conversion.data;
+  const { summary, funnel, contentAttribution, bounceRates, trends } = conversion.data;
   const engagementMismatch = getEngagementConversionMismatch(contentAttribution);
   const ctaSuggestions = getCtaSuggestions(contentAttribution);
   const lowestConvertingHighTraffic = getLowestConvertingHighTraffic(contentAttribution);
@@ -215,14 +215,16 @@ export default async function ConversionsPage() {
         <h3 className="dashboard-section-title">فرصت درآمدی</h3>
         <NotAvailableBlock reason={NO_REVENUE_DATA_REASON} />
 
-        <h3 className="dashboard-section-title">نرخ خروج بالاترین صفحات (واقعی)</h3>
+        <h3 className="dashboard-section-title">نرخ پرش بالاترین صفحات (واقعی)</h3>
+        <p className="dashboard-card-hint">
+          GA4 معیاری به نام «نرخ خروج» (Exit Rate) ندارد — آن مفهوم مخصوص Universal Analytics بود. نزدیک‌ترین معیار واقعی و در دسترس GA4، نرخ پرش (Bounce Rate) است.
+        </p>
         <DataTable
-          rows={exitRates}
+          rows={bounceRates}
           columns={[
-            { key: "page", label: "صفحه", render: (row: ExitRateRow) => row.page },
-            { key: "pageViews", label: "بازدید", render: (row: ExitRateRow) => row.pageViews },
-            { key: "exits", label: "خروج", render: (row: ExitRateRow) => row.exits },
-            { key: "exitRate", label: "نرخ خروج", render: (row: ExitRateRow) => formatPercent(row.exitRate) },
+            { key: "page", label: "صفحه", render: (row: BounceRateRow) => row.page },
+            { key: "pageViews", label: "بازدید", render: (row: BounceRateRow) => row.pageViews },
+            { key: "bounceRate", label: "نرخ پرش", render: (row: BounceRateRow) => formatPercent(row.bounceRate) },
           ]}
           getRowKey={(row, index) => `${row.page}-${index}`}
           emptyMessage="داده‌ای وجود ندارد."

@@ -1,33 +1,34 @@
 import { runReport } from "@/lib/google/ga4Client";
 import type { IsoDateRange } from "../dateRange";
 import { compareValues, type ComparisonResult } from "../comparison";
-import type { ContentAttributionRow, ExitRateRow, CtaSuggestion, ConversionPageViews } from "./types";
+import type { ContentAttributionRow, BounceRateRow, CtaSuggestion, ConversionPageViews } from "./types";
 
-const EXIT_ROW_LIMIT = 20;
+const BOUNCE_ROW_LIMIT = 20;
 
 /**
- * Real per-page exit rate — "exits" and "screenPageViews" are both real,
- * queryable GA4 Data API metrics; exitRate here is a derived ratio of two
- * real numbers, not a metric GA4 exposes directly by name (the API has no
- * "exitRate" metric), so this module computes it rather than relying on
- * one that doesn't exist.
+ * Real per-page bounce rate. GA4 Data API has no "exits" metric and no
+ * "Exit Rate" concept (that's Universal Analytics) — a prior version of
+ * this function queried a nonexistent "exits" metric and GA4 rejected the
+ * request outright. `bounceRate` is a real, valid GA4 Data API metric and
+ * is returned already as a 0-100 percent by the API, so no derived ratio
+ * is computed here.
  */
-export async function getExitRateInsights(range: IsoDateRange): Promise<ExitRateRow[]> {
+export async function getBounceRateInsights(range: IsoDateRange): Promise<BounceRateRow[]> {
   const rows = await runReport({
     startDate: range.start,
     endDate: range.end,
     dimensions: ["pagePath"],
-    metrics: ["exits", "screenPageViews"],
-    limit: EXIT_ROW_LIMIT,
+    metrics: ["bounceRate", "screenPageViews"],
+    limit: BOUNCE_ROW_LIMIT,
   });
 
   return rows
-    .map((row) => {
-      const pageViews = row.metrics.screenPageViews ?? 0;
-      const exits = row.metrics.exits ?? 0;
-      return { page: row.dimensions.pagePath ?? "", pageViews, exits, exitRate: pageViews > 0 ? (exits / pageViews) * 100 : 0 };
-    })
-    .sort((a, b) => b.exitRate - a.exitRate);
+    .map((row) => ({
+      page: row.dimensions.pagePath ?? "",
+      pageViews: row.metrics.screenPageViews ?? 0,
+      bounceRate: (row.metrics.bounceRate ?? 0) * 100,
+    }))
+    .sort((a, b) => b.bounceRate - a.bounceRate);
 }
 
 /**

@@ -70,12 +70,17 @@ export type ContentAttributionRow = {
   estimatedScore: number;
 };
 
-export type ExitRateRow = {
+/**
+ * GA4 Data API has no "exits"/"Exit Rate" metric — that's a Universal
+ * Analytics concept with no GA4 equivalent. `bounceRate` is the closest
+ * real, queryable GA4 metric for "this page didn't hold the visitor," so
+ * this reports bounce rate per page instead of a fabricated exit rate.
+ */
+export type BounceRateRow = {
   page: string;
   pageViews: number;
-  exits: number;
-  /** Percent: exits / pageViews * 100. */
-  exitRate: number;
+  /** Percent, 0-100 — GA4's real bounceRate metric for this page. */
+  bounceRate: number;
 };
 
 export type CtaSuggestion = {

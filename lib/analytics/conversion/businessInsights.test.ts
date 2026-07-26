@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import type { Ga4Row } from "@/lib/google/ga4Client";
 import type { ContentAttributionRow, ConversionPageViews } from "./types";
 import {
-  getExitRateInsights,
+  getBounceRateInsights,
   getEngagementConversionMismatch,
   getCtaSuggestions,
   getLowestConvertingHighTraffic,
@@ -31,27 +31,31 @@ function row(overrides: Partial<ContentAttributionRow>): ContentAttributionRow {
   };
 }
 
-describe("getExitRateInsights", () => {
+describe("getBounceRateInsights", () => {
   beforeEach(() => {
     runReportMock.mockReset();
   });
 
-  it("computes exitRate as exits/screenPageViews * 100, sorted descending", async () => {
+  it("queries the real GA4 bounceRate metric (not a nonexistent 'exits' metric) and converts it to a 0-100 percent, sorted descending", async () => {
     runReportMock.mockResolvedValue([
-      { dimensions: { pagePath: "/a" }, metrics: { exits: 10, screenPageViews: 100 } },
-      { dimensions: { pagePath: "/b" }, metrics: { exits: 50, screenPageViews: 100 } },
+      { dimensions: { pagePath: "/a" }, metrics: { bounceRate: 0.1, screenPageViews: 100 } },
+      { dimensions: { pagePath: "/b" }, metrics: { bounceRate: 0.5, screenPageViews: 100 } },
     ]);
 
-    const rows = await getExitRateInsights({ start: "2021-01-01", end: "2021-01-31" });
+    const rows = await getBounceRateInsights({ start: "2021-01-01", end: "2021-01-31" });
+
+    expect(runReportMock).toHaveBeenCalledWith(
+      expect.objectContaining({ metrics: ["bounceRate", "screenPageViews"] })
+    );
     expect(rows[0].page).toBe("/b");
-    expect(rows[0].exitRate).toBeCloseTo(50, 5);
-    expect(rows[1].exitRate).toBeCloseTo(10, 5);
+    expect(rows[0].bounceRate).toBeCloseTo(50, 5);
+    expect(rows[1].bounceRate).toBeCloseTo(10, 5);
   });
 
-  it("never divides by zero when a page has zero pageviews", async () => {
-    runReportMock.mockResolvedValue([{ dimensions: { pagePath: "/a" }, metrics: { exits: 0, screenPageViews: 0 } }]);
-    const rows = await getExitRateInsights({ start: "2021-01-01", end: "2021-01-31" });
-    expect(rows[0].exitRate).toBe(0);
+  it("defaults to zero when a page has no bounceRate data", async () => {
+    runReportMock.mockResolvedValue([{ dimensions: { pagePath: "/a" }, metrics: { screenPageViews: 0 } }]);
+    const rows = await getBounceRateInsights({ start: "2021-01-01", end: "2021-01-31" });
+    expect(rows[0].bounceRate).toBe(0);
   });
 });
 
