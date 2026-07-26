@@ -6,7 +6,12 @@
  * unavailable, reported as such (see lib/dashboard/getSystemStatus.ts),
  * never silently defaulted.
  */
-export function getGoogleServiceAccountKeyPath(): string | null {
+/**
+ * Raw value only — either a local file path or a raw JSON credentials
+ * blob, depending on environment. See lib/google/credentials.ts for the
+ * logic that tells the two apart; nothing here parses or validates it.
+ */
+export function getGoogleServiceAccountKeyRaw(): string | null {
   return process.env.GOOGLE_SERVICE_ACCOUNT_KEY || null;
 }
 
@@ -19,9 +24,9 @@ export function getGa4PropertyId(): string | null {
 }
 
 export function isGoogleAnalyticsConfigured(): boolean {
-  return Boolean(getGoogleServiceAccountKeyPath() && getGa4PropertyId());
+  return Boolean(getGoogleServiceAccountKeyRaw() && getGa4PropertyId());
 }
 
 export function isSearchConsoleConfigured(): boolean {
-  return Boolean(getGoogleServiceAccountKeyPath() && getGscSiteUrl());
+  return Boolean(getGoogleServiceAccountKeyRaw() && getGscSiteUrl());
 }
