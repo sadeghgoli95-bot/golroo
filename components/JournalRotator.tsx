@@ -5,15 +5,17 @@ import Link from "next/link";
 import Container from "./Container";
 import { client } from "@/sanity/lib/client";
 import { articlesQuery } from "@/sanity/lib/queries";
-import JournalCard, { type ArticlePreview } from "./Journal/JournalCard";
+import type { ArticlePreview } from "./Journal/JournalCard";
+import { normalizePersianText } from "@/lib/utils/textNormalize";
+import useReducedMotion from "@/hooks/useReducedMotion";
 
 type Article = ArticlePreview & { _id: string };
 
-const VISIBLE_COUNT = 4;
-const ROTATE_INTERVAL_MS = 10000;
-const EXIT_DURATION_MS = 400;
+const VISIBLE_COUNT = 3;
+const ROTATE_INTERVAL_MS = 5000;
+const EXIT_DURATION_MS = 350;
 const TOUCH_RESUME_DELAY_MS = 3000;
-const CARD_STAGGER_MS = 80;
+const ROW_STAGGER_MS = 70;
 
 // There's no view/analytics tracking in this codebase, so "most-read" is
 // approximated with a recency-tier proxy (newest / mid / older) rather than
@@ -61,7 +63,12 @@ function sameSet(a: Article[], b: Set<string>): boolean {
   return a.every((article) => b.has(article._id));
 }
 
-function pickFour(articles: Article[], previousIds: Set<string>): Article[] {
+/**
+ * A stable selection per interval (not a reshuffle every render), biased
+ * toward recent articles, that avoids repeating the exact previous set —
+ * see the module comment on weightedPool for what "most-read" approximates.
+ */
+function pickVisible(articles: Article[], previousIds: Set<string>): Article[] {
   if (articles.length <= VISIBLE_COUNT) return articles;
 
   const weighted = weightedPool(articles);
@@ -74,44 +81,69 @@ function pickFour(articles: Article[], previousIds: Set<string>): Article[] {
   return picked;
 }
 
+function categoryLabel(article: Article): string {
+  const raw = (typeof article.category === "string" ? article.category : article.category?.title) || article.topic || "";
+  return normalizePersianText(raw);
+}
+
+function metaLabel(article: Article): string {
+  const parts: string[] = [];
+  if (article.readingTime) parts.push(`${article.readingTime} دقیقه مطالعه`);
+  if (article.publishedAt) parts.push(new Date(article.publishedAt).toLocaleDateString("fa-IR"));
+  return parts.join(" · ");
+}
+
 export default function JournalRotator() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [displayed, setDisplayed] = useState<Article[]>([]);
   const [entered, setEntered] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
+  const reducedMotion = useReducedMotion();
 
   const previousIdsRef = useRef<Set<string>>(new Set());
   const resumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Fetched once on mount — rotation afterward only re-samples this
+  // already-fetched array locally, it never re-queries Sanity.
   useEffect(() => {
     client.fetch<Article[]>(articlesQuery).then((data) => {
       setArticles(data);
-      const initial = pickFour(data, new Set());
+      const initial = pickVisible(data, new Set());
       previousIdsRef.current = new Set(initial.map((a) => a._id));
       setDisplayed(initial);
     });
   }, []);
 
   const rotate = useCallback(() => {
-    setEntered(false); // trigger fade-out + move-down
+    if (reducedMotion) {
+      setArticles((current) => {
+        const next = pickVisible(current, previousIdsRef.current);
+        previousIdsRef.current = new Set(next.map((a) => a._id));
+        setDisplayed(next);
+        return current;
+      });
+      return;
+    }
+
+    setEntered(false); // trigger fade-out + subtle horizontal displacement
 
     exitTimeoutRef.current = setTimeout(() => {
       setArticles((current) => {
-        const next = pickFour(current, previousIdsRef.current);
+        const next = pickVisible(current, previousIdsRef.current);
         previousIdsRef.current = new Set(next.map((a) => a._id));
         setDisplayed(next);
         return current;
       });
 
-      // Two rAFs: let the new (offset) cards paint once before animating
+      // Two rAFs: let the new (offset) rows paint once before animating
       // them back to their resting position, so the browser doesn't
       // collapse the transition into a no-op.
       requestAnimationFrame(() => {
         requestAnimationFrame(() => setEntered(true));
       });
     }, EXIT_DURATION_MS);
-  }, []);
+  }, [reducedMotion]);
 
   useEffect(() => {
     if (isPaused || articles.length === 0) return;
@@ -126,8 +158,8 @@ export default function JournalRotator() {
     };
   }, []);
 
-  const handleMouseEnter = () => setIsPaused(true);
-  const handleMouseLeave = () => setIsPaused(false);
+  const pause = () => setIsPaused(true);
+  const resume = () => setIsPaused(false);
 
   const handleTouchStart = () => {
     if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
@@ -140,90 +172,67 @@ export default function JournalRotator() {
   };
 
   return (
-    <section
-      className="section"
-      style={{ background: "var(--bg-soft)" }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchEnd}
-    >
+    <section className="section journal-editorial">
       <Container>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "end",
-            marginBottom: 70,
-            flexWrap: "wrap",
-            gap: 24,
-          }}
-        >
+        <div className="journal-editorial-header">
           <div>
-            <div
-              style={{
-                color: "var(--bronze)",
-                fontSize: 13,
-                letterSpacing: ".22em",
-                marginBottom: 18,
-              }}
-            >
-              JOURNAL
-            </div>
-
-            <h2
-              style={{
-                fontSize: "clamp(2.4rem,4vw,3.6rem)",
-                fontWeight: 400,
-                lineHeight: 1.7,
-                maxWidth: 780,
-              }}
-            >
+            <p className="overline">JOURNAL</p>
+            <h2 className="journal-editorial-title">
               اگر قرار باشد فقط یک بخش از این سایت را بخوانید،
-              <br />
+              <br className="hero-break" />
               از اینجا شروع کنید.
             </h2>
-
-            <p
-              style={{
-                marginTop: 24,
-                maxWidth: 600,
-                fontSize: 17,
-                color: "var(--text-muted)",
-                lineHeight: 2,
-              }}
-            >
-              این نوشته‌ها حاصل سال‌ها مطالعه، تجربهٔ بالینی و فکر کردن به دنیای کودکان‌اند؛ برای والدینی که می‌خواهند فراتر از توصیه‌های آماده، فرزندشان را عمیق‌تر بفهمند.
-            </p>
           </div>
 
-          <Link
-            href="/journal"
-            style={{
-              color: "var(--bronze)",
-              fontSize: 16,
-            }}
-          >
-            مشاهده همه یادداشت‌ها →
+          <Link href="/journal" className="btn-text journal-editorial-link">
+            مشاهده همه یادداشت‌ها
           </Link>
         </div>
 
-        <div className="journal-rotator-grid">
-          {displayed.map((article, index) => (
-            <div
-              key={article._id}
-              className="journal-rotator-card-anim"
-              style={{
-                height: "100%",
-                opacity: entered ? 1 : 0,
-                transform: entered ? "translateY(0)" : "translateY(10px)",
-                transitionDelay: entered ? `${index * CARD_STAGGER_MS}ms` : "0ms",
-              }}
-            >
-              <JournalCard item={article} compact />
-            </div>
-          ))}
+        <div
+          className="journal-rotator-list"
+          onMouseEnter={pause}
+          onMouseLeave={resume}
+          onFocus={pause}
+          onBlur={resume}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
+        >
+          {displayed.map((article, index) => {
+            const slug = typeof article.slug === "string" ? article.slug : article.slug.current;
+            const title = normalizePersianText(article.title);
+            const excerpt = normalizePersianText(article.excerpt);
+            const category = categoryLabel(article);
+            const meta = metaLabel(article);
+
+            return (
+              <Link
+                key={article._id}
+                href={`/journal/${slug}`}
+                className="journal-row"
+                style={
+                  reducedMotion
+                    ? undefined
+                    : {
+                        opacity: entered ? 1 : 0,
+                        transform: entered ? "translateX(0)" : "translateX(12px)",
+                        transitionDelay: entered ? `${index * ROW_STAGGER_MS}ms` : "0ms",
+                      }
+                }
+              >
+                <div className="journal-row-meta">
+                  {category && <span className="journal-row-topic">{category}</span>}
+                  {meta && <span className="journal-row-date">{meta}</span>}
+                </div>
+                <div className="journal-row-body">
+                  <h3 className="journal-row-title">{title}</h3>
+                  {excerpt && <p className="journal-row-excerpt">{excerpt}</p>}
+                </div>
+                <span className="journal-row-arrow" aria-hidden="true">→</span>
+              </Link>
+            );
+          })}
         </div>
       </Container>
     </section>

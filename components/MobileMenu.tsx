@@ -2,11 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { navLinks } from "./navLinks";
 import SearchOverlay from "./Search/SearchOverlay";
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
   const panelRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -73,7 +75,8 @@ export default function MobileMenu() {
           background: "none",
           border: "none",
           cursor: "pointer",
-          padding: "8px",
+          minWidth: "44px",
+          minHeight: "44px",
           flexDirection: "column",
           gap: "5px",
           alignItems: "center",
@@ -119,7 +122,7 @@ export default function MobileMenu() {
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(26,23,20,.4)",
+            background: "var(--overlay)",
             zIndex: 998,
           }}
         />
@@ -153,24 +156,28 @@ export default function MobileMenu() {
           <SearchOverlay />
         </div>
 
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            onClick={close}
-            style={{
-              fontSize: "1.4rem",
-              fontWeight: 300,
-              color: "var(--text)",
-              textDecoration: "none",
-              padding: "12px 0",
-              borderBottom: "1px solid var(--line-soft)",
-              display: "block",
-            }}
-          >
-            {link.label}
-          </Link>
-        ))}
+        {navLinks.map((link) => {
+          const isActive = pathname === link.href || pathname?.startsWith(`${link.href}/`);
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={close}
+              aria-current={isActive ? "page" : undefined}
+              style={{
+                fontSize: "1.4rem",
+                fontWeight: 300,
+                color: isActive ? "var(--accent)" : "var(--text)",
+                textDecoration: "none",
+                padding: "12px 0",
+                borderBottom: "1px solid var(--line-soft)",
+                display: "block",
+              }}
+            >
+              {link.label}
+            </Link>
+          );
+        })}
 
         <Link
           href="/appointment"

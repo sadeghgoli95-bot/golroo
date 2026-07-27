@@ -9,6 +9,7 @@ import type { DashboardNavItem } from "./types";
 export const dashboardNavigation: DashboardNavItem[] = [
   { label: "نمای کلی", href: "/dashboard", icon: "dashboard" },
   { label: "مرکز فرماندهی", href: "/dashboard/command-center", icon: "command-center" },
+  { label: "جذب مخاطب", href: "/dashboard/acquisition", icon: "growth" },
   { label: "تحلیل محتوا", href: "/dashboard/content-analytics", icon: "content" },
   { label: "سئو", href: "/dashboard/seo", icon: "seo" },
   { label: "هوش جستجو", href: "/dashboard/search-intelligence", icon: "search" },

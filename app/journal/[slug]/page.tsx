@@ -2,20 +2,29 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { client } from "@/sanity/lib/client";
-import { articleQuery } from "@/sanity/lib/queries";
+import { articleQuery, relatedArticlesQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import { PortableText } from "next-sanity";
 import { articlePortableTextComponents } from "@/components/Article/portableTextComponents";
 import ArticleHeader from "@/components/Article/ArticleHeader";
 import ArticleBody from "@/components/Article/ArticleBody";
 import ArticleFooter from "@/components/Article/ArticleFooter";
+import ArticleToc from "@/components/Article/ArticleToc";
+import RelatedArticles from "@/components/Article/RelatedArticles";
+import ArticleCta from "@/components/Article/ArticleCta";
 import Navbar from "@/components/Navbar";
 import Breadcrumb from "@/components/Breadcrumb";
+import ReadingProgress from "@/components/ReadingProgress";
 import { JsonLd, articleJsonLd, breadcrumbJsonLd, faqPageJsonLd, organizationJsonLd, speakableJsonLd } from "@/components/Seo/JsonLd";
 import { siteConfig } from "@/lib/siteConfig";
 import { SITE_URL } from "@/lib/seo/site";
 import { normalizePersianText, normalizePortableTextBlocks } from "@/lib/utils/textNormalize";
+import { extractPortableTextHeadings } from "@/lib/utils/extractPortableTextHeadings";
+import { buildTableOfContents } from "@/lib/content-pipeline/tableOfContents";
+import type { ArticlePreview } from "@/components/Journal/JournalCard";
 import type { Metadata } from "next";
+
+const MIN_HEADINGS_FOR_TOC = 3;
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -59,6 +68,11 @@ export default async function ArticlePage({ params }: Props) {
 
   if (!rawArticle) notFound();
 
+  const categorySlug = rawArticle.category?.slug?.current;
+  const relatedArticles = categorySlug
+    ? await client.fetch<(ArticlePreview & { _id: string })[]>(relatedArticlesQuery, { slug, categorySlug })
+    : [];
+
   const article = {
     ...rawArticle,
     title: normalizePersianText(rawArticle.title),
@@ -98,8 +112,12 @@ export default async function ArticlePage({ params }: Props) {
 
   const ogImageSource = article.seo?.ogImage || article.featuredImage;
 
+  const headings = extractPortableTextHeadings(article.body);
+  const toc = headings.length >= MIN_HEADINGS_FOR_TOC ? buildTableOfContents(headings) : [];
+
   return (
     <>
+      <ReadingProgress />
       <Navbar />
       <main dir="rtl">
         <JsonLd
@@ -173,6 +191,7 @@ export default async function ArticlePage({ params }: Props) {
         )}
 
         <div className="article-container">
+        <ArticleToc items={toc} />
         <ArticleBody>
           {article.window && (
             <div
@@ -363,7 +382,14 @@ export default async function ArticlePage({ params }: Props) {
             </div>
           )}
         </ArticleBody>
+        <ArticleCta />
         </div>
+
+        {relatedArticles.length > 0 && (
+          <div className="article-container">
+            <RelatedArticles articles={relatedArticles} />
+          </div>
+        )}
 
         <div className="article-container" style={{ paddingBottom: "8rem" }}>
           <ArticleFooter />

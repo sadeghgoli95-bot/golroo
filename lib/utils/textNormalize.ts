@@ -32,14 +32,27 @@ const ZWNJ = "‌"; // U+200C half-space
 const ZERO_WIDTH_SPACE = "​"; // U+200B
 const BOM = "﻿"; // U+FEFF
 const SOFT_HYPHEN = "­"; // U+00AD
-// Arabic combining diacritics (tashkeel): fatha, damma, kasra, tanwin
-// variants, shadda, sukun, and the standalone superscript alef (U+0670).
-const ARABIC_DIACRITICS_RANGE = "ً-ْٰ";
+// Arabic combining diacritics (tashkeel) that are genuinely optional/
+// inconsistent vowel-pointing in Persian prose: fatha, damma, kasra,
+// shadda, sukun, and the standalone superscript alef (U+0670). Tanwin
+// (ً ٌ ٍ, U+064B-064D) is deliberately EXCLUDED from this display-safe
+// range — in Persian it isn't decorative vocalization, it's the fixed,
+// correct spelling of a whole class of common adverbs (دقیقاً، واقعاً،
+// مثلاً، لطفاً، کاملاً...); stripping it silently misspells those words.
+// This was the root cause of a real SSR/client text mismatch on
+// OpeningLetter.tsx's "دقیقاً" — PersianTextNormalizer (client-only, see
+// components/PersianTextNormalizer.tsx) was stripping the tanwin from
+// static copy that server rendering left untouched. FULL_ARABIC_DIACRITICS_RANGE
+// below (tanwin included) stays available for the lossy comparison-only
+// fold, where collapsing دقیقاً/دقیقا to the same match is desirable.
+const ARABIC_DIACRITICS_RANGE = "َ-ْٰ";
+const FULL_ARABIC_DIACRITICS_RANGE = "ً-ْٰ";
 
 const YEH_RE = new RegExp(ARABIC_YEH, "g");
 const KAF_RE = new RegExp(ARABIC_KAF, "g");
 const INVISIBLE_RE = new RegExp(`[${ZERO_WIDTH_SPACE}${BOM}${SOFT_HYPHEN}]`, "g");
 const DIACRITICS_RE = new RegExp(`[${ARABIC_DIACRITICS_RANGE}]`, "g");
+const FULL_DIACRITICS_RE = new RegExp(`[${FULL_ARABIC_DIACRITICS_RANGE}]`, "g");
 const MULTI_ZWNJ_RE = new RegExp(`${ZWNJ}{2,}`, "g");
 const ZWNJ_ADJACENT_SPACE_RE = new RegExp(`[ \\t]*${ZWNJ}[ \\t]*`, "g");
 const CODE_FENCE_RE = /^```/;
@@ -120,10 +133,13 @@ export function normalizePersianText(input?: string | null): string {
 /**
  * Lossy fold for comparison-only use (search matching, keyword/duplicate
  * detection). Converts ZWNJ to a plain space and lowercases — never use
- * the result for anything stored or displayed.
+ * the result for anything stored or displayed. Unlike the display-safe
+ * path, this also folds away tanwin (FULL_DIACRITICS_RE) so a search for
+ * "دقیقا" still matches content spelled "دقیقاً" — comparison wants
+ * maximum leniency even though display must keep the correct spelling.
  */
 export function foldPersianText(input: string): string {
-  return foldDigitsToAscii(foldGlyphsAndInvisibles(input))
+  return foldDigitsToAscii(foldGlyphsAndInvisibles(input).replace(FULL_DIACRITICS_RE, ""))
     .replace(new RegExp(ZWNJ, "g"), " ")
     .replace(/\s+/g, " ")
     .trim()

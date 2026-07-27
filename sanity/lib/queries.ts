@@ -33,6 +33,13 @@ export const articleQuery = groq`
   }
 `
 
+export const relatedArticlesQuery = groq`
+  *[_type == "article" && status != "draft" && slug.current != $slug && category->slug.current == $categorySlug]
+  | order(publishedAt desc) [0...3]{
+    ${articleCardProjection}
+  }
+`
+
 // ---------- Category ----------
 
 export const categoryBySlugQuery = groq`

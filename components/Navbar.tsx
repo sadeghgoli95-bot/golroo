@@ -1,12 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Container from "./Container";
 import SearchOverlay from "./Search/SearchOverlay";
 import MobileMenu from "./MobileMenu";
 import { navLinks } from "./navLinks";
 
 export default function Navbar() {
+  const pathname = usePathname();
+
   return (
     <header
       style={{
@@ -17,7 +20,7 @@ export default function Navbar() {
         zIndex: 999,
         backdropFilter: "blur(18px)",
         background: "color-mix(in srgb, var(--bg) 95%, transparent)",
-        borderBottom: "1px solid rgba(212,167,106,.2)",
+        borderBottom: "1px solid var(--line-soft)",
       }}
     >
       <Container>
@@ -42,25 +45,29 @@ export default function Navbar() {
           </Link>
 
           <nav className="desktop-nav" aria-label="ناوبری اصلی">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                style={{
-                  color: "var(--text-muted)",
-                  transition: ".2s ease-out",
-                  textDecoration: "none",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = "var(--accent)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = "var(--text-muted)";
-                }}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href || pathname?.startsWith(`${link.href}/`);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={isActive ? "page" : undefined}
+                  className="navbar-link"
+                  style={{
+                    color: isActive ? "var(--accent)" : "var(--text-muted)",
+                    textDecoration: "none",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) e.currentTarget.style.color = "var(--accent)";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) e.currentTarget.style.color = "var(--text-muted)";
+                  }}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
             <SearchOverlay />
           </nav>
 

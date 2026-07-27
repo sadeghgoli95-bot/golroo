@@ -15,6 +15,7 @@ import {
 } from "@/sanity/lib/queries";
 import { formatArticleCount } from "@/lib/utils/persian";
 import { siteConfig } from "@/lib/siteConfig";
+import { normalizePersianText } from "@/lib/utils/textNormalize";
 
 const PAGE_SIZE = 12;
 
@@ -24,10 +25,16 @@ type Props = {
 };
 
 async function getCategory(slug: string) {
-  return client.fetch<{ title: string; description?: string; slug: { current: string } } | null>(
+  const category = await client.fetch<{ title: string; description?: string; slug: { current: string } } | null>(
     categoryBySlugQuery,
     { slug }
   );
+  if (!category) return category;
+  return {
+    ...category,
+    title: normalizePersianText(category.title),
+    description: category.description ? normalizePersianText(category.description) : category.description,
+  };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

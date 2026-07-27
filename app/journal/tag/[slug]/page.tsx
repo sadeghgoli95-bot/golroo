@@ -18,6 +18,7 @@ import {
 } from "@/sanity/lib/queries";
 import { formatArticleCount } from "@/lib/utils/persian";
 import { siteConfig } from "@/lib/siteConfig";
+import { normalizePersianText } from "@/lib/utils/textNormalize";
 
 const PAGE_SIZE = 12;
 
@@ -29,7 +30,13 @@ type Props = {
 };
 
 async function getTag(slug: string) {
-  return client.fetch<Tag | null>(tagBySlugQuery, { slug });
+  const tag = await client.fetch<Tag | null>(tagBySlugQuery, { slug });
+  if (!tag) return tag;
+  return {
+    ...tag,
+    title: normalizePersianText(tag.title),
+    description: tag.description ? normalizePersianText(tag.description) : tag.description,
+  };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -71,7 +78,7 @@ async function getRelatedTags(slug: string, currentTitle: string) {
       if (existing) {
         existing.count += 1;
       } else {
-        counts.set(tag.slug.current, { title: tag.title, slug: tag.slug.current, count: 1 });
+        counts.set(tag.slug.current, { title: normalizePersianText(tag.title), slug: tag.slug.current, count: 1 });
       }
     }
   }
@@ -87,7 +94,7 @@ async function getRelatedTags(slug: string, currentTitle: string) {
       if (related.length >= 8) break;
       if (tag.slug.current === slug) continue;
       if (related.some((r) => r.slug === tag.slug.current)) continue;
-      related.push({ title: tag.title, slug: tag.slug.current, count: tag.count });
+      related.push({ title: normalizePersianText(tag.title), slug: tag.slug.current, count: tag.count });
     }
   }
 

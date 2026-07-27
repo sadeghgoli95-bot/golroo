@@ -4,27 +4,39 @@
    DESIGN TOKENS
 ========================================= */
 :root {
-  /* Colors — Sunlit Gold */
-  --bg: #FEFEFC;
-  --bg-soft: #FFF8DC;
-  --surface: #FFF8DC;
-  --surface-2: #FFF3C4;
-  --card: #FEFEFC;
-  --text: #1A1714;
-  --text-soft: #4A4540;
-  --text-muted: #7A7068;
-  --text-light: #A09890;
-  --accent: #B8860B;
-  --accent-light: #D4A76A;
-  --accent-dark: #8B6508;
-  --highlight: #FDEE00;
-  --honey: #D4A76A;
-  --line: rgba(212,167,106,.3);
-  --line-soft: rgba(212,167,106,.15);
-  --line-strong: rgba(184,134,11,.4);
-  --shadow-sm: 0 2px 12px rgba(184,134,11,.06);
-  --shadow-md: 0 8px 30px rgba(184,134,11,.08);
-  --overlay: rgba(26,23,20,.4);
+  /* =========================================
+     LOCKED GOLROO BRAND PALETTE — do not deviate.
+     PRIMARY #4B245F · WHITE #FFFFFF · DARK #24152B ·
+     NEUTRAL #C9C1B5 · LIMITED ACCENT #B49A5A.
+     Every other color below is either one of these five values
+     verbatim, or a documented color-mix()/rgba() derivation of one of
+     them (never an invented hue) — see each token's comment. */
+  --brand-primary: #4B245F;
+  --brand-white: #FFFFFF;
+  --brand-dark: #24152B;
+  --brand-neutral: #C9C1B5;
+  --brand-accent-limited: #B49A5A; /* editorial accent only — never a second dominant color */
+
+  --bg: var(--brand-white);
+  --bg-soft: color-mix(in srgb, var(--brand-neutral) 8%, var(--brand-white)); /* derived: 8% neutral into white */
+  --surface: color-mix(in srgb, var(--brand-neutral) 10%, var(--brand-white));
+  --surface-2: color-mix(in srgb, var(--brand-neutral) 16%, var(--brand-white));
+  --card: var(--brand-white);
+  --text: var(--brand-dark);
+  --text-soft: color-mix(in srgb, var(--brand-dark) 82%, var(--brand-white));
+  --text-muted: color-mix(in srgb, var(--brand-dark) 60%, var(--brand-white));
+  --text-light: color-mix(in srgb, var(--brand-dark) 38%, var(--brand-white));
+  --accent: var(--brand-primary);
+  --accent-light: color-mix(in srgb, var(--brand-primary) 65%, var(--brand-white));
+  --accent-dark: var(--brand-dark); /* hover/pressed state — the locked dark plum, not an invented shade */
+  --highlight: color-mix(in srgb, var(--brand-primary) 14%, var(--brand-white)); /* selected/active background */
+  --honey: var(--brand-accent-limited); /* the ONE limited editorial accent — kept sparing via low color-mix % below */
+  --line: rgba(201,193,181,.45); /* --brand-neutral as rgb(201,193,181) */
+  --line-soft: rgba(201,193,181,.22);
+  --line-strong: rgba(75,36,95,.35); /* --brand-primary as rgb(75,36,95) */
+  --shadow-sm: 0 2px 12px rgba(36,21,43,.06); /* --brand-dark as rgb(36,21,43) */
+  --shadow-md: 0 8px 30px rgba(36,21,43,.10);
+  --overlay: rgba(36,21,43,.45);
 
   /* Bridge aliases — tokens used across the stylesheet that aren't part
      of the explicit palette above, mapped onto it for consistency. */
@@ -32,14 +44,17 @@
   --primary: var(--accent);
   --primary-hover: var(--accent-dark);
   --link-hover: var(--accent);
-  --mint: color-mix(in srgb, var(--honey) 30%, var(--bg));
+  --mint: color-mix(in srgb, var(--honey) 22%, var(--bg)); /* soft panel tint — kept light so the limited gold accent stays limited */
   --border: var(--line);
   --divider: var(--line-soft);
   --muted: var(--text-soft);
   --caption: var(--text-light);
-  --bronze: var(--accent); /* overline/label color per spec — gold, not honey */
+  --bronze: var(--accent); /* overline/label color — royal purple, the brand signature */
   --input-bg: var(--card);
 
+  /* Functional dashboard status colors — semantic (success/warning/danger),
+     not brand identity; left outside the locked palette on purpose so
+     alerts keep their universally-understood meaning. */
   --success: #5C6B3F;
   --warning: #A6752E;
   --danger: #A83A3A;
@@ -123,7 +138,11 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
   line-height: 1.15;
   letter-spacing: -0.03em;
-  color: var(--primary);
+  /* Locked palette rule: #24152B (dark plum) is for headings/high-priority
+     text; #4B245F (primary purple) is reserved for labels, links, CTAs and
+     active states — see .overline/.card-category/.button-minimal etc.,
+     which intentionally keep var(--primary)/var(--accent). */
+  color: var(--text);
 }
 
 h1 { font-size: clamp(3.8rem, 8vw, 7rem); }
@@ -271,7 +290,11 @@ summary:focus-visible,
 }
 
 .button-primary:hover, .btn-primary:hover {
-  background: var(--accent-dark);
+  /* Scoped to this button only (not the shared --accent-dark token, which
+     dashboard.css also consumes) — a purple-dominant blend so the primary
+     CTA's hover state still reads as purple instead of going near-black,
+     derived only from the two locked brand hexes, no new hue. */
+  background: color-mix(in srgb, var(--brand-primary) 78%, var(--brand-dark));
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
   opacity: 1;
@@ -280,7 +303,7 @@ summary:focus-visible,
 .button-secondary, .btn-secondary {
   background: transparent;
   color: var(--text-soft);
-  border: 1px solid rgba(212,167,106,.4);
+  border: 1px solid var(--line);
 }
 
 .button-secondary:hover, .btn-secondary:hover {
@@ -310,7 +333,7 @@ summary:focus-visible,
   display: flex;
   flex-direction: column;
   padding: 2.4rem;
-  border: 1px solid rgba(212,167,106,.25);
+  border: 1px solid var(--line-soft);
   border-radius: var(--radius-card);
   background: var(--card);
   transition: transform var(--speed-fast) var(--ease), background var(--speed-fast) var(--ease), border-color var(--speed-fast) var(--ease);
@@ -319,8 +342,8 @@ summary:focus-visible,
 .card:hover {
   transform: translateY(-4px);
   background: var(--surface-2);
-  border-color: var(--honey);
-  box-shadow: 0 4px 20px rgba(184,134,11,.08);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
 }
 
 /* For .card content that isn't a link/button — same panel look,
@@ -336,7 +359,8 @@ summary:focus-visible,
   box-shadow: none;
 }
 
-.card-title { font-size: 1.8rem; font-weight: 300; line-height: 1.4; margin-bottom: 1rem; color: var(--primary); }
+.card-title { font-size: 1.8rem; font-weight: 300; line-height: 1.4; margin-bottom: 1rem; color: var(--text); transition: color var(--speed-fast) var(--ease); }
+.card:hover .card-title { color: var(--accent); }
 .card-text { line-height: 1.9; color: var(--muted); }
 .card-category { color: var(--primary); font-size: .82rem; letter-spacing: .18em; text-transform: uppercase; margin-bottom: 1.5rem; }
 .card-footer { margin-top: auto; padding-top: 2rem; }
@@ -356,23 +380,133 @@ summary:focus-visible,
   overflow: hidden;
 }
 
-.journal-rotator-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
-}
-@media (max-width: 1024px) {
-  .journal-rotator-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 640px) {
-  .journal-rotator-grid { grid-template-columns: 1fr; }
+/* =========================================
+   JOURNAL — EDITORIAL ROTATOR (homepage only)
+   Horizontal, typography-led rows — deliberately not a card grid: no
+   card background/border/shadow here, just rule dividers and spacing.
+   See components/JournalRotator.tsx.
+========================================= */
+.journal-editorial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 4.5rem;
 }
 
-.journal-rotator-card-anim {
-  transition: opacity 400ms ease, transform 400ms ease;
+.journal-editorial-title {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1.35;
+  max-width: 780px;
+  margin-top: 1rem;
 }
+
+.journal-editorial-link {
+  flex-shrink: 0;
+  font-size: .95rem;
+}
+
+.journal-rotator-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.journal-row {
+  display: grid;
+  grid-template-columns: 160px 1fr auto;
+  align-items: center;
+  gap: 2.4rem;
+  padding-block: 2.1rem;
+  border-top: 1px solid var(--line-soft);
+  color: inherit;
+  text-decoration: none;
+  transition: opacity .35s var(--ease), transform .35s var(--ease);
+}
+
+.journal-rotator-list > .journal-row:last-child {
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.journal-row-meta {
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+
+.journal-row-topic {
+  color: var(--accent);
+  font-size: .78rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.journal-row-date {
+  color: var(--caption);
+  font-size: .82rem;
+}
+
+.journal-row-title {
+  font-size: clamp(1.3rem, 2vw, 1.6rem);
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--text);
+  transition: color var(--speed-fast) var(--ease);
+}
+
+.journal-row:hover .journal-row-title,
+.journal-row:focus-visible .journal-row-title {
+  color: var(--accent);
+}
+
+.journal-row-excerpt {
+  margin-top: .6rem;
+  color: var(--muted);
+  line-height: 1.85;
+  font-size: .95rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.journal-row-arrow {
+  flex-shrink: 0;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity var(--speed-fast) var(--ease), transform var(--speed-fast) var(--ease);
+}
+
+.journal-row:hover .journal-row-arrow,
+.journal-row:focus-visible .journal-row-arrow {
+  opacity: 1;
+  transform: translateX(-6px);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .journal-rotator-card-anim { transition: none !important; }
+  .journal-row { transition: none; }
+  .journal-row-arrow { transition: none; }
+}
+
+@media (max-width: 640px) {
+  .journal-editorial-title { margin-top: .6rem; }
+
+  .journal-row {
+    grid-template-columns: 1fr;
+    gap: .7rem;
+    padding-block: 1.7rem;
+  }
+
+  .journal-row-meta {
+    flex-direction: row;
+    align-items: center;
+    gap: .8rem;
+  }
+
+  .journal-row-arrow {
+    display: none;
+  }
 }
 
 /* =========================================
@@ -405,16 +539,16 @@ summary:focus-visible,
 /* =========================================
    LINE SYSTEM
 ========================================= */
-.rule { width: 100%; height: 1px; background: rgba(212,167,106,.2); }
+.rule { width: 100%; height: 1px; background: var(--line); }
 
 .rule-soft {
   width: 100%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212,167,106,.2), transparent);
+  background: linear-gradient(90deg, transparent, var(--line), transparent);
 }
 
 .rule-short { width: 80px; height: 1px; background: var(--primary); }
-.rule-vertical { width: 1px; align-self: stretch; background: rgba(212,167,106,.2); }
+.rule-vertical { width: 1px; align-self: stretch; background: var(--line); }
 .rule-accent { width: 48px; height: 2px; background: var(--primary); }
 
 .section-divider { position: relative; }
@@ -460,6 +594,10 @@ summary:focus-visible,
 @keyframes fade {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up, .fade { animation: none; opacity: 1; transform: none; }
 }
 
 .line-grow { position: relative; }
@@ -593,7 +731,7 @@ summary:focus-visible,
   line-height: 1.08;
   font-weight: 250;
   letter-spacing: -.055em;
-  color: var(--primary);
+  color: var(--text);
 }
 
 .headline {
@@ -601,7 +739,7 @@ summary:focus-visible,
   line-height: 1.15;
   font-weight: 300;
   max-width: 14ch;
-  color: var(--primary);
+  color: var(--text);
 }
 
 .subheadline {
@@ -783,6 +921,78 @@ summary:focus-visible,
   margin-top: 6rem;
   padding-top: 3rem;
   border-top: 1px solid var(--border);
+}
+
+.article-toc {
+  margin: 3rem 0 4rem;
+  padding: 1.8rem 2rem;
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border);
+}
+
+.article-toc-title {
+  font-size: .85rem;
+  letter-spacing: .15em;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.article-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: .7rem;
+}
+
+.article-toc-list a {
+  color: var(--muted);
+  transition: color var(--speed-fast) var(--ease);
+}
+
+.article-toc-list a:hover { color: var(--primary); opacity: 1; }
+
+.article-toc-list .article-toc-list {
+  margin-top: .6rem;
+  padding-inline-start: 1.4rem;
+}
+
+.article-cta {
+  margin: 5rem 0;
+  padding: 2.4rem 2.6rem;
+  background: color-mix(in srgb, var(--mint) 30%, transparent);
+  border-radius: var(--radius-card);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.article-cta p {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.05rem;
+  max-width: 46ch;
+}
+
+@media (max-width: 640px) {
+  .article-cta {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    padding: 2rem;
+  }
+}
+
+.article-related {
+  margin: 6rem 0;
+}
+
+.article-related-title {
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  margin-bottom: 2.4rem;
 }
 
 .pull-quote {
@@ -1126,20 +1336,106 @@ summary:focus-visible,
 
 /* =========================================
    HERO
+   One integrated composition, not an image column + text column: the
+   photo bleeds from the section's true left edge (independent of
+   .container) and is soft-masked into the page's white background, while
+   the text sits in normal container flow on top — so it reads as
+   typography inhabiting the photo's own negative space, not two
+   side-by-side blocks. See components/Hero.tsx.
 ========================================= */
-.hero-section {
-  min-height: 100svh;
+.hero-redesign {
+  position: relative;
+  min-height: 92svh;
   display: flex;
   align-items: center;
-  padding-block: 8rem 4rem;
+  padding-block: 9rem 4rem;
+  overflow: hidden;
+}
+
+.hero-visual {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: clamp(560px, 68vw, 1040px);
+  /* Locked close to the source photo's own 12288x6942 (~1.77:1) ratio —
+     this is what actually fixes the over-zoom: the previous box stretched
+     to the full section height (inset: 0 auto 0 0) with only a width cap,
+     i.e. a tall ~1.1:1 portrait box, which forced object-fit: cover to
+     crop a landscape photo down to a narrow vertical sliver to fill it.
+     Matching the box to the photo's own ratio means cover has almost
+     nothing left to crop, so nearly the full composition — blossoms and
+     the negative space beside them — shows instead. */
+  aspect-ratio: 16 / 9;
+  z-index: 0;
+  /* Soft radial dissolve centered on the branch/blossoms — refined from
+     the previous ellipse (72% 78% at 26% 50%, black 46%, transparent 96%),
+     which left a visible seam: at the box's true left edge the gradient's
+     normalized distance from center only reached ~72% of the fade (200*26/72),
+     never hitting the "transparent" stop before the box boundary clipped
+     it. Recentering/resizing so every edge's distance safely exceeds the
+     transparent stop (left: 200*32/64=100, top/bottom: 200*48/84≈114,
+     right: 200*68/64≈213 — all past 92) guarantees a full dissolve on
+     every side, while the opaque core (≤48% of radius) still covers the
+     blossom cluster richly. */
+  -webkit-mask-image: radial-gradient(ellipse 64% 84% at 32% 48%, black 48%, transparent 92%);
+  mask-image: radial-gradient(ellipse 64% 84% at 32% 48%, black 48%, transparent 92%);
+}
+
+.hero-visual-img {
+  object-fit: cover;
+  /* Anchored to the true left edge (was 22% 42%, tuned for the old tall
+     crop). The box now barely crops at all, so this only matters for the
+     sub-1% sliver aspect-ratio math still trims — anchoring left
+     guarantees that sliver comes off the right (negative space), never
+     the blossom branch on the left edge. */
+  object-position: 0% 48%;
+  animation: heroImageReveal 1.2s var(--ease) both;
+}
+
+@keyframes heroImageReveal {
+  from { opacity: 0; transform: scale(1.045); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .9rem;
+  color: var(--accent);
+  letter-spacing: .24em;
+  font-size: .82rem;
+  margin-bottom: 2rem;
+}
+
+.hero-eyebrow-mark {
+  width: 26px;
+  height: 1px;
+  background: var(--accent);
+  flex-shrink: 0;
 }
 
 .hero-heading {
-  font-size: clamp(2.1rem, 8vw, 5.2rem);
-  line-height: 1.35;
+  font-size: clamp(2.1rem, 7vw, 4.8rem);
+  line-height: 1.32;
   font-weight: 400;
-  margin-bottom: 42px;
+  margin-bottom: 36px;
   overflow-wrap: break-word;
+  color: var(--text);
+}
+
+.hero-lead {
+  max-width: 640px;
+  font-size: 1.25rem;
+  color: var(--text-soft);
+  line-height: 2.05;
+  margin-bottom: 3.2rem;
 }
 
 .hero-actions {
@@ -1148,10 +1444,68 @@ summary:focus-visible,
   flex-wrap: wrap;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .hero-visual-img { animation: none; }
+}
+
+@media (max-width: 900px) {
+  .hero-visual {
+    /* Graceful scale-down, same aspect-ratio box — no re-crop needed,
+       the composition just gets smaller. */
+    width: 58vw;
+    /* Same seam fix as desktop, re-solved for this box's own ratio —
+       left edge distance 200*30/58≈103, past the 92 transparent stop. */
+    -webkit-mask-image: radial-gradient(ellipse 58% 84% at 30% 50%, black 44%, transparent 92%);
+    mask-image: radial-gradient(ellipse 58% 84% at 30% 50%, black 44%, transparent 92%);
+  }
+}
+
 @media (max-width: 640px) {
+  .hero-redesign {
+    min-height: 0;
+    display: block;
+    /* Reduced top padding (was 6.5rem) — the section only needs to clear
+       the fixed 82px navbar plus a small margin; the extra rem was pure
+       dead space before the image, on top of the image's own negative
+       top margin below. Composition/aspect-ratio of the image itself is
+       untouched — this only tightens the surrounding whitespace. */
+    padding-block: 5rem 3.5rem;
+  }
+
+  .hero-visual {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: auto;
+    /* Same fix as desktop: an aspect-ratio-locked band instead of a
+       fixed height, so the full desktop composition scales down rather
+       than getting re-cropped into a different, shorter shape. */
+    aspect-ratio: 16 / 9;
+    /* Was 46vh — tightened as a safety cap for compactness on tall
+       narrow viewports; doesn't change anything at the 320-430px widths
+       actually tested, where 16/9 already resolves well under this. */
+    max-height: 40vh;
+    /* Bottom margin reduced 1.5rem -> 1rem for a more compact transition
+       into the text; top margin/mask/crop unchanged. */
+    margin: -2rem -20px 1rem;
+    -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 94%);
+    mask-image: linear-gradient(to bottom, black 55%, transparent 94%);
+  }
+
+  .hero-visual-img {
+    object-position: 0% 42%;
+  }
+
+  .hero-content {
+    max-width: none;
+  }
+
   .hero-break { display: none; }
 
-  .hero-heading { margin-bottom: 28px; line-height: 1.4; }
+  .hero-heading { margin-bottom: 24px; line-height: 1.4; }
+
+  .hero-lead { font-size: 1.08rem; margin-bottom: 2.4rem; }
 
   .hero-actions {
     flex-direction: column;
@@ -1172,6 +1526,30 @@ summary:focus-visible,
   align-items: center;
   gap: 42px;
   font-size: 15px;
+}
+
+.navbar-link {
+  position: relative;
+  transition: color var(--speed-fast) var(--ease);
+  padding-block: 4px;
+}
+
+.navbar-link::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--speed-fast) var(--ease);
+}
+
+.navbar-link:hover::after,
+.navbar-link[aria-current="page"]::after {
+  transform: scaleX(1);
 }
 
 .hamburger-btn:focus-visible {
@@ -1372,7 +1750,7 @@ summary:focus-visible,
   font-weight: 300;
   margin: 0;
   letter-spacing: -.03em;
-  color: var(--primary);
+  color: var(--text);
 }
 
 .article-excerpt {

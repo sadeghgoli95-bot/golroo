@@ -4,11 +4,12 @@ import {
   normalizeImportText,
   normalizePersianText,
   stripDiacritics,
+  stripInvisibleArtifacts,
 } from "./textNormalize";
 import { normalizePersian } from "./persianSearch";
 
 describe("stripDiacritics / normalizePersianText diacritics removal", () => {
-  it("removes fatha, kasra, damma, tanwin, shadda and sukun", () => {
+  it("removes fatha, kasra, damma, shadda and sukun", () => {
     // بَسیار with fatha on ب, and مُدَرِّس with shadda/kasra/damma
     expect(stripDiacritics("بَسیار")).toBe("بسیار");
     expect(stripDiacritics("مُدَرِّس")).toBe("مدرس");
@@ -17,6 +18,12 @@ describe("stripDiacritics / normalizePersianText diacritics removal", () => {
 
   it("leaves plain Persian text untouched", () => {
     expect(stripDiacritics("سلام دنیا")).toBe("سلام دنیا");
+  });
+
+  it("preserves tanwin (ً ٌ ٍ) — fixed Persian spelling, not decorative vocalization, so SSR and client-side normalization never disagree on words like دقیقاً/واقعاً", () => {
+    expect(stripDiacritics("دقیقاً")).toBe("دقیقاً");
+    expect(normalizePersianText("دقیقاً")).toBe("دقیقاً");
+    expect(stripInvisibleArtifacts("واقعاً")).toBe("واقعاً");
   });
 });
 

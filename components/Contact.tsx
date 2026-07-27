@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Container from "./Container";
+import Button from "./Button";
 
 export default function Contact() {
   return (
@@ -8,7 +9,7 @@ export default function Contact() {
       style={{ borderTop: "1px solid var(--line)" }}
     >
       <Container>
-        <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
+        <div style={{ maxWidth: 780, margin: "0 auto", textAlign: "center" }}>
           <div
             style={{
               color: "var(--bronze)",
@@ -17,23 +18,19 @@ export default function Contact() {
               marginBottom: 22,
             }}
           >
-            CONTACT
+            تماس
           </div>
           <h2
             style={{
-              fontSize: "clamp(3rem,5vw,5rem)",
+              fontSize: "clamp(2.4rem,4.2vw,3.8rem)",
               fontWeight: 300,
-              lineHeight: 1.7,
+              lineHeight: 1.55,
               marginBottom: 32,
+              maxWidth: "22ch",
+              marginInline: "auto",
             }}
           >
-            شاید
-            <br />
-            وقت آن رسیده باشد
-            <br />
-            داستان را از
-            <br />
-            زاویه‌ای دیگر ببینیم.
+            گاهی فهمیدن یک تجربه، نیاز به نگاهی از زاویه‌ای دیگر دارد.
           </h2>
           <p
             style={{
@@ -44,9 +41,7 @@ export default function Contact() {
               marginBottom: "4rem",
             }}
           >
-            اگر احساس می‌کنید زمان مناسبی برای شروع گفت‌وگوست،
-            می‌توانید برای رزرو جلسه آنلاین یا دریافت اطلاعات بیشتر
-            با ما در ارتباط باشید.
+            اگر چیزی در رفتار فرزندتان، در یک رابطه یا در تجربه هیجانی خودتان مدتی است به یک پرسش تبدیل شده، لازم نیست از پیش بدانید دقیقاً مسئله چیست. یک گفت‌وگو می‌تواند کمک کند روشن شود چطور می‌توان به آن نزدیک شد.
           </p>
           <div
             style={{
@@ -56,34 +51,8 @@ export default function Contact() {
               flexWrap: "wrap",
             }}
           >
-            <Link
-              href="/appointment"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "1rem 2.8rem",
-                background: "var(--accent)",
-                color: "var(--text)",
-                textDecoration: "none",
-                transition: ".3s",
-              }}
-            >
-              رزرو جلسه
-            </Link>
-            <Link
-              href="/contact"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "1rem 2.8rem",
-                border: "1px solid var(--line)",
-                color: "var(--text)",
-                textDecoration: "none",
-                transition: ".3s",
-              }}
-            >
+            <Button href="/appointment">رزرو جلسه</Button>
+            <Link href="/contact" className="btn btn-secondary">
               ارتباط با ما
             </Link>
           </div>

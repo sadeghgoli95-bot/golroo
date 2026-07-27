@@ -20,6 +20,7 @@ import {
 } from "@/sanity/lib/queries";
 import { formatArticleCount, toPersianDigits } from "@/lib/utils/persian";
 import { siteConfig } from "@/lib/siteConfig";
+import { normalizePersianText } from "@/lib/utils/textNormalize";
 
 const PAGE_SIZE = 12;
 
@@ -41,7 +42,18 @@ type Props = {
 };
 
 async function getAuthor(slug: string) {
-  return client.fetch<Author | null>(authorBySlugQuery, { slug });
+  const author = await client.fetch<Author | null>(authorBySlugQuery, { slug });
+  if (!author) return author;
+  return {
+    ...author,
+    name: normalizePersianText(author.name),
+    title: author.title ? normalizePersianText(author.title) : author.title,
+    bio: author.bio ? normalizePersianText(author.bio) : author.bio,
+    degree: author.degree ? normalizePersianText(author.degree) : author.degree,
+    organization: author.organization ? normalizePersianText(author.organization) : author.organization,
+    interests: author.interests?.map((interest) => normalizePersianText(interest)),
+    quote: author.quote ? normalizePersianText(author.quote) : author.quote,
+  };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

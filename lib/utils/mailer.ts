@@ -30,12 +30,17 @@ const visitorTypeLabels: Record<string, string> = {
 export function renderAppointmentEmailHtml(payload: AppointmentEmailPayload): string {
   const row = (label: string, value: string) =>
     value
-      ? `<tr style="border-bottom: 1px solid #E8E2D9;"><td style="padding: 12px 0; color: #7A7068; width: 140px;">${label}:</td><td style="padding: 12px 0;">${value}</td></tr>`
+      ? `<tr style="border-bottom: 1px solid #EDE9E3;"><td style="padding: 12px 0; color: #7C7380; width: 140px;">${label}:</td><td style="padding: 12px 0;">${value}</td></tr>`
       : "";
 
+  // Golroo brand palette (locked): #4B245F primary, #FFFFFF white, #24152B
+  // dark plum, #C9C1B5 neutral. Hardcoded (not CSS variables) since email
+  // clients don't reliably support them; #EDE9E3/#7C7380/#F5F1EA below are
+  // documented derivations (light tints/mixes) of the locked neutral/dark
+  // plum, not invented colors.
   return `
-    <div dir="rtl" style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; background: #FEFEFC; color: #1A1714;">
-      <h2 style="color: #B8860B; border-bottom: 1px solid #D4A76A; padding-bottom: 16px;">
+    <div dir="rtl" style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; background: #FFFFFF; color: #24152B;">
+      <h2 style="color: #4B245F; border-bottom: 1px solid #C9C1B5; padding-bottom: 16px;">
         درخواست جلسه جدید
       </h2>
       <table style="width: 100%; border-collapse: collapse; margin-top: 24px;">
@@ -50,8 +55,8 @@ export function renderAppointmentEmailHtml(payload: AppointmentEmailPayload): st
         ${row("زمان ثبت درخواست", payload.submittedAt)}
         ${payload.ip ? row("IP", payload.ip) : ""}
       </table>
-      <div style="margin-top: 32px; padding: 16px; background: #FFF8DC; border-right: 3px solid #B8860B;">
-        <p style="margin: 0; color: #7A7068; font-size: 14px;">
+      <div style="margin-top: 32px; padding: 16px; background: #F5F1EA; border-right: 3px solid #4B245F;">
+        <p style="margin: 0; color: #7C7380; font-size: 14px;">
           این ایمیل از طریق فرم درخواست جلسه سایت گل‌رو ارسال شده است.
         </p>
       </div>

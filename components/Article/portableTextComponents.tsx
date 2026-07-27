@@ -1,12 +1,24 @@
 import Image from "next/image";
 import type { PortableTextComponents } from "@portabletext/react";
 import { urlFor } from "@/sanity/lib/image";
+import { slugify } from "@/lib/utils/slugify";
 import PullQuote from "./PullQuote";
+
+type HeadingValue = { children?: unknown[] };
+
+// Same slugify as extractPortableTextHeadings.ts, applied to the same
+// block's children — keeps rendered anchor ids in sync with the TOC's hrefs.
+function headingId(value: HeadingValue): string {
+  const text = (value.children ?? [])
+    .map((span) => (typeof (span as { text?: unknown }).text === "string" ? (span as { text: string }).text : ""))
+    .join("");
+  return slugify(text);
+}
 
 export const articlePortableTextComponents: PortableTextComponents = {
   block: {
-    h2: ({ children }) => <h2>{children}</h2>,
-    h3: ({ children }) => <h3>{children}</h3>,
+    h2: ({ children, value }) => <h2 id={headingId(value)}>{children}</h2>,
+    h3: ({ children, value }) => <h3 id={headingId(value)}>{children}</h3>,
     h4: ({ children }) => <h4>{children}</h4>,
     blockquote: ({ children }) => <PullQuote>{children}</PullQuote>,
     normal: ({ children }) => <p>{children}</p>,

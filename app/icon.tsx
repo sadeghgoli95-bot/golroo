@@ -13,7 +13,7 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#B8860B",
+          background: "#4B245F",
         }}
       >
         <span

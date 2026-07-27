@@ -7,6 +7,7 @@ import { JsonLd, faqPageJsonLd } from "@/components/Seo/JsonLd";
 import { client } from "@/sanity/lib/client";
 import { publishedFaqsQuery } from "@/sanity/lib/queries";
 import { SITE_URL } from "@/lib/seo/site";
+import { normalizePersianText } from "@/lib/utils/textNormalize";
 
 export const metadata: Metadata = {
   title: "پرسش‌های متداول",
@@ -26,8 +27,16 @@ export const metadata: Metadata = {
   },
 };
 
+type RawFaq = { _id: string; question: string; answer: string; category?: string; slug: { current: string } };
+
 export default async function FaqPage() {
-  const faqs = await client.fetch(publishedFaqsQuery);
+  const rawFaqs = await client.fetch<RawFaq[]>(publishedFaqsQuery);
+  const faqs = rawFaqs.map((faq) => ({
+    ...faq,
+    question: normalizePersianText(faq.question),
+    answer: normalizePersianText(faq.answer),
+    category: faq.category ? normalizePersianText(faq.category) : faq.category,
+  }));
 
   return (
     <>
