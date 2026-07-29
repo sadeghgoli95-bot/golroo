@@ -45,7 +45,7 @@ const thinkers = [
 
 export default function Thinking() {
   return (
-    <section className="section" style={{ background: "var(--bg-soft)" }}>
+    <section className="section">
       <Container>
         <div style={{ marginBottom: 70, maxWidth: 720 }}>
           <p className="overline" style={{ marginBottom: "var(--space-2)" }}>

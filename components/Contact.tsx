@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Container from "./Container";
 import Button from "./Button";
 
@@ -36,18 +35,8 @@ export default function Contact() {
           >
             اگر چیزی در رفتار فرزندتان، در یک رابطه یا در تجربه هیجانی خودتان مدتی است به یک پرسش تبدیل شده، لازم نیست از پیش بدانید دقیقاً مسئله چیست. یک گفت‌وگو می‌تواند کمک کند روشن شود چطور می‌توان به آن نزدیک شد.
           </p>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "1rem",
-              flexWrap: "wrap",
-            }}
-          >
-            <Button href="/appointment">رزرو جلسه</Button>
-            <Link href="/contact" className="btn btn-secondary">
-              گفت‌وگو را شروع کنید
-            </Link>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Button href="/contact">گفت‌وگو را شروع کنید</Button>
           </div>
         </div>
       </Container>

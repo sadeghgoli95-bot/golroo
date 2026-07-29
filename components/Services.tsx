@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Container from "./Container";
 
 const ageGroups = [
@@ -148,12 +147,6 @@ export default function Services() {
           <p style={{ lineHeight: 2.1, color: "var(--text-muted)", maxWidth: "68ch" }}>
             در صورت نیاز، ممکن است پیش از شروع درمان، ارزیابی تکمیلی یا ارجاع به متخصص مربوط پیشنهاد شود.
           </p>
-        </div>
-
-        <div style={{ marginTop: "3rem" }}>
-          <Link href="/about" className="btn-text">
-            بیشتر درباره نگاه من به این کار بخوانید
-          </Link>
         </div>
       </Container>
     </section>

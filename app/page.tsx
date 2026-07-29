@@ -1,15 +1,10 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import OpeningLetter from "@/components/OpeningLetter";
-import QuoteBlock from "@/components/QuoteBlock";
 import QuestionBlock from "@/components/QuestionBlock";
-import Observation from "@/components/Observation";
 import JournalRotator from "@/components/JournalRotator";
-import Manifesto from "@/components/Manifesto";
-import ReadingPause from "@/components/ReadingPause";
-import Thinking from "@/components/Thinking";
-import Story from "@/components/Story";
-import Services from "@/components/Services";
+import ServicesPreview from "@/components/ServicesPreview";
+import ApproachPreview from "@/components/ApproachPreview";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import GridOverlay from "@/components/GridOverlay";
@@ -40,43 +35,28 @@ export default function Home() {
           <OpeningLetter />
         </Reveal>
         <Reveal>
-          <QuoteBlock quote="لازم نیست مطمئن باشید که مشکلی وجود دارد. اگر چیزی در رفتار، احساس یا رابطه با فرزندتان ذهن شما را مشغول کرده است، همان نگرانی می‌تواند نقطه مناسبی برای آغاز یک گفت‌وگو باشد." />
-        </Reveal>
-        <Reveal>
           <QuestionBlock
             question="اگر رفتار فرزندتان می‌توانست حرف بزند، چه چیزی می‌گفت؟"
             text="گاهی رفتار، مسئله اصلی نیست؛ نزدیک‌ترین راهی است که کودک برای نشان دادن تجربه‌ای پیدا کرده که هنوز نمی‌تواند آن را با کلمات بیان کند. فهمیدن این تجربه، اغلب نقطه‌ای است که مسیر گفت‌وگو و تغییر از آن آغاز می‌شود."
           />
         </Reveal>
 
-        {/* 3. A new way of seeing — before any solution, a different lens */}
-        <Reveal>
-          <Story />
-        </Reveal>
-        <Reveal>
-          <Observation />
-        </Reveal>
-
-        {/* Breathing pause before the trust cluster */}
-        <ReadingPause text="شخصیت کودک، فقط با آنچه برایش اتفاق می‌افتد شکل نمی‌گیرد؛ با تجربهٔ فهمیده شدن و فهمیده نشدن نیز شکل می‌گیرد." />
-
-        {/* 4. Trust — earned through writing, thinking, philosophy; not claims */}
+        {/* 3. Journal preview — 3 rotating articles, full reading lives on /journal */}
         <Reveal>
           <JournalRotator />
         </Reveal>
+
+        {/* 4. Services preview — 3 cards, full detail lives on /about */}
         <Reveal>
-          <Thinking />
-        </Reveal>
-        <Reveal>
-          <Manifesto />
+          <ServicesPreview />
         </Reveal>
 
-        {/* 5. Professional approach — only introduced after trust */}
+        {/* 5. Why this approach — short teaser, full philosophy lives on /about */}
         <Reveal>
-          <Services />
+          <ApproachPreview />
         </Reveal>
 
-        {/* 6. Low-pressure contact */}
+        {/* 6. Contact CTA — one calm action */}
         <Reveal>
           <Contact />
         </Reveal>

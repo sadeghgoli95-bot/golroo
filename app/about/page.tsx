@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Story from "@/components/Story";
+import Observation from "@/components/Observation";
+import QuoteBlock from "@/components/QuoteBlock";
+import Thinking from "@/components/Thinking";
+import Manifesto from "@/components/Manifesto";
+import ReadingPause from "@/components/ReadingPause";
+import Services from "@/components/Services";
 import { SITE_URL } from "@/lib/seo/site";
 
 export const metadata: Metadata = {
@@ -72,7 +79,10 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="section" style={{ background: "var(--bg-soft)" }}>
+        <Story />
+        <Observation />
+
+        <section className="section">
           <div className="container" style={{ maxWidth: 760 }}>
             <h2>رویکرد درمانی</h2>
 
@@ -97,7 +107,10 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="section">
+        <QuoteBlock quote="لازم نیست مطمئن باشید که مشکلی وجود دارد. اگر چیزی در رفتار، احساس یا رابطه با فرزندتان ذهن شما را مشغول کرده است، همان نگرانی می‌تواند نقطه مناسبی برای آغاز یک گفت‌وگو باشد." />
+        <Thinking />
+
+        <section className="section" style={{ background: "var(--bg-soft)" }}>
           <div className="container" style={{ maxWidth: 760 }}>
             <h2>درباره من</h2>
 
@@ -126,6 +139,9 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
+
+        <Manifesto />
+        <ReadingPause text="شخصیت کودک، فقط با آنچه برایش اتفاق می‌افتد شکل نمی‌گیرد؛ با تجربهٔ فهمیده شدن و فهمیده نشدن نیز شکل می‌گیرد." />
 
         <section className="section" style={{ background: "var(--bg-soft)" }}>
           <div className="container" style={{ maxWidth: 760 }}>
@@ -186,12 +202,16 @@ export default function AboutPage() {
               <br />
               تجربه‌ای است که باید با دقت، کنجکاوی و احترام به آن نزدیک شد.
             </blockquote>
+          </div>
+        </section>
 
-            <div style={{ marginTop: "4rem", paddingTop: "3rem", borderTop: "1px solid var(--line)" }}>
-              <Link href="/journal" className="btn-text">
-                نمونه‌ای از این نگاه را در ژورنال بخوانید
-              </Link>
-            </div>
+        <Services />
+
+        <section className="section-sm">
+          <div className="container" style={{ maxWidth: 760 }}>
+            <Link href="/journal" className="btn-text">
+              نمونه‌ای از این نگاه را در ژورنال بخوانید
+            </Link>
           </div>
         </section>
       </main>
