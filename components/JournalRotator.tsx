@@ -172,7 +172,7 @@ export default function JournalRotator() {
   };
 
   return (
-    <section className="section journal-editorial">
+    <section className="section journal-editorial" style={{ background: "var(--surface)" }}>
       <Container>
         <div className="journal-editorial-header">
           <div>

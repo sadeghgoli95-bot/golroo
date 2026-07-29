@@ -4,7 +4,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import "./dashboard.css";
 
 export const metadata: Metadata = {
-  title: "میرورا",
+  title: "گل‌رو",
   robots: { index: false, follow: false },
 };
 

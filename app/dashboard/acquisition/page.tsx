@@ -43,7 +43,7 @@ export default async function AcquisitionPage() {
       <>
         <DashboardHeader
           title="جذب مخاطب (Acquisition)"
-          description="مردم چطور میرورا را پیدا می‌کنند؟ — مبتنی بر Google Analytics 4 (۳۰ روز اخیر)"
+          description="مردم چطور گل‌رو را پیدا می‌کنند؟ — مبتنی بر Google Analytics 4 (۳۰ روز اخیر)"
         />
         <div className="dashboard-empty-state">
           <p>Google Analytics 4 متصل نیست{traffic.error ? ` — ${traffic.error}` : "."}</p>
@@ -60,7 +60,7 @@ export default async function AcquisitionPage() {
     <>
       <DashboardHeader
         title="جذب مخاطب (Acquisition)"
-        description="مردم چطور میرورا را پیدا می‌کنند؟ — مبتنی بر Google Analytics 4 (۳۰ روز اخیر در مقابل ۳۰ روز قبل از آن)"
+        description="مردم چطور گل‌رو را پیدا می‌کنند؟ — مبتنی بر Google Analytics 4 (۳۰ روز اخیر در مقابل ۳۰ روز قبل از آن)"
       />
 
       <div className="dashboard-grid">

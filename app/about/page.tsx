@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { SITE_URL } from "@/lib/seo/site";
@@ -45,20 +46,11 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section style={{ padding: "96px 0" }}>
-          <div
-            className="container"
-            style={{
-              maxWidth: "760px",
-              display: "grid",
-              gap: "40px",
-              lineHeight: "2.2",
-              fontSize: "1.1rem",
-            }}
-          >
-            <section>
-              <h2>نگاه من به روان‌درمانی</h2>
+        <section className="section">
+          <div className="container" style={{ maxWidth: 760 }}>
+            <h2>نگاه من به روان‌درمانی</h2>
 
+            <div style={{ display: "grid", gap: 28, marginTop: 32, lineHeight: 2.2, fontSize: "1.1rem" }}>
               <p>
                 در روان‌درمانی، هدف من پیش از هر چیز نزدیک شدن به تجربه‌ای است
                 که کودک یا نوجوان در حال زندگی کردن آن است؛ نه یافتن سریع‌ترین
@@ -76,11 +68,15 @@ export default function AboutPage() {
                 معناست که تغییر پایدارتر زمانی اتفاق می‌افتد که ابتدا فهمیده
                 شود رفتار در چه زمینه‌ای شکل گرفته است.
               </p>
-            </section>
+            </div>
+          </div>
+        </section>
 
-            <section>
-              <h2>رویکرد درمانی</h2>
+        <section className="section" style={{ background: "var(--bg-soft)" }}>
+          <div className="container" style={{ maxWidth: 760 }}>
+            <h2>رویکرد درمانی</h2>
 
+            <div style={{ display: "grid", gap: 28, marginTop: 32, lineHeight: 2.2, fontSize: "1.1rem" }}>
               <p>
                 رویکرد من در کار بالینی از نگاه روان‌پویشی، نظریه دلبستگی و
                 تفکر رابطه‌ای شکل گرفته است.
@@ -97,11 +93,15 @@ export default function AboutPage() {
               <p>
                 پایبندی من، پیش از هر چیز، به دقت در فهم همین تجربه است.
               </p>
-            </section>
+            </div>
+          </div>
+        </section>
 
-            <section>
-              <h2>درباره من</h2>
+        <section className="section">
+          <div className="container" style={{ maxWidth: 760 }}>
+            <h2>درباره من</h2>
 
+            <div style={{ display: "grid", gap: 28, marginTop: 32, lineHeight: 2.2, fontSize: "1.1rem" }}>
               <p>
                 <strong>محمد صادق گل‌رو</strong> فارغ‌التحصیل کارشناسی ارشد
                 روان‌شناسی تربیتی از دانشگاه تهران مرکز است. مسیر یادگیری کار
@@ -123,11 +123,15 @@ export default function AboutPage() {
                 می‌گیرد فهمید. به همین دلیل، بازسازی رابطه والد و کودک، در
                 بسیاری از موارد، بخشی جدایی‌ناپذیر از فرایند درمان است.
               </p>
-            </section>
+            </div>
+          </div>
+        </section>
 
-            <section>
-              <h2>در این سایت چه خواهید خواند؟</h2>
+        <section className="section" style={{ background: "var(--bg-soft)" }}>
+          <div className="container" style={{ maxWidth: 760 }}>
+            <h2>در این سایت چه خواهید خواند؟</h2>
 
+            <div style={{ display: "grid", gap: 28, marginTop: 32, lineHeight: 2.2, fontSize: "1.1rem" }}>
               <p>
                 نوشته‌های این سایت به‌جای ارائه نسخه آماده یا توصیه سریع،
                 تلاشی‌اند برای دیدن دقیق‌تر یک پدیده انسانی؛ نه اثبات یک نظریه،
@@ -139,35 +143,55 @@ export default function AboutPage() {
                 دیده باشید یا پرسشی جدید برایتان شکل گرفته باشد، آن نوشته به
                 هدف خود رسیده است.
               </p>
-            </section>
+            </div>
+          </div>
+        </section>
 
-            <section>
-              <h2>ارزش‌هایی که به آن‌ها پایبندم</h2>
+        <section className="section">
+          <div className="container" style={{ maxWidth: 760 }}>
+            <h2 style={{ marginBottom: 8 }}>ارزش‌هایی که به آن‌ها پایبندم</h2>
 
-              <ul style={{ lineHeight: "2.4" }}>
-                <li>کنجکاوی به جای قضاوت</li>
-                <li>فهم به جای نصیحت</li>
-                <li>مسئولیت به جای سرزنش</li>
-                <li>پیچیدگی به جای ساده‌سازی</li>
-                <li>رابطه به جای فردگرایی افراطی</li>
-                <li>فروتنی معرفتی به جای قطعیت</li>
-              </ul>
-            </section>
-
-            <blockquote
+            <ul
               style={{
-                borderRight: "3px solid color-mix(in srgb, var(--text) 20%, transparent)",
-                paddingRight: "24px",
-                fontSize: "1.4rem",
-                lineHeight: "2",
-                fontWeight: 300,
-                marginTop: "24px",
+                listStyle: "none",
+                display: "grid",
+                gap: 0,
+                marginTop: 32,
               }}
             >
+              {[
+                "کنجکاوی به جای قضاوت",
+                "فهم به جای نصیحت",
+                "مسئولیت به جای سرزنش",
+                "پیچیدگی به جای ساده‌سازی",
+                "رابطه به جای فردگرایی افراطی",
+                "فروتنی معرفتی به جای قطعیت",
+              ].map((value, index) => (
+                <li
+                  key={value}
+                  style={{
+                    padding: "1.4rem 0",
+                    borderTop: index === 0 ? "none" : "1px solid var(--line)",
+                    fontSize: "1.15rem",
+                    color: "var(--text)",
+                  }}
+                >
+                  {value}
+                </li>
+              ))}
+            </ul>
+
+            <blockquote className="pull-quote" style={{ marginTop: "3.5rem" }}>
               ذهن انسان مسئله‌ای نیست که حل شود؛
               <br />
               تجربه‌ای است که باید با دقت، کنجکاوی و احترام به آن نزدیک شد.
             </blockquote>
+
+            <div style={{ marginTop: "4rem", paddingTop: "3rem", borderTop: "1px solid var(--line)" }}>
+              <Link href="/journal" className="btn-text">
+                نمونه‌ای از این نگاه را در ژورنال بخوانید
+              </Link>
+            </div>
           </div>
         </section>
       </main>

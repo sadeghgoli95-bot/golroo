@@ -13,16 +13,9 @@ export default function QuestionBlock({ question, text }: Props) {
     >
       <Container>
         <div style={{ maxWidth: 860, margin: "0 auto" }}>
-          <div
-            style={{
-              color: "var(--bronze)",
-              letterSpacing: ".22em",
-              fontSize: 13,
-              marginBottom: 28,
-            }}
-          >
+          <p className="overline" style={{ marginBottom: "var(--space-3)" }}>
             A QUESTION
-          </div>
+          </p>
           <h2
             style={{
               fontSize: "clamp(2.4rem,4vw,4rem)",

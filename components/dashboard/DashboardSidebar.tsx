@@ -16,7 +16,7 @@ export default function DashboardSidebar() {
 
   return (
     <aside className="dashboard-sidebar">
-      <div className="dashboard-sidebar-brand">میرورا (Mirora)</div>
+      <div className="dashboard-sidebar-brand">گل‌رو</div>
       <nav className="dashboard-sidebar-nav">
         {dashboardNavigation.map((item) => {
           const isActive = pathname === item.href;

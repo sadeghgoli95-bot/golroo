@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Sadegh Golroo" }],
   creator: "Sadegh Golroo",
-  publisher: "Golroo",
+  publisher: "گل‌رو",
   robots: {
     index: true,
     follow: true,
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     description:
       "روان‌درمانی کودک و نوجوان با تمرکز بر رابطه، رشد و فهم تجربه کودک.",
     url: SITE_URL,
-    siteName: "Golroo",
+    siteName: "گل‌رو",
     locale: "fa_IR",
     type: "website",
   },

@@ -12,16 +12,9 @@ export default function Story() {
     <section className="section">
       <Container>
         <div style={{ marginBottom: 70 }}>
-          <div
-            style={{
-              color: "var(--bronze)",
-              letterSpacing: ".22em",
-              fontSize: 13,
-              marginBottom: 18,
-            }}
-          >
+          <p className="overline" style={{ marginBottom: "var(--space-2)" }}>
             A DIFFERENT WAY OF SEEING
-          </div>
+          </p>
           <h2
             style={{
               fontSize: "clamp(2.8rem,5vw,4.4rem)",

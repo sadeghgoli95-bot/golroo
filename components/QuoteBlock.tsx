@@ -23,16 +23,9 @@ export default function QuoteBlock({ quote, author }: Props) {
             textAlign: "center",
           }}
         >
-          <div
-            style={{
-              color: "var(--bronze)",
-              letterSpacing: ".25em",
-              fontSize: 13,
-              marginBottom: 40,
-            }}
-          >
+          <p className="overline" style={{ marginBottom: "var(--space-5)" }}>
             A THOUGHT
-          </div>
+          </p>
 
           <blockquote
             style={{

@@ -13,22 +13,16 @@ export default function Observation() {
     <section
       className="section"
       style={{
+        background: "var(--bg-soft)",
         borderTop: "1px solid var(--line)",
         borderBottom: "1px solid var(--line)",
       }}
     >
       <Container>
         <div style={{ maxWidth: 980, margin: "0 auto" }}>
-          <div
-            style={{
-              color: "var(--bronze)",
-              letterSpacing: ".22em",
-              fontSize: 13,
-              marginBottom: 42,
-            }}
-          >
+          <p className="overline" style={{ marginBottom: "var(--space-5)" }}>
             OBSERVATIONS
-          </div>
+          </p>
 
           {observations.map((item, index) => (
             <div

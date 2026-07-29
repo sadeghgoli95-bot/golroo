@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Container from "./Container";
 
 const ageGroups = [
@@ -44,16 +45,9 @@ export default function Services() {
           }}
         >
           <div>
-            <div
-              style={{
-                color: "var(--bronze)",
-                letterSpacing: ".22em",
-                fontSize: 13,
-                marginBottom: 18,
-              }}
-            >
+            <p className="overline" style={{ marginBottom: "var(--space-2)" }}>
               SERVICES
-            </div>
+            </p>
             <h2
               style={{
                 fontSize: "clamp(2.8rem,5vw,4.2rem)",
@@ -83,14 +77,7 @@ export default function Services() {
           }}
         >
           {ageGroups.map((group) => (
-            <article
-              key={group.age}
-              style={{
-                border: "1px solid var(--line)",
-                padding: "2.5rem",
-                transition: ".35s",
-              }}
-            >
+            <article key={group.age} className="card card-static">
               <div style={{ color: "var(--bronze)", fontSize: 14, marginBottom: 24 }}>
                 {group.age}
               </div>
@@ -107,13 +94,7 @@ export default function Services() {
         {/* Parent consultation — same visual system as the age-group cards
             above, deliberately not louder: same border/padding treatment,
             single wide panel instead of a 3-up grid. */}
-        <article
-          style={{
-            marginTop: "2rem",
-            border: "1px solid var(--line)",
-            padding: "2.5rem",
-          }}
-        >
+        <article className="card card-static" style={{ marginTop: "2rem" }}>
           <div style={{ color: "var(--bronze)", fontSize: 14, marginBottom: 24 }}>
             مشاوره والدین
           </div>
@@ -167,6 +148,12 @@ export default function Services() {
           <p style={{ lineHeight: 2.1, color: "var(--text-muted)", maxWidth: "68ch" }}>
             در صورت نیاز، ممکن است پیش از شروع درمان، ارزیابی تکمیلی یا ارجاع به متخصص مربوط پیشنهاد شود.
           </p>
+        </div>
+
+        <div style={{ marginTop: "3rem" }}>
+          <Link href="/about" className="btn-text">
+            بیشتر درباره نگاه من به این کار بخوانید
+          </Link>
         </div>
       </Container>
     </section>

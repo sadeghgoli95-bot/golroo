@@ -19,12 +19,9 @@ export default function NotFound() {
           نداشته باشد.
         </p>
 
-        <div className="cluster" style={{ justifyContent: "center", gap: "1.2rem", marginTop: "2.5rem" }}>
+        <div className="cluster" style={{ justifyContent: "center", marginTop: "2.5rem" }}>
           <Link href="/" className="button button-primary">
             بازگشت به صفحه اصلی
-          </Link>
-          <Link href="/journal" className="button button-secondary">
-            مشاهده ژورنال
           </Link>
         </div>
 
@@ -42,12 +39,6 @@ export default function NotFound() {
             className="search-input"
           />
         </form>
-
-        <nav aria-label="لینک‌های مفید" className="cluster" style={{ justifyContent: "center", gap: "2rem", marginTop: "3rem" }}>
-          <Link href="/about">درباره من</Link>
-          <Link href="/contact">درخواست جلسه</Link>
-          <Link href="/journal">ژورنال</Link>
-        </nav>
       </div>
     </main>
   );

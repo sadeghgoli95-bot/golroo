@@ -36,7 +36,7 @@ export default function Hero() {
           <div className="hero-actions fade-up fade-delay-3">
             <Button href="/appointment">رزرو جلسه</Button>
             <Link href="/about" className="btn btn-secondary">
-              بیشتر بخوانید
+              نگاه من به این مسیر
             </Link>
           </div>
         </div>

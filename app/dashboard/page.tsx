@@ -50,7 +50,7 @@ export default async function OverviewPage() {
 
   return (
     <>
-      <DashboardHeader title="نمای کلی" description="وضعیت کلی محتوا و سئوی میرورا" />
+      <DashboardHeader title="نمای کلی" description="وضعیت کلی محتوا و سئوی گل‌رو" />
 
       <div className="dashboard-grid">
         {scoreCards.map((card) => (

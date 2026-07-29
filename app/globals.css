@@ -510,6 +510,166 @@ summary:focus-visible,
 }
 
 /* =========================================
+   JOURNAL — MAIN INDEX (editorial)
+   Magazine-style discovery for /journal: one featured hero, a small
+   recent grid, then topic groups using the same row list as the
+   homepage rotator (.journal-row) — deliberately varied layouts
+   instead of one repeating card grid. See JournalEditorial.tsx.
+========================================= */
+.journal-editorial-index {
+  display: flex;
+  flex-direction: column;
+}
+
+.journal-index-section {
+  padding-block: clamp(3.5rem, 6vw, 5.5rem);
+  border-top: 1px solid var(--line-soft);
+}
+
+.journal-index-section:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.journal-index-label {
+  margin-bottom: 2rem;
+}
+
+.journal-index-topic-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.journal-index-topic-header .journal-index-label {
+  margin-bottom: 0;
+}
+
+.journal-featured {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+}
+
+.journal-featured-media {
+  overflow: hidden;
+  border-radius: var(--radius-image);
+}
+
+.journal-featured-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  transition: transform var(--speed-slow) var(--ease);
+}
+
+.journal-featured:hover .journal-featured-img,
+.journal-featured:focus-visible .journal-featured-img {
+  transform: scale(1.02);
+}
+
+.journal-featured-body { display: flex; flex-direction: column; gap: 1.2rem; }
+
+.journal-featured-title {
+  font-size: clamp(1.9rem, 3.4vw, 2.8rem);
+  font-weight: 300;
+  line-height: 1.4;
+  color: var(--text);
+  transition: color var(--speed-fast) var(--ease);
+}
+
+.journal-featured:hover .journal-featured-title,
+.journal-featured:focus-visible .journal-featured-title {
+  color: var(--accent);
+}
+
+.journal-featured-excerpt {
+  color: var(--muted);
+  line-height: 1.95;
+  max-width: 52ch;
+}
+
+.journal-featured-meta { color: var(--caption); font-size: .88rem; }
+
+.journal-featured-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  color: var(--primary);
+  font-size: .95rem;
+  margin-top: .4rem;
+  transition: opacity var(--speed-fast) var(--ease);
+}
+
+.journal-recent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  gap: 2.5rem;
+}
+
+.journal-recent-card {
+  display: flex;
+  flex-direction: column;
+  gap: .8rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.journal-recent-media { overflow: hidden; border-radius: var(--radius-image); }
+
+.journal-recent-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform var(--speed-slow) var(--ease);
+}
+
+.journal-recent-card:hover .journal-recent-img,
+.journal-recent-card:focus-visible .journal-recent-img {
+  transform: scale(1.02);
+}
+
+.journal-recent-title {
+  font-size: 1.4rem;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--text);
+  transition: color var(--speed-fast) var(--ease);
+}
+
+.journal-recent-card:hover .journal-recent-title,
+.journal-recent-card:focus-visible .journal-recent-title {
+  color: var(--accent);
+}
+
+.journal-recent-excerpt {
+  color: var(--muted);
+  line-height: 1.85;
+  font-size: .95rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journal-featured-img, .journal-recent-img { transition: none; }
+}
+
+@media (max-width: 900px) {
+  .journal-featured {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================
    TEXTURE SYSTEM
 ========================================= */
 .texture {
@@ -598,6 +758,23 @@ summary:focus-visible,
 
 @media (prefers-reduced-motion: reduce) {
   .fade-up, .fade { animation: none; opacity: 1; transform: none; }
+}
+
+/* Scroll-triggered section reveal — see components/Reveal.tsx. Kept to
+   the same quiet fade/rise as .fade-up, just observer-driven. */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s var(--ease), transform .7s var(--ease);
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
 }
 
 .line-grow { position: relative; }

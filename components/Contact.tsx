@@ -10,16 +10,9 @@ export default function Contact() {
     >
       <Container>
         <div style={{ maxWidth: 780, margin: "0 auto", textAlign: "center" }}>
-          <div
-            style={{
-              color: "var(--bronze)",
-              letterSpacing: ".22em",
-              fontSize: 13,
-              marginBottom: 22,
-            }}
-          >
+          <p className="overline" style={{ marginBottom: "var(--space-3)" }}>
             تماس
-          </div>
+          </p>
           <h2
             style={{
               fontSize: "clamp(2.4rem,4.2vw,3.8rem)",
@@ -53,7 +46,7 @@ export default function Contact() {
           >
             <Button href="/appointment">رزرو جلسه</Button>
             <Link href="/contact" className="btn btn-secondary">
-              ارتباط با ما
+              گفت‌وگو را شروع کنید
             </Link>
           </div>
         </div>

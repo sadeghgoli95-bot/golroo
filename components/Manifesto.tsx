@@ -14,16 +14,9 @@ export default function Manifesto() {
     <section className="section" style={{ background: "var(--bg)" }}>
       <Container>
         <div style={{ marginBottom: 70 }}>
-          <div
-            style={{
-              color: "var(--bronze)",
-              fontSize: 13,
-              letterSpacing: ".22em",
-              marginBottom: 18,
-            }}
-          >
+          <p className="overline" style={{ marginBottom: "var(--space-2)" }}>
             MANIFESTO
-          </div>
+          </p>
           <h2
             style={{
               fontSize: "clamp(2.5rem,5vw,4.2rem)",

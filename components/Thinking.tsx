@@ -48,16 +48,9 @@ export default function Thinking() {
     <section className="section" style={{ background: "var(--bg-soft)" }}>
       <Container>
         <div style={{ marginBottom: 70, maxWidth: 720 }}>
-          <div
-            style={{
-              color: "var(--bronze)",
-              letterSpacing: ".22em",
-              fontSize: 13,
-              marginBottom: 18,
-            }}
-          >
+          <p className="overline" style={{ marginBottom: "var(--space-2)" }}>
             HOW WE THINK
-          </div>
+          </p>
           <h2
             style={{
               fontSize: "clamp(2.6rem,5vw,4rem)",

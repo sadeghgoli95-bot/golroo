@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ContactForm from "@/components/Contact/ContactForm";
@@ -184,6 +185,12 @@ export default function ContactPage() {
                   شد.
                 </p>
               </div>
+            </div>
+
+            <div style={{ marginTop: "3rem", textAlign: "center" }}>
+              <Link href="/journal" className="btn-text">
+                تا رسیدن آن زمان، می‌توانید یادداشت‌های ژورنال را بخوانید
+              </Link>
             </div>
           </div>
         </section>

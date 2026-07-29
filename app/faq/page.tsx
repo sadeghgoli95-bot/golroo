@@ -78,14 +78,9 @@ export default async function FaqPage() {
               <p style={{ color: "var(--text)", fontSize: "1.1rem" }}>
                 هنوز پاسخ پرسش خود را پیدا نکرده‌اید؟
               </p>
-              <div className="cluster" style={{ gap: "1rem" }}>
-                <Link href="/contact" className="button button-primary">
-                  درخواست جلسه
-                </Link>
-                <Link href="/contact" className="button button-secondary">
-                  تماس با من
-                </Link>
-              </div>
+              <Link href="/contact" className="button button-primary">
+                درخواست جلسه
+              </Link>
             </div>
           </div>
         </section>

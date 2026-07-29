@@ -1,18 +1,20 @@
 // Single source of truth for the site's canonical production URL and name.
-// mirora.ir is the real, live custom domain as of the Mirora domain
-// migration — matches every existing canonical/OpenGraph URL already in
-// the codebase (layout.tsx, siteConfig.ts, per-page metadata).
+// mirora.ir is the real, live custom domain — matches every existing
+// canonical/OpenGraph URL already in the codebase (layout.tsx,
+// siteConfig.ts, per-page metadata). "Mirora" is only ever the domain;
+// it is never the brand, organization, or on-site identity.
 // lib/siteConfig.ts derives from this file, not the other way around, so
 // there is exactly one place this value is declared.
 export const SITE_URL = "https://mirora.ir";
 
-// SITE_NAME stays "گل‌رو" — the visible page-title/OG brand text is
-// unchanged by design (see ORGANIZATION_NAME below for the umbrella
-// platform brand used only in JSON-LD Organization/publisher entities).
+// SITE_NAME is the site/brand identity shown everywhere — page titles,
+// OG brand text, and JSON-LD Organization/publisher (see
+// ORGANIZATION_NAME below, which is the same brand, not a separate one).
 export const SITE_NAME = "گل‌رو";
 
-// The clinic/platform brand, distinct from the therapist's personal
-// identity (siteConfig.person.name = "محمد صادق گل‌رو"). Used only where
-// schema.org expects a genuine Organization — the Person entity must
-// never be renamed to this.
-export const ORGANIZATION_NAME = "میرورا";
+// The Organization entity for JSON-LD (publisher, organizationJsonLd),
+// distinct from the therapist's personal identity (siteConfig.person.name
+// = "محمد صادق گل‌رو"). This is the same برند as SITE_NAME — kept as its
+// own export because schema builders import it directly — never "میرورا"
+// (that word names only the domain, mirora.ir).
+export const ORGANIZATION_NAME = SITE_NAME;

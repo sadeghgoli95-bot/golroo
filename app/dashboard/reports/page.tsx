@@ -62,7 +62,7 @@ export default async function ReportsCenterPage() {
 
   return (
     <>
-      <DashboardHeader title="گزارش‌ها" description="خلاصه اجرایی وضعیت کل سایت میرورا" />
+      <DashboardHeader title="گزارش‌ها" description="خلاصه اجرایی وضعیت کل سایت گل‌رو" />
 
       <section className="dashboard-section">
         <h2 className="dashboard-section-title">گزارش اجرایی رشد (Search / Content / Conversion)</h2>
