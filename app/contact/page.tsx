@@ -2,36 +2,63 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ContactForm from "@/components/Contact/ContactForm";
 import {
   WhatsappIcon,
   TelegramIcon,
   MailIcon,
-  PhoneIcon,
+  InstagramIcon,
   PinIcon,
-  InfoIcon,
+  PhoneIcon,
 } from "@/components/Contact/icons";
+import { siteConfig } from "@/lib/siteConfig";
 import { SITE_URL } from "@/lib/seo/site";
 
 export const metadata: Metadata = {
-  title: "درخواست جلسه",
+  title: "راه‌های ارتباطی",
   description:
-    "برای هماهنگی جلسه حضوری یا آنلاین با صادق گل‌رو، روان‌درمانگر کودک و نوجوان، درخواست خود را ثبت کنید.",
+    "راه‌های ارتباط با صادق گل‌رو، روان‌درمانگر کودک و نوجوان — واتساپ، تلگرام، ایمیل و اینستاگرام.",
   alternates: { canonical: "/contact" },
   openGraph: {
-    title: "درخواست جلسه | گل‌رو",
+    title: "راه‌های ارتباطی | گل‌رو",
     description:
-      "برای هماهنگی جلسه حضوری یا آنلاین با صادق گل‌رو، روان‌درمانگر کودک و نوجوان، درخواست خود را ثبت کنید.",
+      "راه‌های ارتباط با صادق گل‌رو، روان‌درمانگر کودک و نوجوان — واتساپ، تلگرام، ایمیل و اینستاگرام.",
     url: `${SITE_URL}/contact`,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "درخواست جلسه | گل‌رو",
+    title: "راه‌های ارتباطی | گل‌رو",
     description:
-      "برای هماهنگی جلسه حضوری یا آنلاین با صادق گل‌رو، روان‌درمانگر کودک و نوجوان، درخواست خود را ثبت کنید.",
+      "راه‌های ارتباط با صادق گل‌رو، روان‌درمانگر کودک و نوجوان — واتساپ، تلگرام، ایمیل و اینستاگرام.",
   },
 };
+
+const channels = [
+  {
+    href: siteConfig.contact.whatsapp,
+    label: "واتساپ",
+    note: "سریع‌ترین راه برای هماهنگی و پاسخ‌گویی",
+    Icon: WhatsappIcon,
+  },
+  {
+    href: siteConfig.contact.telegram,
+    label: "تلگرام",
+    note: "برای پیام و پرسش‌های کوتاه",
+    Icon: TelegramIcon,
+  },
+  {
+    href: `mailto:${siteConfig.contact.email}`,
+    label: "ایمیل",
+    note: "برای مکاتبات رسمی‌تر",
+    Icon: MailIcon,
+  },
+  {
+    href: siteConfig.contact.instagram,
+    label: "اینستاگرام",
+    note: "یادداشت‌ها و مطالب کوتاه‌تر",
+    Icon: InstagramIcon,
+  },
+];
 
 export default function ContactPage() {
   return (
@@ -41,74 +68,37 @@ export default function ContactPage() {
         <section className="editorial-space">
           <div className="container" style={{ maxWidth: 900 }}>
             <p className="overline">CONTACT</p>
-            <h1 className="display">درخواست جلسه</h1>
+            <h1 className="display" style={{ color: "var(--primary)" }}>
+              راه‌های ارتباطی
+            </h1>
             <p className="lead">
-              اگر فکر می‌کنید زمان آن رسیده که درباره تجربه خود بیشتر فکر کنید، می‌توانید برای
-              جلسه حضوری یا آنلاین درخواست ثبت کنید.
+              برای مراجعان داخل و خارج از ایران، امکان برگزاری جلسات آنلاین و حضوری فراهم است. برای
+              پیام یا سوال سریع از راه‌های زیر استفاده کنید.
             </p>
           </div>
         </section>
 
-        {/* جلسات آنلاین */}
-        <section className="section-sm">
+        {/* کانال‌های ارتباطی */}
+        <section className="section-sm" style={{ background: "var(--bg-soft)" }}>
           <div className="container" style={{ maxWidth: 900 }}>
-            <div className="stack-lg">
-              <div className="stack" style={{ gap: "1rem" }}>
-                <h2 className="headline" style={{ fontSize: "clamp(1.8rem, 3vw, 2.4rem)" }}>
-                  جلسات آنلاین
-                </h2>
-                <p className="body-lg" style={{ color: "var(--muted)" }}>
-                  برای مراجعان داخل و خارج از ایران، امکان برگزاری جلسات آنلاین فراهم است.
-                </p>
-              </div>
-
-              <div className="grid-3">
-                <div className="contact-channel">
+            <div className="grid-4">
+              {channels.map(({ href, label, note, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target={href.startsWith("mailto:") ? undefined : "_blank"}
+                  rel={href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                  className="contact-channel"
+                >
                   <span className="contact-channel-icon">
-                    <WhatsappIcon />
+                    <Icon />
                   </span>
-                  <p className="card-title" style={{ fontSize: "1.3rem" }}>
-                    واتساپ
+                  <p className="card-title" style={{ fontSize: "1.15rem", marginBottom: 0 }}>
+                    {label}
                   </p>
-                  <a
-                    href="https://wa.me/989120538112"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="button button-primary"
-                  >
-                    ارسال پیام در واتساپ
-                  </a>
-                </div>
-
-                <div className="contact-channel">
-                  <span className="contact-channel-icon">
-                    <TelegramIcon />
-                  </span>
-                  <p className="card-title" style={{ fontSize: "1.3rem" }}>
-                    تلگرام
-                  </p>
-                  <a
-                    href="https://t.me/SadeghGolroo"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="button button-primary"
-                  >
-                    پیام در تلگرام
-                  </a>
-                </div>
-
-                <div className="contact-channel">
-                  <span className="contact-channel-icon">
-                    <MailIcon />
-                  </span>
-                  <p className="card-title" style={{ fontSize: "1.3rem" }}>
-                    ایمیل
-                  </p>
-                  <a href="mailto:sadeghgoli95@gmail.com" className="button button-primary">
-                    ارسال ایمیل
-                  </a>
-                </div>
-              </div>
+                  <p className="caption">{note}</p>
+                </a>
+              ))}
             </div>
           </div>
         </section>
@@ -117,79 +107,79 @@ export default function ContactPage() {
           <div className="rule" />
         </div>
 
-        {/* جلسات حضوری */}
+        {/* جلسات حضوری / آنلاین */}
         <section className="section-sm">
           <div className="container" style={{ maxWidth: 900 }}>
-            <div className="stack-lg">
-              <div className="stack" style={{ gap: "1rem" }}>
-                <h2 className="headline" style={{ fontSize: "clamp(1.8rem, 3vw, 2.4rem)" }}>
+            <div className="grid-2">
+              <div className="stack" style={{ gap: "1.4rem" }}>
+                <h2 className="headline" style={{ fontSize: "clamp(1.8rem, 3vw, 2.4rem)", color: "var(--primary)" }}>
                   جلسات حضوری
                 </h2>
-                <p className="body-lg" style={{ color: "var(--muted)" }}>
-                  جلسات حضوری با تعیین وقت قبلی انجام می‌شود.
-                </p>
-              </div>
-
-              <div className="stack">
                 <address className="contact-info-row" style={{ fontStyle: "normal" }}>
                   <PinIcon />
-                  <span>
-                    تهران، پاسداران، خیابان بوستان دوم، خیابان گیلان غربی، بین فرخی یزدی و داوود
-                    اسلامی، نبش موحد ۲، پلاک ۵
-                  </span>
+                  <span>{siteConfig.contact.address}</span>
                 </address>
-
                 <div className="contact-info-row">
                   <PhoneIcon />
                   <span className="stack" style={{ gap: ".5rem" }}>
-                    <a href="tel:+982122849351">۰۲۱-۲۲۸۴۹۳۵۱</a>
-                    <a href="tel:+989307070617">۰۹۳۰-۷۰۷۰۶۱۷</a>
+                    {siteConfig.contact.phones.map((phone) => (
+                      <a key={phone} href={`tel:${phone}`}>
+                        {phone}
+                      </a>
+                    ))}
                   </span>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
 
-        <div className="container" style={{ maxWidth: 900 }}>
-          <div className="rule" />
-        </div>
-
-        {/* فرم درخواست جلسه */}
-        <section className="section-sm">
-          <div className="container" style={{ maxWidth: 900 }}>
-            <div className="stack-lg">
-              <div className="stack" style={{ gap: "1rem" }}>
-                <h2 className="headline" style={{ fontSize: "clamp(1.8rem, 3vw, 2.4rem)" }}>
-                  فرم درخواست جلسه
+              <div className="stack" style={{ gap: "1.4rem" }}>
+                <h2 className="headline" style={{ fontSize: "clamp(1.8rem, 3vw, 2.4rem)", color: "var(--primary)" }}>
+                  جلسات آنلاین
                 </h2>
                 <p className="body-lg" style={{ color: "var(--muted)" }}>
-                  اطلاعات زیر را تکمیل کنید تا پس از بررسی، برای هماهنگی با شما تماس گرفته شود.
+                  برای مراجعان داخل و خارج از ایران، امکان برگزاری جلسات آنلاین فراهم است؛ زمان و
+                  بستر جلسه پس از هماهنگی مشخص می‌شود.
                 </p>
               </div>
-              <ContactForm />
             </div>
           </div>
         </section>
 
-        {/* یادداشت مهم */}
-        <section className="section-sm" style={{ paddingTop: 0 }}>
+        {/* CTA نهایی */}
+        <section className="section-sm">
           <div className="container" style={{ maxWidth: 900 }}>
-            <div className="contact-note">
-              <InfoIcon />
-              <div className="stack" style={{ gap: ".8rem" }}>
-                <p style={{ color: "var(--primary)", fontWeight: 500 }}>پیش از درخواست جلسه</p>
-                <p style={{ color: "var(--text)", lineHeight: 1.9 }}>
-                  جلسات درمانی تنها پس از هماهنگی و تعیین وقت برگزار می‌شوند. ارسال فرم یا پیام به
-                  معنای رزرو قطعی جلسه نیست و پس از بررسی، برای هماهنگی با شما تماس گرفته خواهد
-                  شد.
+            <div
+              style={{
+                background: "var(--primary)",
+                color: "#fff",
+                borderRadius: "var(--radius-card)",
+                padding: "3.5rem 3rem",
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "2rem",
+              }}
+            >
+              <div>
+                <p style={{ fontSize: "1.2rem", marginBottom: ".6rem" }}>
+                  برای هماهنگی جلسه، فرم رزرو را تکمیل کنید.
+                </p>
+                <p style={{ color: "rgba(255,255,255,.75)", lineHeight: 1.9, maxWidth: "48ch" }}>
+                  ارسال فرم به معنای رزرو قطعی جلسه نیست؛ پس از بررسی با شما تماس گرفته می‌شود.
                 </p>
               </div>
-            </div>
-
-            <div style={{ marginTop: "3rem", textAlign: "center" }}>
-              <Link href="/journal" className="btn-text">
-                تا رسیدن آن زمان، می‌توانید یادداشت‌های ژورنال را بخوانید
+              <Link
+                href="/appointment"
+                style={{
+                  background: "#fff",
+                  color: "var(--primary)",
+                  padding: "1rem 2rem",
+                  borderRadius: "var(--radius-pill)",
+                  fontWeight: 500,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                رزرو جلسه
               </Link>
             </div>
           </div>
