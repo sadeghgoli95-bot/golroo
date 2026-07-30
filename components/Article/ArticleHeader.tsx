@@ -25,14 +25,14 @@ export default function ArticleHeader({
   return (
     <header className="reading">
       {category && categorySlug ? (
-        <Link href={`/journal/category/${categorySlug}`} className="overline">
+        <Link href={`/journal/category/${categorySlug}`} className="article-overline">
           {category}
         </Link>
       ) : (
-        <p className="overline">{category || "THERAPEUTIC JOURNAL"}</p>
+        <p className="article-overline">{category || "THERAPEUTIC JOURNAL"}</p>
       )}
-      <h1 className="display">{title}</h1>
-      {excerpt && <p className="lead">{excerpt}</p>}
+      <h1 className="article-title">{title}</h1>
+      {excerpt && <p className="article-excerpt">{excerpt}</p>}
       <div className="article-header-meta">
         {authorName &&
           (authorSlug ? (
