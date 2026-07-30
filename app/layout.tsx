@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
-import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/components/Seo/JsonLd";
+import { JsonLd, organizationJsonLd, personJsonLd, websiteJsonLd } from "@/components/Seo/JsonLd";
 import { professionalServiceJsonLd } from "@/lib/seo/schema";
 import { SITE_URL } from "@/lib/seo/site";
 import PersianTextNormalizer from "@/components/PersianTextNormalizer";
@@ -108,6 +108,7 @@ export default function RootLayout({
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={websiteJsonLd()} />
         <JsonLd data={professionalServiceJsonLd()} />
+        <JsonLd data={personJsonLd()} />
         <PersianTextNormalizer />
         {children}
       </body>

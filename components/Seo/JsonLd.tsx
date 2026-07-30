@@ -104,10 +104,10 @@ export function articleJsonLd(article: {
 
 /**
  * cssSelector defaults to the real classNames the article page uses for
- * headline/lead (see components/Article/ArticleHeader.tsx: h1.display,
- * p.lead) — not placeholder selectors.
+ * headline/excerpt (see components/Article/ArticleHeader.tsx: h1.article-title,
+ * p.article-excerpt) — not placeholder selectors.
  */
-export function speakableJsonLd(url: string, cssSelectors: string[] = [".display", ".lead"]) {
+export function speakableJsonLd(url: string, cssSelectors: string[] = [".article-title", ".article-excerpt"]) {
   return {
     "@context": "https://schema.org",
     "@type": "WebPage",
