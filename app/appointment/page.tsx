@@ -44,6 +44,14 @@ export default function AppointmentPage() {
 
         <section className="section-sm" style={{ paddingTop: 0 }}>
           <div className="container" style={{ maxWidth: 820 }}>
+            <div className="before-start-block">
+              <p className="before-start-title">قبل از شروع</p>
+              <ul className="before-start-list">
+                <li>مدت هر جلسه: ۵۰ دقیقه</li>
+                <li>زمان پاسخ‌گویی: معمولاً ظرف ۲۴ ساعت با شما تماس گرفته می‌شود</li>
+                <li>جلسات به‌صورت آنلاین یا حضوری قابل هماهنگی است</li>
+              </ul>
+            </div>
             <AppointmentForm />
           </div>
         </section>

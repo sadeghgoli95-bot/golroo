@@ -6,7 +6,7 @@ function Highlight({ children }: { children: string }) {
 
 export default function OpeningLetter() {
   return (
-    <section className="section">
+    <section className="section" style={{ background: "var(--bg-soft)" }}>
       <Container>
         <div
           style={{

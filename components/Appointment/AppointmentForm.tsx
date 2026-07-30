@@ -198,7 +198,7 @@ export default function AppointmentForm() {
 
       <fieldset style={{ border: "none", padding: 0, display: "grid", gap: ".8rem" }}>
         <legend className="field-label" style={{ padding: 0, marginBottom: ".4rem" }}>
-          نوع جلسه *
+          نوع جلسه
         </legend>
         <div className="radio-group">
           <label className="radio-option">
@@ -224,7 +224,7 @@ export default function AppointmentForm() {
 
       <fieldset style={{ border: "none", padding: 0, display: "grid", gap: ".8rem" }}>
         <legend className="field-label" style={{ padding: 0, marginBottom: ".4rem" }}>
-          نوع مراجعه *
+          نوع مراجعه
         </legend>
         <div className="radio-group">
           {(

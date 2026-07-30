@@ -34,7 +34,7 @@ export default function Journal() {
         <section className="editorial-space">
           <div className="container">
             <p className="overline">THERAPEUTIC JOURNAL</p>
-            <h1 className="display">مشاهده‌هایی از اتاق درمان</h1>
+            <h1 className="display" style={{ color: "var(--primary)" }}>مشاهده‌هایی از اتاق درمان</h1>
             <p className="lead">
               این نوشته‌ها آموزش نیستند؛
               دعوتی هستند برای مکث و مشاهده.

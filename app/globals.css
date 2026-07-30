@@ -370,6 +370,11 @@ summary:focus-visible,
 
 /* Minimal rotating-journal card variant: title stays neutral until hover,
    excerpt clamps to 2 lines so all cards stay equal height. */
+.journal-card .card-title {
+  color: var(--primary);
+}
+.journal-card:hover .card-title { color: var(--accent); }
+
 .journal-card-compact { height: 100%; }
 .journal-card-compact .card-title { color: var(--text); transition: color var(--speed-fast) var(--ease); }
 .journal-card-compact:hover .card-title { color: var(--accent); }
@@ -414,19 +419,57 @@ summary:focus-visible,
 }
 
 .journal-row {
+  position: relative;
   display: grid;
   grid-template-columns: 160px 1fr auto;
   align-items: center;
   gap: 2.4rem;
   padding-block: 2.1rem;
-  border-top: 1px solid var(--line-soft);
   color: inherit;
   text-decoration: none;
   transition: opacity .35s var(--ease), transform .35s var(--ease);
 }
 
-.journal-rotator-list > .journal-row:last-child {
-  border-bottom: 1px solid var(--line-soft);
+.journal-row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(to left, rgba(75, 36, 95, .4), transparent);
+}
+
+.journal-rotator-list > .journal-row:last-child::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(to left, rgba(75, 36, 95, .4), transparent);
+}
+
+.journal-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.journal-filter-chip {
+  font-family: inherit;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 193, 181, .5);
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+  text-decoration: none;
+  transition: all .2s ease;
+}
+.journal-filter-chip:hover {
+  border-color: transparent;
+  background: var(--primary);
+  color: #fff;
 }
 
 .journal-row-meta {
@@ -451,7 +494,7 @@ summary:focus-visible,
   font-size: clamp(1.3rem, 2vw, 1.6rem);
   font-weight: 300;
   line-height: 1.5;
-  color: var(--text);
+  color: var(--primary);
   transition: color var(--speed-fast) var(--ease);
 }
 
@@ -580,7 +623,7 @@ summary:focus-visible,
   font-size: clamp(1.9rem, 3.4vw, 2.8rem);
   font-weight: 300;
   line-height: 1.4;
-  color: var(--text);
+  color: var(--primary);
   transition: color var(--speed-fast) var(--ease);
 }
 
@@ -640,7 +683,7 @@ summary:focus-visible,
   font-size: 1.4rem;
   font-weight: 300;
   line-height: 1.5;
-  color: var(--text);
+  color: var(--primary);
   transition: color var(--speed-fast) var(--ease);
 }
 
@@ -1034,6 +1077,8 @@ summary:focus-visible,
   line-height: 1.3;
   margin-top: 4.5rem;
   margin-bottom: 1.5rem;
+  color: var(--primary);
+  font-weight: 400;
 }
 
 .article-body h3 {
@@ -1940,4 +1985,80 @@ summary:focus-visible,
 
 @media (max-width: 640px) {
   .article-hero { padding: 108px 0 56px; }
+}
+
+/* =========================================
+   ABOUT PAGE
+========================================= */
+.about-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+.about-toc a {
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+}
+.about-toc a:hover { color: var(--primary); }
+
+.section-compact { padding-block: 64px; }
+
+.about-bio-text {
+  display: grid;
+  gap: 26px;
+  margin-top: 28px;
+  line-height: 2.1;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.about-values-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  margin-top: 44px;
+  background: rgba(75, 36, 95, .18);
+  border: 1px solid rgba(75, 36, 95, .18);
+}
+.about-value-card {
+  background: var(--card, #fff);
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.about-value-num { font-size: 13px; color: var(--accent); font-weight: 500; }
+.about-value-text { font-size: 19px; color: var(--text); line-height: 1.6; }
+
+@media (max-width: 640px) {
+  .about-values-grid { grid-template-columns: 1fr; }
+}
+
+/* =========================================
+   APPOINTMENT PAGE
+========================================= */
+.before-start-block {
+  background: var(--bg-soft);
+  border-radius: 16px;
+  padding: 32px 36px;
+  margin: 0 0 40px;
+}
+.before-start-title {
+  color: var(--primary);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+.before-start-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.8;
 }

@@ -149,6 +149,18 @@ export default function JournalEditorial({ articles }: Props) {
 
   return (
     <div className="journal-editorial-index">
+      <div className="journal-index-section" style={{ borderTop: "none" }}>
+        <p className="overline" style={{ marginBottom: "1.2rem" }}>{articles.length} یادداشت</p>
+        <nav className="journal-filter" aria-label="پرش به دسته‌بندی">
+          <a href="#" className="journal-filter-chip">همه</a>
+          {topics.map((topic, i) => (
+            <a key={topic.label} href={`#topic-${i}`} className="journal-filter-chip">
+              {topic.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+
       <section className="journal-index-section">
         <FeaturedCard article={featured} />
       </section>
@@ -164,8 +176,8 @@ export default function JournalEditorial({ articles }: Props) {
         </section>
       )}
 
-      {topics.map((topic) => (
-        <section key={topic.label} className="journal-index-section">
+      {topics.map((topic, i) => (
+        <section key={topic.label} id={`topic-${i}`} className="journal-index-section">
           <div className="journal-index-topic-header">
             <p className="overline journal-index-label">{topic.label}</p>
             {topic.slug && (

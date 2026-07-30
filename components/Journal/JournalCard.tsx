@@ -38,7 +38,7 @@ export default function JournalCard({ item, highlightQuery, compact }: Props) {
   const excerpt = normalizePersianText(item.excerpt);
 
   return (
-    <article className={compact ? "card journal-card-compact" : "card"}>
+    <article className={compact ? "card journal-card-compact" : "card journal-card"}>
       {!compact && item.featuredImage && (
         <Link href={articleHref} tabIndex={-1} aria-hidden="true">
           <div style={{ margin: "-2.4rem -2.4rem 1.6rem", overflow: "hidden", borderRadius: "16px 16px 0 0" }}>
