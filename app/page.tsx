@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import Container from "@/components/Container";
 import Hero from "@/components/Hero";
 import OpeningLetter from "@/components/OpeningLetter";
 import QuestionBlock from "@/components/QuestionBlock";
@@ -29,6 +30,18 @@ export default function Home() {
 
         {/* 1. Hero — immediate emotional recognition */}
         <Hero />
+
+        <section className="parent-note">
+          <Container style={{ maxWidth: 720 }}>
+            <p className="overline">یادداشتی برای والدین</p>
+            <p className="parent-note-text">
+              اگر این متن را می‌خوانید، احتمالاً چیزی در رابطه با فرزندتان ذهن شما را
+              مشغول کرده — رفتاری که تازه شروع شده، سکوتی که طولانی‌تر از حد معمول
+              است، یا نگرانی‌ای که هنوز اسمی برایش پیدا نکرده‌اید. این‌جا، پیش از هر
+              پاسخ آماده، تلاش می‌کنیم با هم به آن نگرانی نگاهی دقیق‌تر بیندازیم.
+            </p>
+          </Container>
+        </section>
 
         {/* 2. Recognition — "این سایت می‌فهمد من چه چیزی را تجربه می‌کنم" */}
         <Reveal>

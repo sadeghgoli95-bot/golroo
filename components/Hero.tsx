@@ -5,20 +5,19 @@ import Link from "next/link";
 
 export default function Hero() {
   return (
-    <section className="hero-redesign">
-      <div className="hero-visual">
+    <section className="hero-fullbleed">
+      <div className="hero-fullbleed-media">
         <Image
           src="/hero/golroo-hero.webp"
           alt="شاخه‌ای با شکوفه‌های بنفش در نوری ملایم، مقابل دیواری روشن و گرم"
           fill
           priority
-          sizes="(max-width: 640px) 100vw, 58vw"
-          className="hero-visual-img"
+          style={{ objectFit: "cover" }}
         />
       </div>
 
       <Container>
-        <div className="hero-content">
+        <div className="hero-fullbleed-text">
           <div className="hero-eyebrow fade-up">
             <span className="hero-eyebrow-mark" />
             SADEGH GOLROO

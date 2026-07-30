@@ -1558,72 +1558,30 @@ summary:focus-visible,
 
 /* =========================================
    HERO
-   One integrated composition, not an image column + text column: the
-   photo bleeds from the section's true left edge (independent of
-   .container) and is soft-masked into the page's white background, while
-   the text sits in normal container flow on top — so it reads as
-   typography inhabiting the photo's own negative space, not two
-   side-by-side blocks. See components/Hero.tsx.
+   Full-bleed photo background spanning the whole section, with the text
+   as an overlay anchored to the light side of the image (the right side,
+   since the site is RTL — margin-inline-end: auto keeps it there instead
+   of drifting to the physical left). See components/Hero.tsx.
 ========================================= */
-.hero-redesign {
+.hero-fullbleed {
   position: relative;
-  min-height: 92svh;
+  min-height: 88svh;
   display: flex;
   align-items: center;
-  padding-block: 9rem 4rem;
   overflow: hidden;
 }
 
-.hero-visual {
+.hero-fullbleed-media {
   position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  width: clamp(560px, 68vw, 1040px);
-  /* Locked close to the source photo's own 12288x6942 (~1.77:1) ratio —
-     this is what actually fixes the over-zoom: the previous box stretched
-     to the full section height (inset: 0 auto 0 0) with only a width cap,
-     i.e. a tall ~1.1:1 portrait box, which forced object-fit: cover to
-     crop a landscape photo down to a narrow vertical sliver to fill it.
-     Matching the box to the photo's own ratio means cover has almost
-     nothing left to crop, so nearly the full composition — blossoms and
-     the negative space beside them — shows instead. */
-  aspect-ratio: 16 / 9;
-  z-index: 0;
-  /* Soft radial dissolve centered on the branch/blossoms — refined from
-     the previous ellipse (72% 78% at 26% 50%, black 46%, transparent 96%),
-     which left a visible seam: at the box's true left edge the gradient's
-     normalized distance from center only reached ~72% of the fade (200*26/72),
-     never hitting the "transparent" stop before the box boundary clipped
-     it. Recentering/resizing so every edge's distance safely exceeds the
-     transparent stop (left: 200*32/64=100, top/bottom: 200*48/84≈114,
-     right: 200*68/64≈213 — all past 92) guarantees a full dissolve on
-     every side, while the opaque core (≤48% of radius) still covers the
-     blossom cluster richly. */
-  -webkit-mask-image: radial-gradient(ellipse 64% 84% at 32% 48%, black 48%, transparent 92%);
-  mask-image: radial-gradient(ellipse 64% 84% at 32% 48%, black 48%, transparent 92%);
+  inset: 0;
 }
 
-.hero-visual-img {
-  object-fit: cover;
-  /* Anchored to the true left edge (was 22% 42%, tuned for the old tall
-     crop). The box now barely crops at all, so this only matters for the
-     sub-1% sliver aspect-ratio math still trims — anchoring left
-     guarantees that sliver comes off the right (negative space), never
-     the blossom branch on the left edge. */
-  object-position: 0% 48%;
-  animation: heroImageReveal 1.2s var(--ease) both;
-}
-
-@keyframes heroImageReveal {
-  from { opacity: 0; transform: scale(1.045); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.hero-content {
+.hero-fullbleed-text {
   position: relative;
   z-index: 1;
-  max-width: 680px;
+  max-width: 600px;
+  margin-inline-end: auto;
+  padding: 64px 56px;
 }
 
 .hero-eyebrow {
@@ -1666,61 +1624,14 @@ summary:focus-visible,
   flex-wrap: wrap;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-visual-img { animation: none; }
-}
-
-@media (max-width: 900px) {
-  .hero-visual {
-    /* Graceful scale-down, same aspect-ratio box — no re-crop needed,
-       the composition just gets smaller. */
-    width: 58vw;
-    /* Same seam fix as desktop, re-solved for this box's own ratio —
-       left edge distance 200*30/58≈103, past the 92 transparent stop. */
-    -webkit-mask-image: radial-gradient(ellipse 58% 84% at 30% 50%, black 44%, transparent 92%);
-    mask-image: radial-gradient(ellipse 58% 84% at 30% 50%, black 44%, transparent 92%);
-  }
-}
-
 @media (max-width: 640px) {
-  .hero-redesign {
-    min-height: 0;
-    display: block;
-    /* Reduced top padding (was 6.5rem) — the section only needs to clear
-       the fixed 82px navbar plus a small margin; the extra rem was pure
-       dead space before the image, on top of the image's own negative
-       top margin below. Composition/aspect-ratio of the image itself is
-       untouched — this only tightens the surrounding whitespace. */
-    padding-block: 5rem 3.5rem;
+  .hero-fullbleed {
+    min-height: 78svh;
   }
 
-  .hero-visual {
-    position: relative;
-    top: auto;
-    left: auto;
-    transform: none;
-    width: auto;
-    /* Same fix as desktop: an aspect-ratio-locked band instead of a
-       fixed height, so the full desktop composition scales down rather
-       than getting re-cropped into a different, shorter shape. */
-    aspect-ratio: 16 / 9;
-    /* Was 46vh — tightened as a safety cap for compactness on tall
-       narrow viewports; doesn't change anything at the 320-430px widths
-       actually tested, where 16/9 already resolves well under this. */
-    max-height: 40vh;
-    /* Bottom margin reduced 1.5rem -> 1rem for a more compact transition
-       into the text; top margin/mask/crop unchanged. */
-    margin: -2rem -20px 1rem;
-    -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 94%);
-    mask-image: linear-gradient(to bottom, black 55%, transparent 94%);
-  }
-
-  .hero-visual-img {
-    object-position: 0% 42%;
-  }
-
-  .hero-content {
+  .hero-fullbleed-text {
     max-width: none;
+    padding: 40px 20px;
   }
 
   .hero-break { display: none; }
@@ -2037,6 +1948,12 @@ summary:focus-visible,
 @media (max-width: 640px) {
   .about-values-grid { grid-template-columns: 1fr; }
 }
+
+/* =========================================
+   HOME — PARENT NOTE
+========================================= */
+.parent-note { padding-block: clamp(96px, 10vw, 160px); background: var(--bg-soft); }
+.parent-note-text { font-size: clamp(19px, 2.5vw, 23px); line-height: 2.1; color: var(--text); margin-top: 24px; }
 
 /* =========================================
    APPOINTMENT PAGE
