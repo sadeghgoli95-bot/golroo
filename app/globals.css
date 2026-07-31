@@ -1159,6 +1159,19 @@ summary:focus-visible,
   border: 1px solid var(--border);
 }
 
+@media (min-width: 901px) {
+  .article-toc {
+    position: sticky;
+    top: 100px;
+    max-height: calc(100svh - 140px);
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .article-toc { display: none; }
+}
+
 .article-toc-title {
   font-size: .85rem;
   letter-spacing: .15em;
@@ -1180,6 +1193,7 @@ summary:focus-visible,
 }
 
 .article-toc-list a:hover { color: var(--primary); opacity: 1; }
+.article-toc-list a[aria-current="location"] { color: var(--primary); font-weight: 500; }
 
 .article-toc-list .article-toc-list {
   margin-top: .6rem;
