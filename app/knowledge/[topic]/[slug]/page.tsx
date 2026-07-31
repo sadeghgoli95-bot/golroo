@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ArticleHeader from "@/components/Article/ArticleHeader";
@@ -19,6 +20,10 @@ export function generateMetadata({ params }: Props): Metadata {
 }
 
 export default function ArticlePage({ params }: Props) {
+  // Orphaned route: no UI links here and content is hardcoded/placeholder
+  // (params.slug is unused below). 404 until it's wired to real content.
+  notFound();
+
   const topic = topics.find((t) => t.slug === params.topic);
 
   return (
