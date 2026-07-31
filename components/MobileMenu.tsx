@@ -5,9 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navLinks } from "./navLinks";
 import SearchOverlay from "./Search/SearchOverlay";
+import useReducedMotion from "@/hooks/useReducedMotion";
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const reducedMotion = useReducedMotion();
+  const barTransition = reducedMotion ? "none" : "all 0.3s ease";
+  const panelTransition = reducedMotion ? "none" : "transform 0.3s ease";
   const pathname = usePathname();
   const panelRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -90,7 +94,7 @@ export default function MobileMenu() {
             width: "22px",
             height: "1.5px",
             background: "var(--text)",
-            transition: "all 0.3s ease",
+            transition: barTransition,
             transform: isOpen ? "rotate(45deg) translate(4px, 4px)" : "none",
           }}
         />
@@ -100,7 +104,7 @@ export default function MobileMenu() {
             width: "22px",
             height: "1.5px",
             background: "var(--text)",
-            transition: "all 0.3s ease",
+            transition: barTransition,
             opacity: isOpen ? 0 : 1,
           }}
         />
@@ -110,7 +114,7 @@ export default function MobileMenu() {
             width: "22px",
             height: "1.5px",
             background: "var(--text)",
-            transition: "all 0.3s ease",
+            transition: barTransition,
             transform: isOpen ? "rotate(-45deg) translate(4px, -4px)" : "none",
           }}
         />
@@ -148,7 +152,7 @@ export default function MobileMenu() {
           flexDirection: "column",
           gap: "8px",
           transform: isOpen ? "translateX(0)" : "translateX(100%)",
-          transition: "transform 0.3s ease",
+          transition: panelTransition,
           borderLeft: "1px solid var(--line)",
         }}
       >

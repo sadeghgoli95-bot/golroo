@@ -5,7 +5,7 @@ import { client } from "@/sanity/lib/client";
 import { articleQuery, relatedArticlesQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import { PortableText } from "next-sanity";
-import { articlePortableTextComponents } from "@/components/Article/portableTextComponents";
+import { createArticlePortableTextComponents } from "@/components/Article/portableTextComponents";
 import ArticleHeader from "@/components/Article/ArticleHeader";
 import ArticleBody from "@/components/Article/ArticleBody";
 import ArticleFooter from "@/components/Article/ArticleFooter";
@@ -114,6 +114,7 @@ export default async function ArticlePage({ params }: Props) {
 
   const headings = extractPortableTextHeadings(article.body);
   const toc = headings.length >= MIN_HEADINGS_FOR_TOC ? buildTableOfContents(headings) : [];
+  const portableTextComponents = createArticlePortableTextComponents();
 
   return (
     <>
@@ -224,17 +225,17 @@ export default async function ArticlePage({ params }: Props) {
           )}
 
           {article.body && (
-            <PortableText value={article.body} components={articlePortableTextComponents} />
+            <PortableText value={article.body} components={portableTextComponents} />
           )}
 
           {article.realExample && (
-            <PortableText value={article.realExample} components={articlePortableTextComponents} />
+            <PortableText value={article.realExample} components={portableTextComponents} />
           )}
 
           {article.scientificExplanation && (
             <PortableText
               value={article.scientificExplanation}
-              components={articlePortableTextComponents}
+              components={portableTextComponents}
             />
           )}
 

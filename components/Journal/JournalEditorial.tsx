@@ -152,7 +152,7 @@ export default function JournalEditorial({ articles }: Props) {
       <div className="journal-index-section" style={{ borderTop: "none" }}>
         <p className="overline" style={{ marginBottom: "1.2rem" }}>{articles.length} یادداشت</p>
         <nav className="journal-filter" aria-label="پرش به دسته‌بندی">
-          <a href="#" className="journal-filter-chip">همه</a>
+          <a href="#journal-top" className="journal-filter-chip">همه</a>
           {topics.map((topic, i) => (
             <a key={topic.label} href={`#topic-${i}`} className="journal-filter-chip">
               {topic.label}
@@ -161,7 +161,7 @@ export default function JournalEditorial({ articles }: Props) {
         </nav>
       </div>
 
-      <section className="journal-index-section">
+      <section id="journal-top" className="journal-index-section">
         <FeaturedCard article={featured} />
       </section>
 

@@ -820,6 +820,12 @@ summary:focus-visible,
   .reveal { opacity: 1; transform: none; transition: none; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .search-overlay-backdrop, .search-overlay-panel { animation: none; }
+  .faq-question-icon { transition: none; }
+  .faq-answer-wrapper { transition: none; }
+}
+
 .line-grow { position: relative; }
 
 .line-grow::after {

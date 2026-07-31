@@ -11,3 +11,15 @@ export function slugify(text: string): string {
     .replace(/[^\p{L}\p{N}\s-]/gu, "")
     .replace(/\s+/g, "-");
 }
+
+/**
+ * Appends -2, -3, ... to `slug` if it was already seen in `seen`, so two
+ * headings with identical text (e.g. two "جمع‌بندی" sections) don't render
+ * the same DOM id and silently break TOC anchor targeting for the second
+ * one. Mutates `seen` as a side effect — pass a fresh Map per document.
+ */
+export function dedupeSlug(seen: Map<string, number>, slug: string): string {
+  const count = seen.get(slug) ?? 0;
+  seen.set(slug, count + 1);
+  return count === 0 ? slug : `${slug}-${count + 1}`;
+}

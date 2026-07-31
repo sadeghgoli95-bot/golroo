@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 
 type FormState = {
@@ -40,6 +40,14 @@ export default function AppointmentForm() {
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
+  const nameRef = useRef<HTMLInputElement>(null);
+  const ageRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const topicRef = useRef<HTMLTextAreaElement>(null);
+  const consentRef = useRef<HTMLInputElement>(null);
+  const fieldOrder: (keyof FormState)[] = ["name", "age", "phone", "topic", "consent"];
+  const fieldRefs = { name: nameRef, age: ageRef, phone: phoneRef, topic: topicRef, consent: consentRef };
+
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
@@ -61,7 +69,11 @@ export default function AppointmentForm() {
     event.preventDefault();
     const validationErrors = validate();
     setErrors(validationErrors);
-    if (Object.keys(validationErrors).length > 0) return;
+    if (Object.keys(validationErrors).length > 0) {
+      const firstInvalid = fieldOrder.find((key) => validationErrors[key]);
+      if (firstInvalid) fieldRefs[firstInvalid as keyof typeof fieldRefs]?.current?.focus();
+      return;
+    }
 
     setStatus("submitting");
     try {
@@ -114,17 +126,19 @@ export default function AppointmentForm() {
             نام و نام خانوادگی *
           </label>
           <input
+            ref={nameRef}
             id="name"
             className="field-input"
             type="text"
             autoComplete="name"
             value={form.name}
+            aria-required="true"
             aria-invalid={Boolean(errors.name)}
             aria-describedby={errors.name ? "name-error" : undefined}
             onChange={(event) => update("name", event.target.value)}
           />
           {errors.name && (
-            <p id="name-error" className="field-error">
+            <p id="name-error" className="field-error" role="alert">
               {errors.name}
             </p>
           )}
@@ -135,17 +149,19 @@ export default function AppointmentForm() {
             سن *
           </label>
           <input
+            ref={ageRef}
             id="age"
             className="field-input"
             type="number"
             min={0}
             value={form.age}
+            aria-required="true"
             aria-invalid={Boolean(errors.age)}
             aria-describedby={errors.age ? "age-error" : undefined}
             onChange={(event) => update("age", event.target.value)}
           />
           {errors.age && (
-            <p id="age-error" className="field-error">
+            <p id="age-error" className="field-error" role="alert">
               {errors.age}
             </p>
           )}
@@ -158,17 +174,19 @@ export default function AppointmentForm() {
             شماره تماس *
           </label>
           <input
+            ref={phoneRef}
             id="phone"
             className="field-input"
             type="tel"
             autoComplete="tel"
             value={form.phone}
+            aria-required="true"
             aria-invalid={Boolean(errors.phone)}
             aria-describedby={errors.phone ? "phone-error" : undefined}
             onChange={(event) => update("phone", event.target.value)}
           />
           {errors.phone && (
-            <p id="phone-error" className="field-error">
+            <p id="phone-error" className="field-error" role="alert">
               {errors.phone}
             </p>
           )}
@@ -189,7 +207,7 @@ export default function AppointmentForm() {
             onChange={(event) => update("email", event.target.value)}
           />
           {errors.email && (
-            <p id="email-error" className="field-error">
+            <p id="email-error" className="field-error" role="alert">
               {errors.email}
             </p>
           )}
@@ -253,16 +271,18 @@ export default function AppointmentForm() {
           موضوع اصلی مراجعه *
         </label>
         <textarea
+          ref={topicRef}
           id="topic"
           className="field-textarea"
           rows={5}
           value={form.topic}
+          aria-required="true"
           aria-invalid={Boolean(errors.topic)}
           aria-describedby={errors.topic ? "topic-error" : undefined}
           onChange={(event) => update("topic", event.target.value)}
         />
         {errors.topic && (
-          <p id="topic-error" className="field-error">
+          <p id="topic-error" className="field-error" role="alert">
             {errors.topic}
           </p>
         )}
@@ -283,9 +303,11 @@ export default function AppointmentForm() {
 
       <label className="consent-row" htmlFor="consent">
         <input
+          ref={consentRef}
           id="consent"
           type="checkbox"
           checked={form.consent}
+          aria-required="true"
           aria-invalid={Boolean(errors.consent)}
           aria-describedby={errors.consent ? "consent-error" : undefined}
           onChange={(event) => update("consent", event.target.checked)}
@@ -293,13 +315,13 @@ export default function AppointmentForm() {
         <span>اطلاعات وارد شده را صحیح می‌دانم و با استفاده از آن برای هماهنگی جلسه موافقم.</span>
       </label>
       {errors.consent && (
-        <p id="consent-error" className="field-error">
+        <p id="consent-error" className="field-error" role="alert">
           {errors.consent}
         </p>
       )}
 
       {status === "error" && (
-        <p className="field-error">
+        <p className="field-error" role="alert">
           ارسال درخواست با خطا مواجه شد. لطفاً دوباره تلاش کنید.
         </p>
       )}
