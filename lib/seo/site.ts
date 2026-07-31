@@ -18,3 +18,9 @@ export const SITE_NAME = "گل‌رو";
 // own export because schema builders import it directly — never "میرورا"
 // (that word names only the domain, mirora.ir).
 export const ORGANIZATION_NAME = SITE_NAME;
+
+// Final fallback OpenGraph/Twitter image for any route with no more
+// specific image (article SEO image / featured image take priority where
+// applicable). Never the Hero image — this is a dedicated 1200-class OG
+// asset at public/og/golroo-og.webp.
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/og/golroo-og.webp`;

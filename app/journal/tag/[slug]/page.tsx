@@ -18,6 +18,7 @@ import {
 } from "@/sanity/lib/queries";
 import { formatArticleCount } from "@/lib/utils/persian";
 import { siteConfig } from "@/lib/siteConfig";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo/site";
 import { normalizePersianText } from "@/lib/utils/textNormalize";
 
 const PAGE_SIZE = 12;
@@ -55,11 +56,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       url: `${siteConfig.url}/journal/tag/${slug}`,
       type: "website",
+      images: [DEFAULT_OG_IMAGE],
     },
     twitter: {
       card: "summary_large_image",
       title: `${tag.title} | ژورنال`,
       description,
+      images: [DEFAULT_OG_IMAGE],
     },
   };
 }

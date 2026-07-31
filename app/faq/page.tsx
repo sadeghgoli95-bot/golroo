@@ -6,7 +6,7 @@ import FaqAccordionList from "@/components/Faq/FaqAccordionList";
 import { JsonLd, faqPageJsonLd } from "@/components/Seo/JsonLd";
 import { client } from "@/sanity/lib/client";
 import { publishedFaqsQuery } from "@/sanity/lib/queries";
-import { SITE_URL } from "@/lib/seo/site";
+import { SITE_URL, DEFAULT_OG_IMAGE } from "@/lib/seo/site";
 import { normalizePersianText } from "@/lib/utils/textNormalize";
 
 export const metadata: Metadata = {
@@ -20,10 +20,12 @@ export const metadata: Metadata = {
       "پاسخ به پرسش‌هایی که معمولاً پیش از شروع روان‌درمانی، رزرو جلسه یا آشنایی با روند درمان مطرح می‌شوند.",
     url: `${SITE_URL}/faq`,
     type: "website",
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "پرسش‌های متداول | گل‌رو",
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

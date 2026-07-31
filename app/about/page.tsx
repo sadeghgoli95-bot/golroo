@@ -9,7 +9,7 @@ import Thinking from "@/components/Thinking";
 import Manifesto from "@/components/Manifesto";
 import ReadingPause from "@/components/ReadingPause";
 import Services from "@/components/Services";
-import { SITE_URL } from "@/lib/seo/site";
+import { SITE_URL, DEFAULT_OG_IMAGE } from "@/lib/seo/site";
 
 export const metadata: Metadata = {
   title: "درباره",
@@ -22,12 +22,14 @@ export const metadata: Metadata = {
       "محمد صادق گل‌رو، روان‌شناس و روان‌درمانگر کودک و نوجوان؛ رویکردی رابطه‌محور، روان‌پویشی و مبتنی بر مشاهده.",
     url: `${SITE_URL}/about`,
     type: "website",
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "درباره | گل‌رو",
     description:
       "محمد صادق گل‌رو، روان‌شناس و روان‌درمانگر کودک و نوجوان؛ رویکردی رابطه‌محور، روان‌پویشی و مبتنی بر مشاهده.",
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

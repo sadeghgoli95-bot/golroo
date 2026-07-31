@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { siteConfig } from "@/lib/siteConfig";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo/site";
 
 export const metadata: Metadata = {
   title: "قوانین و مقررات",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
     description: "شرایط استفاده از سایت گل‌رو و درخواست جلسه روان‌درمانی.",
     url: `${siteConfig.url}/terms`,
     type: "website",
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

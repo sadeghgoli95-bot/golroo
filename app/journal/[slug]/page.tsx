@@ -17,7 +17,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import ReadingProgress from "@/components/ReadingProgress";
 import { JsonLd, articleJsonLd, breadcrumbJsonLd, faqPageJsonLd, organizationJsonLd, speakableJsonLd } from "@/components/Seo/JsonLd";
 import { siteConfig } from "@/lib/siteConfig";
-import { SITE_URL } from "@/lib/seo/site";
+import { SITE_URL, DEFAULT_OG_IMAGE } from "@/lib/seo/site";
 import { normalizePersianText, normalizePortableTextBlocks } from "@/lib/utils/textNormalize";
 import { extractPortableTextHeadings } from "@/lib/utils/extractPortableTextHeadings";
 import { buildTableOfContents } from "@/lib/content-pipeline/tableOfContents";
@@ -39,6 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = seo.metaTitle || article.title;
   const description = seo.metaDescription || article.excerpt;
   const ogImageSource = seo.ogImage || article.featuredImage;
+  const ogImageUrl = ogImageSource ? urlFor(ogImageSource).width(1200).height(630).url() : DEFAULT_OG_IMAGE;
 
   return {
     title,
@@ -51,13 +52,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       type: "article",
       url: seo.canonicalUrl || `${SITE_URL}/journal/${slug}`,
-      images: ogImageSource ? [urlFor(ogImageSource).width(1200).height(630).url()] : undefined,
+      images: [ogImageUrl],
     },
     twitter: {
       card: "summary_large_image",
       title: seo.twitterTitle || title,
       description: seo.twitterDescription || description,
-      images: ogImageSource ? [urlFor(ogImageSource).width(1200).height(630).url()] : undefined,
+      images: [ogImageUrl],
     },
   };
 }

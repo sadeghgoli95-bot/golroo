@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ObservationGrid from "@/components/Observation/ObservationGrid";
-import { SITE_URL } from "@/lib/seo/site";
+import { SITE_URL, DEFAULT_OG_IMAGE } from "@/lib/seo/site";
 
 export const metadata: Metadata = {
   title: "مشاهده‌ها",
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     description: "مشاهده‌هایی که از دل اتاق درمان آمده‌اند؛ نه نسخه درمان، تمرین نگاه کردن.",
     url: `${SITE_URL}/observations`,
     type: "website",
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

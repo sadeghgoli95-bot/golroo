@@ -4,7 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import { JsonLd, organizationJsonLd, personJsonLd, websiteJsonLd } from "@/components/Seo/JsonLd";
 import { professionalServiceJsonLd } from "@/lib/seo/schema";
-import { SITE_URL } from "@/lib/seo/site";
+import { SITE_URL, DEFAULT_OG_IMAGE } from "@/lib/seo/site";
 import PersianTextNormalizer from "@/components/PersianTextNormalizer";
 
 const vazir = localFont({
@@ -74,11 +74,13 @@ export const metadata: Metadata = {
     siteName: "گل‌رو",
     locale: "fa_IR",
     type: "website",
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "گل‌رو",
     description: "روان‌درمانی کودک و نوجوان",
+    images: [DEFAULT_OG_IMAGE],
   },
   icons: {
     icon: "/favicon.ico",

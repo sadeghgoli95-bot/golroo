@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import JournalGrid from "@/components/Journal/JournalGrid";
-import { SITE_URL } from "@/lib/seo/site";
+import { SITE_URL, DEFAULT_OG_IMAGE } from "@/lib/seo/site";
 
 export const revalidate = 60;
 
@@ -17,12 +17,14 @@ export const metadata: Metadata = {
       "مشاهده‌ها و یادداشت‌های بالینی درباره روان‌درمانی کودک و نوجوان، دلبستگی و رابطه والد و کودک.",
     url: `${SITE_URL}/journal`,
     type: "website",
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "ژورنال | گل‌رو",
     description:
       "مشاهده‌ها و یادداشت‌های بالینی درباره روان‌درمانی کودک و نوجوان، دلبستگی و رابطه والد و کودک.",
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

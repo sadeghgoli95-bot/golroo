@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { siteConfig } from "@/lib/siteConfig";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo/site";
 
 export const metadata: Metadata = {
   title: "حریم خصوصی",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
     description: "سیاست حریم خصوصی سایت گل‌رو؛ نحوه جمع‌آوری، استفاده و محافظت از اطلاعات کاربران.",
     url: `${siteConfig.url}/privacy`,
     type: "website",
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

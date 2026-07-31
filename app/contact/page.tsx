@@ -11,7 +11,7 @@ import {
   PhoneIcon,
 } from "@/components/Contact/icons";
 import { siteConfig } from "@/lib/siteConfig";
-import { SITE_URL } from "@/lib/seo/site";
+import { SITE_URL, DEFAULT_OG_IMAGE } from "@/lib/seo/site";
 
 export const metadata: Metadata = {
   title: "راه‌های ارتباطی",
@@ -24,12 +24,14 @@ export const metadata: Metadata = {
       "راه‌های ارتباط با صادق گل‌رو، روان‌درمانگر کودک و نوجوان — واتساپ، تلگرام، ایمیل و اینستاگرام.",
     url: `${SITE_URL}/contact`,
     type: "website",
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "راه‌های ارتباطی | گل‌رو",
     description:
       "راه‌های ارتباط با صادق گل‌رو، روان‌درمانگر کودک و نوجوان — واتساپ، تلگرام، ایمیل و اینستاگرام.",
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 
