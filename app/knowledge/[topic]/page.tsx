@@ -19,6 +19,7 @@ export function generateMetadata({ params }: Props): Metadata {
   return {
     title: topic ? `${topic.title} | گل‌رو` : "گل‌رو",
     description: topic?.description,
+    alternates: { canonical: `/knowledge/${params.topic}` },
   };
 }
 

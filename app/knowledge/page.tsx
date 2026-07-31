@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { topics } from "@/data/topics";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "مرکز دانش",
+  description: "مقاله‌ها، مشاهده‌ها و یادداشت‌هایی درباره رشد، رابطه و تجربه کودک.",
+  alternates: { canonical: "/knowledge" },
+};
 
 export default function Knowledge() {
   return (
