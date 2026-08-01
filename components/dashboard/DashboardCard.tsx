@@ -1,4 +1,5 @@
 import type { ComparisonResult } from "@/lib/analytics/comparison";
+import { METRIC_GLOSSARY } from "@/lib/dashboard/metricGlossary";
 
 type DashboardCardProps = {
   label: string;
@@ -8,6 +9,8 @@ type DashboardCardProps = {
   comparison?: ComparisonResult;
   /** True for metrics where a lower value is the improvement (e.g. average search position) — flips which trend direction renders as positive/negative. */
   invertColor?: boolean;
+  /** Optional key into METRIC_GLOSSARY — when set, renders a plain-language explanation of the metric below the card. */
+  glossaryKey?: string;
 };
 
 const TREND_ARROW: Record<ComparisonResult["trend"], string> = {
@@ -33,7 +36,9 @@ function trendClassName(trend: ComparisonResult["trend"], invertColor: boolean):
   return isPositive ? "dashboard-trend-positive" : "dashboard-trend-negative";
 }
 
-export default function DashboardCard({ label, value, hint, comparison, invertColor = false }: DashboardCardProps) {
+export default function DashboardCard({ label, value, hint, comparison, invertColor = false, glossaryKey }: DashboardCardProps) {
+  const glossaryText = glossaryKey ? METRIC_GLOSSARY[glossaryKey] : undefined;
+
   return (
     <div className="dashboard-card">
       <p className="dashboard-card-label">{label}</p>
@@ -46,10 +51,15 @@ export default function DashboardCard({ label, value, hint, comparison, invertCo
           ) : (
             <span>—</span>
           )}
-          {comparison.previous !== null ? <span className="dashboard-card-comparison-previous">قبلی: {comparison.previous}</span> : null}
+          {comparison.previous !== null ? (
+            <span className="dashboard-card-comparison-previous">
+              قبلی: <span dir="ltr" style={{ unicodeBidi: "isolate" }}>{comparison.previous}</span>
+            </span>
+          ) : null}
         </p>
       ) : null}
       {hint ? <p className="dashboard-card-hint">{hint}</p> : null}
+      {glossaryText ? <p className="dashboard-card-glossary">{glossaryText}</p> : null}
     </div>
   );
 }

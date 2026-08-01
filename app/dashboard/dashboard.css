@@ -103,6 +103,12 @@
   margin: 8px 0 0;
 }
 
+.dashboard-card-glossary {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 8px 0 0;
+}
+
 .dashboard-table-wrap {
   background: var(--card);
   border: 1px solid var(--line);
