@@ -140,7 +140,7 @@ export default async function ReportsCenterPage() {
             <p className="dashboard-card-value">{executiveReport.growth.biggestOpportunity?.title ?? "—"}</p>
             {executiveReport.growth.biggestOpportunity ? (
               <p className="dashboard-card-hint">
-                جایگاه {executiveReport.growth.biggestOpportunity.averagePosition.toFixed(1)} با {executiveReport.growth.biggestOpportunity.impressions} نمایش واقعی
+                جایگاه <span dir="ltr" style={{ unicodeBidi: "isolate" }}>{executiveReport.growth.biggestOpportunity.averagePosition.toFixed(1)}</span> با <span dir="ltr" style={{ unicodeBidi: "isolate" }}>{executiveReport.growth.biggestOpportunity.impressions}</span> نمایش واقعی
               </p>
             ) : (
               <p className="dashboard-card-hint">سیگنال واقعی کافی وجود ندارد.</p>

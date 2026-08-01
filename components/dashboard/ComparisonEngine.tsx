@@ -98,10 +98,10 @@ export default function ComparisonEngine({ snapshots }: ComparisonEngineProps) {
         <>
           <p className="dashboard-trend-chart-range" style={{ marginTop: 12 }}>
             <span>
-              {result.currentLabel} ({result.currentSampleCount} عکس‌فوری)
+              {result.currentLabel} (<span dir="ltr" style={{ unicodeBidi: "isolate" }}>{result.currentSampleCount}</span> عکس‌فوری)
             </span>
             <span>
-              در مقابل {result.previousLabel} ({result.previousSampleCount} عکس‌فوری)
+              در مقابل {result.previousLabel} (<span dir="ltr" style={{ unicodeBidi: "isolate" }}>{result.previousSampleCount}</span> عکس‌فوری)
             </span>
           </p>
           <div className="dashboard-grid" style={{ marginTop: 12 }}>

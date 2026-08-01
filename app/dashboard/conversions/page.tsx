@@ -112,7 +112,7 @@ export default async function ConversionsPage() {
           <ul className="dashboard-insights-list">
             {suddenConversionDrops.map((alert) => (
               <li key={alert.metric} className="dashboard-insight dashboard-insight-critical">
-                افت ناگهانی {alert.label}: {alert.comparison.percentChange?.toFixed(1)}٪ نسبت به دوره قبل ({alert.comparison.previous} → {alert.comparison.current})
+                افت ناگهانی {alert.label}: <span dir="ltr" style={{ unicodeBidi: "isolate" }}>{alert.comparison.percentChange?.toFixed(1)}٪</span> نسبت به دوره قبل (<span dir="ltr" style={{ unicodeBidi: "isolate" }}>{alert.comparison.previous} → {alert.comparison.current}</span>)
               </li>
             ))}
           </ul>

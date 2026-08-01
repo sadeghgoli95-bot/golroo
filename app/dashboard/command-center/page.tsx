@@ -142,7 +142,7 @@ export default async function CommandCenterPage() {
               <>
                 <p className="dashboard-card-value">{center.growth.biggestOpportunity.title}</p>
                 <p className="dashboard-card-hint">
-                  جایگاه {center.growth.biggestOpportunity.averagePosition.toFixed(1)} — {center.growth.biggestOpportunity.impressions} نمایش واقعی
+                  جایگاه <span dir="ltr" style={{ unicodeBidi: "isolate" }}>{center.growth.biggestOpportunity.averagePosition.toFixed(1)}</span> — <span dir="ltr" style={{ unicodeBidi: "isolate" }}>{center.growth.biggestOpportunity.impressions}</span> نمایش واقعی
                 </p>
               </>
             ) : (
