@@ -1,10 +1,10 @@
 import type { DashboardNavItem } from "./types";
 
 /**
- * The Analytics Dashboard's only navigation — article import/review are
- * intentionally not linked here anymore (see app/dashboard/content/import
- * and app/dashboard/content/review, still present and working at their
- * URLs, just no longer part of the dashboard's primary workflow).
+ * The Analytics Dashboard's only navigation. app/dashboard/content/import
+ * and app/dashboard/content/review (previously linked from here) no
+ * longer exist in the codebase — this comment used to say they were
+ * still present but unlinked; they've since been fully removed.
  */
 export const dashboardNavigation: DashboardNavItem[] = [
   { label: "نمای کلی", href: "/dashboard", icon: "dashboard" },
